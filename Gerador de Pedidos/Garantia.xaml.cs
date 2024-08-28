@@ -1,35 +1,46 @@
-namespace Gerador_de_Pedidos;
+using System.Collections.ObjectModel;
 
-public partial class Garantia : ContentPage
+namespace Gerador_de_Pedidos
 {
-	public Garantia()
-	{
-		InitializeComponent();
+    public partial class Garantia : ContentPage
+    {
+        public ObservableCollection<Item> Items { get; set; }
 
-        // Exemplo de dados
-        var items = new List<Item>
+        public Garantia()
         {
-            new Item { ItemName = "Item 1" },
-            new Item { ItemName = "Item 2" }
-        };
+            InitializeComponent();
 
-        // Atribuindo os dados ao CollectionView
-        itemsCollectionView.ItemsSource = items;
+            // Inicializa a coleção de itens
+            Items = new ObservableCollection<Item>
+            {
+                new Item { Texto = "Texto 1", OutroCampo = "Valor 1" },
+                new Item { Texto = "Texto 2", OutroCampo = "Valor 2" }
+            };
+
+            // Define o BindingContext para a página
+            BindingContext = this;
+        }
+
+        // Evento acionado quando um item é selecionado na CollectionView
+        void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Obtém o item selecionado
+            var selectedItem = e.CurrentSelection.FirstOrDefault() as Item;
+            if (selectedItem != null)
+            {
+                // Obtém o texto do item selecionado
+                string textoSelecionado = selectedItem.Texto;
+
+                // Aqui você pode adicionar a lógica para o que deseja fazer com o texto selecionado
+                DisplayAlert("Texto Selecionado", textoSelecionado, "OK");
+            }
+        }
     }
 
-
-public class Item
-{
-    public string ItemName { get; set; }
-}
-
-private async void OnLabelTapped(object sender, EventArgs e)
+    // Classe que representa cada item na CollectionView
+    public class Item
     {
-        if (sender is Label label)
-        {
-            // Copia o texto do label para a área de transferência
-
-            await DisplayAlert("Texto Copiado", "O texto foi copiado para a área de transferência.", "OK");
-        }
+        public string Texto { get; set; }
+        public string OutroCampo { get; set; }
     }
 }

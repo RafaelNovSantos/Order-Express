@@ -428,14 +428,18 @@ BorderColor="#00ED2D2D">
             HorizontalOptions="FillAndExpand"
             MinimumHeightRequest="0"
             MaximumHeightRequest="480"
-            BackgroundColor="Black">
+            BackgroundColor="Black"
+                                    SelectionChanged="SelectionChangedCopyCod"
+                                    SelectionMode="Single"
+                                   >
 
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
                         Padding="10" 
                         HasShadow="False" 
-                        BackgroundColor="White">
+                        BackgroundColor="White"
+                                                  >
 
                                                 <HorizontalStackLayout Spacing="0">
                                                     <Label TextColor="Black" 

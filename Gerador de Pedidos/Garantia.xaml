@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Gerador_de_Pedidos.Garantia"
-              Shell.NavBarIsVisible="False"
-     >
-    <VerticalStackLayout HorizontalOptions="Center"
-                          VerticalOptions="Center">
-        <CollectionView x:Name="itemsCollectionView">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Label 
-                    Text="{Binding ItemName}" 
-                    BackgroundColor="LightGray"
-                    TextColor="Black"
-                    Padding="10">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnLabelTapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </ViewCell>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+             x:Class="Gerador_de_Pedidos.Garantia">
 
+    <CollectionView ItemsSource="{Binding Items}" SelectionChanged="OnCollectionViewSelectionChanged">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="10">
+                    <Label Text="{Binding Texto}" FontSize="20" />
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 
-    </VerticalStackLayout>
 </ContentPage>
-    
-    
