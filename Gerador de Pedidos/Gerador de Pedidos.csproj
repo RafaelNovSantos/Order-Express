@@ -73,6 +73,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="MenuPage.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Remove="MenuPage.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\Images\background.jpg" />
 	  <None Remove="Resources\Images\background_2.jpg" />
 	</ItemGroup>

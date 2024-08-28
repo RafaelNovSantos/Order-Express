@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.MainPage"
+              Shell.NavBarIsVisible="False"
              BackgroundColor="#1A9B9B9B"
              >
 
@@ -186,11 +187,7 @@
                             <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                         </Button.ImageSource>
                     </Button>
-                    <Button  Text="Garantia" Clicked='Button_Clicked'>
-                        <Button.ImageSource>
-                            <FontImageSource FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
-                        </Button.ImageSource>
-                    </Button>
+
 
                 </HorizontalStackLayout>
             </VerticalStackLayout>

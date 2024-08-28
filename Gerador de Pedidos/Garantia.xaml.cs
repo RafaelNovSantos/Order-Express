@@ -1,27 +1,35 @@
-namespace Gerador_de_Pedidos
-{
-    public partial class Garantia : FlyoutPage
-    {
-        public Garantia()
-        {
-            InitializeComponent();
-        }
+namespace Gerador_de_Pedidos;
 
-        // Método para alterar o conteúdo do Detail
-        private void Button_Clicked(object sender, EventArgs e)
+public partial class Garantia : ContentPage
+{
+	public Garantia()
+	{
+		InitializeComponent();
+
+        // Exemplo de dados
+        var items = new List<Item>
         {
-            // Verifica se o Detail é uma NavigationPage
-            if (Detail is NavigationPage navigationPage)
-            {
-                // Navega para a página raiz na pilha de navegação
-                Navigation.PopToRootAsync();
-            }
-            else
-            {
-                // Caso o Detail não seja uma NavigationPage, você pode querer substituí-lo
-                Detail = new NavigationPage(new MainPage());
-                IsPresented = false; // Fecha o menu lateral (Flyout)
-            }
+            new Item { ItemName = "Item 1" },
+            new Item { ItemName = "Item 2" }
+        };
+
+        // Atribuindo os dados ao CollectionView
+        itemsCollectionView.ItemsSource = items;
+    }
+
+
+public class Item
+{
+    public string ItemName { get; set; }
+}
+
+private async void OnLabelTapped(object sender, EventArgs e)
+    {
+        if (sender is Label label)
+        {
+            // Copia o texto do label para a área de transferência
+
+            await DisplayAlert("Texto Copiado", "O texto foi copiado para a área de transferência.", "OK");
         }
     }
 }

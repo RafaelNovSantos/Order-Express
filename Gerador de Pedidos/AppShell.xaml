@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Gerador_de_Pedidos"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutBehavior="Flyout"
     BackgroundColor="{StaticResource ShellBackgroundColor}">
 
     <Shell.Resources>
@@ -21,8 +21,27 @@
 
 
     <!-- ShellContent -->
-    <ShellContent
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent
+        Title="Gerador De Pedidos"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
+            </ShellContent.Icon>
+        </ShellContent>
 
+ 
+    </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent
+        Title="Garantia"
+           
+        ContentTemplate="{DataTemplate local:Garantia}"
+        Route="Garantia">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
+            </ShellContent.Icon>
+        </ShellContent>
+    </FlyoutItem>
 </Shell>

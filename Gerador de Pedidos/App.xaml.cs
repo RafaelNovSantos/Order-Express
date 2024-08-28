@@ -1,4 +1,7 @@
-﻿namespace Gerador_de_Pedidos
+﻿using Gerador_de_Pedidos;
+
+
+namespace Gerador_de_Pedidos
 {
     public partial class App : Application
     {
@@ -7,6 +10,8 @@
             InitializeComponent();
 
             MainPage = new AppShell();
+
         }
+
     }
 }

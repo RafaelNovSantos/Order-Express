@@ -803,14 +803,5 @@ namespace Gerador_de_Pedidos
 
         }
 
-        private void listaProdutosExcel_Scrolled(object sender, ItemsViewScrolledEventArgs e)
-        {
-
-        }
-
-        private async void Button_Clicked(object sender, EventArgs e)
-        {
-           await Navigation.PushAsync(new Garantia());
-        }
     }
 }
