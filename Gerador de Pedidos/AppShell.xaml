@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Gerador_de_Pedidos.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Gerador_de_Pedidos"
+    Shell.FlyoutBehavior="Disabled"
+    BackgroundColor="{StaticResource ShellBackgroundColor}">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="ShellBackgroundColor">#00000000</Color>
+            <Color x:Key="ShellTitleColor">White</Color>
+            <!-- Cor de fundo da barra -->
+            <!-- Cor do texto da barra -->
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <!-- Definição dos ShellContents -->
+    <!-- Definir o TitleView para o Shell -->
+
+
+    <!-- ShellContent -->
+    <ShellContent
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+</Shell>
