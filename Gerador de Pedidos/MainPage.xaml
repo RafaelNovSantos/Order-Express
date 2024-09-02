@@ -48,7 +48,7 @@
     <ScrollView>
 
 
-        
+
         <Grid Padding="10" HorizontalOptions="Center"  VerticalOptions="Center">
 
 
@@ -63,14 +63,16 @@
                 <!-- Ajustado para ocupar o espaço restante -->
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-          
+
 
             <!-- Seção de entrada de dados -->
-            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Padding="10" Spacing="10">
+            <VerticalStackLayout Padding="10" Spacing="10">
+
 
 
                 <HorizontalStackLayout HorizontalOptions="Center">
-                <Label Text="Tipo de Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                    <Label Text="Tipo de Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+
                 </HorizontalStackLayout>
                 <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
                     <Picker.Items>
@@ -130,15 +132,22 @@
                 <Entry x:Name="txtValor" Placeholder="Valor" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" />
 
                 <HorizontalStackLayout Spacing="10">
-                    <Entry x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" WidthRequest="400"/>
+                    <Entry x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" WidthRequest="280"/>
+
                     <Button Text="Adicionar" Clicked="OnAdicionarClicked" HeightRequest="40" WidthRequest="116" HorizontalOptions="End">
+
                         <Button.ImageSource>
                             <FontImageSource FontFamily="IconsFont" Glyph="&#xE802;" Size="20"  Color="#00FF00"/>
                         </Button.ImageSource>
                     </Button>
+                    <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked" WidthRequest="110">
+                        <Button.ImageSource>
+                            <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
+                        </Button.ImageSource>
+                    </Button>
                 </HorizontalStackLayout>
                 <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
-                    <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="360" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
+                    <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
                     <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
                         <Picker.Items>
                             <x:String>SEDEX</x:String>
@@ -180,16 +189,7 @@
 
 
                 <!-- Seção de botões -->
-                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Padding="10" Spacing="10" HeightRequest="70">
 
-                    <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked">
-                        <Button.ImageSource>
-                            <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
-                        </Button.ImageSource>
-                    </Button>
-
-
-                </HorizontalStackLayout>
             </VerticalStackLayout>
 
             <!-- Seção de lista de produtos selecionados -->
@@ -236,7 +236,7 @@
                         </Button>
                     </HorizontalStackLayout>
 
-                    <Frame BackgroundColor="#00c4b4" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="295" Padding="0" HorizontalOptions="End">
+                    <Frame BackgroundColor="#00c4b4" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="293" Padding="0" HorizontalOptions="End">
                         <Grid  Padding="10" ColumnSpacing="35" VerticalOptions="FillAndExpand" HorizontalOptions="End" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30" />
@@ -247,7 +247,7 @@
                             <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}"/>
                             <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
                             <Label Grid.Column="2" Text="Valor" Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label Grid.Column="3" Text="Qnt." Style="{StaticResource HeaderLabelStyle}"/>
+                            <Label Grid.Column="3" Text="Qnt" Style="{StaticResource HeaderLabelStyle}"/>
                         </Grid>
                     </Frame>
 
@@ -257,7 +257,7 @@ SelectionMode="Multiple"
 SelectionChanged="OnCollectionViewSelectionChanged"
 VerticalOptions="Start"
 MinimumHeightRequest="0"
-MaximumHeightRequest="480">
+MaximumHeightRequest="440">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame Padding="10"
@@ -365,6 +365,7 @@ MaximumHeightRequest="480">
                                     <x:String>Neo 2</x:String>
                                     <x:String>Micra</x:String>
                                     <x:String>Fasticket</x:String>
+                                    <x:String>Impressor Max-Neo</x:String>
                                 </Picker.Items>
                             </Picker>
                             <HorizontalStackLayout HorizontalOptions="Center">
@@ -375,7 +376,7 @@ BorderColor="#00ED2D2D">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="20" Color="#FFFFFF"/>
                                     </Button.ImageSource>
-                                </Button> 
+                                </Button>
                                 <Button x:Name="IconeAnimado" 
                         WidthRequest="42" 
                         HeightRequest="42" 
@@ -414,23 +415,25 @@ BorderColor="#00ED2D2D">
                             </Grid>
                         </Frame>
 
-                        <Frame BorderColor="Black" 
+                        <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
     Padding="0"
-    BackgroundColor="Black">
+    BackgroundColor="White">
 
                             <ScrollView VerticalScrollBarVisibility="Default"
-                                        BackgroundColor="Black">
+                                        BackgroundColor="Wheat">
                                 <CollectionView 
             x:Name="listaProdutosExcel"
             ItemsLayout="VerticalList"
             HorizontalOptions="FillAndExpand"
             MinimumHeightRequest="0"
-            MaximumHeightRequest="480"
+            MaximumHeightRequest="440"
             BackgroundColor="Black"
-                                    SelectionChanged="SelectionChangedCopyCod"
+                                    
                                     SelectionMode="Single"
+                                    SelectionChanged="selectionChangedCopyCod"
+                                    
                                    >
 
                                     <CollectionView.ItemTemplate>
@@ -440,22 +443,37 @@ BorderColor="#00ED2D2D">
                         HasShadow="False" 
                         BackgroundColor="White"
                                                   >
-
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup Name="CommonStates">
+                                                        <!-- Estado quando o item não está selecionado -->
+                                                        <VisualState Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                        <!-- Estado quando o item está selecionado -->
+                                                        <VisualState Name="Selected">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="Gray" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
                                                 <HorizontalStackLayout Spacing="0">
-                                                    <Label TextColor="Black" 
+                                                    <Label TextColor="White" 
                                 Text="{Binding Codigo}" 
                                 HorizontalTextAlignment="Center" 
                                 VerticalOptions="Center" 
                                 WidthRequest="60" 
                                 VerticalTextAlignment="Center"/>
-                                                    <Label TextColor="Black" 
+                                                    <Label TextColor="White" 
                                 Text="{Binding Descricao}" 
                                 HorizontalTextAlignment="Center" 
                                 VerticalOptions="Center" 
                                 WidthRequest="150" 
                                 VerticalTextAlignment="Center"/>
                                                     <Label Text="{Binding Valor, StringFormat='{0:F2}'}" 
-                                TextColor="Black" 
+                                TextColor="White" 
                                 HorizontalTextAlignment="Center" 
                                 VerticalTextAlignment="Center" 
                                 VerticalOptions="Center" 

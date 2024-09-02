@@ -161,14 +161,42 @@ namespace Gerador_de_Pedidos
         }
 
 
+        private async void selectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
+        {
+
+
+
+            // Obtém os itens selecionados na CollectionView
+            var selectedItems = e.CurrentSelection.Cast<Produto>().ToList();
+
+            if (selectedItems.Count > 0)
+            {
+                // Assume que seleciona apenas um item
+                var selectedItem = selectedItems.FirstOrDefault();
+
+                if (selectedItem != null && (lblStatusProduto.Text == "Produto Encontrado" || lblStatusProduto.Text == "Digite o Código..." || lblStatusProduto.Text == "Produto Não Encontrado"))
+                {
+                    txtCodigo.Text = null;
+                    // Atualiza o txtCodigo com o código do produto selecionado
+                    txtCodigo.Text = selectedItem.Codigo;
+                    listaProdutosExcel.SelectedItems.Clear(); // Limpa a seleção
+                    listaProdutosExcel.SelectedItem = null;
+                    // Força a chamada ao método OnTxtCodigoTextChangedUnified
+                    OnTxtCodigoTextChangedUnified(txtCodigo, new TextChangedEventArgs(string.Empty, txtCodigo.Text));
+                }
+            }
+        }
+
         private async void OnPickerSelectionChanged(object sender, EventArgs e)
         {
+            var selectedValue = valores.SelectedItem?.ToString();
             var picker = sender as Picker;
             if (picker != null && picker.SelectedItem != null)
             {
                 selectedSheetName = picker.SelectedItem.ToString(); // Atualiza a variável de instância
                 Console.WriteLine($"Nome da planilha selecionada: {selectedSheetName}"); // Adicionando um log para depuração
                 OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+                await ExecuteTask(selectedValue);
                 // Chame a função LerExcel passando o nome da planilha correspondente
                 // Remova esta chamada se você não quiser que a função seja chamada automaticamente ao selecionar um item
 
@@ -201,12 +229,52 @@ namespace Gerador_de_Pedidos
 
             }
 
+
             // Chama o método para atualizar o Picker, ou qualquer outra lógica adicional
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
         }
 
-        
+
         // Defina o evento OnPickerSelectionChanged
+
+
+        private async Task ExecuteTask(string selectedValue)
+        {
+
+            int columnToUse;
+
+            // Definir a coluna correta com base na seleção do Picker
+            switch (selectedValue)
+            {
+                case "Valor ATA":
+                    columnToUse = 3; // Ajuste com base na coluna correta
+                    break;
+                case "Valor Oficina":
+
+                    columnToUse = 4; // Ajuste com base na coluna correta
+                    break;
+                case "Valor Cliente Final":
+
+                    columnToUse = 5; // Ajuste com base na coluna correta
+                    break;
+                default:
+                    await DisplayAlert("Erro", "Tipo de valor não selecionado.", "OK");
+                    btnBuscarProduto.IsVisible = false; // Ocultar o botão se houve erro
+                    lblStatusProduto.IsVisible = true; // Mostrar o texto de status se houve erro
+                    lblStatusProduto.Text = "Tipo de valor não selecionado.";
+                    lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
+                    return;
+            }
+
+            await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
+
+
+            if (!string.IsNullOrEmpty(selectedSheetName))
+            {
+                await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
+            }
+        }
+
 
 
         private async Task ProcessarSelecao(string selectedValue)
@@ -237,7 +305,7 @@ namespace Gerador_de_Pedidos
             }
 
             // Recarregar os dados da planilha usando a coluna correta
-            await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
+           
 
             string cod = txtCodigo.Text;
 
@@ -286,11 +354,24 @@ namespace Gerador_de_Pedidos
         }
 
 
+        private string _ultimoItemSelecionado;
+
         private async void OnPickerSelectionChangedPrice(object sender, EventArgs e)
         {
             var picker = sender as Picker;
             if (picker == null || picker.SelectedItem == null)
                 return;
+
+            var selectedValue = picker.SelectedItem.ToString();
+
+            // Verifica se o item selecionado mudou
+            if (selectedValue != _ultimoItemSelecionado)
+            {
+                await ExecuteTask(selectedValue);
+
+                // Atualiza o item selecionado após a tarefa ser executada
+                _ultimoItemSelecionado = selectedValue;
+            }
 
             // Mostrar o botão de busca e ocultar o texto de status enquanto a busca está em andamento
             btnBuscarProduto.IsVisible = true;
@@ -305,7 +386,7 @@ namespace Gerador_de_Pedidos
             var rotateIcon = IconeAnimado.RotateTo(360, 1000, Easing.Linear);
             var rotateButton = btnBuscarProduto.RotateTo(360, 1000, Easing.Linear);
 
-            await ProcessarSelecao(picker.SelectedItem.ToString());
+            await ProcessarSelecao(selectedValue);
 
             // Parar a rotação e ocultar os ícones
             IconeAnimado.Rotation = 0;
@@ -313,6 +394,10 @@ namespace Gerador_de_Pedidos
             btnBuscarProduto.IsVisible = false;
             lblStatusProduto.IsVisible = true;
         }
+
+
+
+
 
         private async void OnAtualizarClicked(object sender, EventArgs e)
         {
@@ -327,7 +412,7 @@ namespace Gerador_de_Pedidos
 
             if (selectedValue != null)
             {
-                await ProcessarSelecao(selectedValue);
+                await ExecuteTask(selectedValue);
             }
             else
             {
