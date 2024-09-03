@@ -438,7 +438,6 @@ BorderColor="#00ED2D2D">
                                     
             HorizontalOptions="FillAndExpand"
             MinimumHeightRequest="0"
-            MaximumHeightRequest="440"
             BackgroundColor="Black"
                                     
                                     SelectionMode="Single"
