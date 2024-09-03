@@ -312,11 +312,15 @@ MaximumHeightRequest="440">
                 <HorizontalStackLayout Spacing="10" Padding="10"></HorizontalStackLayout>
                 <!-- Lista de Produtos Da Planilha -->
                 <Frame 
-                    BackgroundColor="#2F2B2B"
+                    BackgroundColor="#1e1e1e"
        CornerRadius="10" 
+                    
        HasShadow="True" 
-       Padding="3"
+       Padding="4"
        Margin="1">
+                    <Frame.Shadow>
+                        <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
+                    </Frame.Shadow>
                     <VerticalStackLayout Padding="5"  
                          HorizontalOptions="FillAndExpand" 
                          BackgroundColor="#1e1e1e">
@@ -393,10 +397,14 @@ BorderColor="#00ED2D2D">
                         <Frame HasShadow="False" 
                BorderColor="Transparent" 
                CornerRadius="10" 
+                              BackgroundColor="Transparent"
+                               
                Padding="0">
                             <Grid BackgroundColor="#00c4b4" 
-                  Padding="9" 
+                  Padding="9"
+                                 
                   ColumnSpacing="20" 
+                                 
                   HorizontalOptions="FillAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -418,6 +426,7 @@ BorderColor="#00ED2D2D">
                         <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
+                          Margin="3"   
     Padding="0"
     BackgroundColor="White">
 
@@ -426,13 +435,14 @@ BorderColor="#00ED2D2D">
                                 <CollectionView 
             x:Name="listaProdutosExcel"
             ItemsLayout="VerticalList"
+                                    
             HorizontalOptions="FillAndExpand"
             MinimumHeightRequest="0"
             MaximumHeightRequest="440"
             BackgroundColor="Black"
                                     
                                     SelectionMode="Single"
-                                    SelectionChanged="selectionChangedCopyCod"
+                                    SelectionChanged="SelectionChangedCopyCod"
                                     
                                    >
 
@@ -445,16 +455,16 @@ BorderColor="#00ED2D2D">
                                                   >
                                                 <VisualStateManager.VisualStateGroups>
                                                     <VisualStateGroup Name="CommonStates">
-                                                        <!-- Estado quando o item não está selecionado -->
+                                                       
                                                         <VisualState Name="Normal">
                                                             <VisualState.Setters>
                                                                 <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
                                                             </VisualState.Setters>
                                                         </VisualState>
-                                                        <!-- Estado quando o item está selecionado -->
+                                                        
                                                         <VisualState Name="Selected">
                                                             <VisualState.Setters>
-                                                                <Setter Property="BackgroundColor" Value="Gray" />
+                                                                <Setter Property="BackgroundColor" Value="White" />
                                                             </VisualState.Setters>
                                                         </VisualState>
                                                     </VisualStateGroup>

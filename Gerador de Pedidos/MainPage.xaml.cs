@@ -104,7 +104,7 @@ namespace Gerador_de_Pedidos
             }
         }
 
-        private string ConvertToExportLink(string editLink)
+        private static string ConvertToExportLink(string editLink)
         {
             if (string.IsNullOrWhiteSpace(editLink))
                 throw new ArgumentException("O link não pode ser nulo ou vazio.", nameof(editLink));
@@ -161,7 +161,7 @@ namespace Gerador_de_Pedidos
         }
 
 
-        private async void selectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
+        private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
 
 
@@ -544,7 +544,7 @@ namespace Gerador_de_Pedidos
 
 
 
-        private Produto selectedItem; // Variável para armazenar o item selecionado
+       
 
 
         private void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -555,28 +555,7 @@ namespace Gerador_de_Pedidos
 
         }
 
-        private string texto = string.Empty;
 
-        private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
-        {
-            // Limpa a variável 'texto' para garantir que não haja dados de seleções anteriores
-            texto = string.Empty;
-
-            // Obtém os itens selecionados na CollectionView
-            var selectedItems = e.CurrentSelection.Cast<Produto>().ToList();
-
-            // Concatena os códigos dos itens selecionados
-            foreach (var product in selectedItems)
-            {
-                texto += $"{product.Codigo}";
-            }
-
-            // Copia o texto para a área de transferência
-            Clipboard.SetTextAsync(texto);
-
-            // Define o texto concatenado na propriedade Text do txtCodigo
-            txtCodigo.Text = texto;
-        }
 
 
         private async void OnEditarClicked(object sender, EventArgs e)
@@ -893,9 +872,11 @@ namespace Gerador_de_Pedidos
 
         public class Produto
         {
-            public string Codigo { get; set; }
-            public string Descricao { get; set; }
-            public string Valor { get; set; }
+
+            
+            public string Codigo { get; set; } 
+            public string Descricao { get; set; } 
+            public string Valor { get; set; } 
             public string Quantidade { get; set; }
 
 
