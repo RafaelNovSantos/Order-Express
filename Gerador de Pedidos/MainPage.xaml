@@ -256,8 +256,8 @@
 SelectionMode="Multiple"
 SelectionChanged="OnCollectionViewSelectionChanged"
 VerticalOptions="Start"
-MinimumHeightRequest="0"
-MaximumHeightRequest="440">
+                                    Margin="3"  
+HeightRequest="440">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame Padding="10"
@@ -381,6 +381,7 @@ BorderColor="#00ED2D2D">
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="20" Color="#FFFFFF"/>
                                     </Button.ImageSource>
                                 </Button>
+
                                 <Button x:Name="IconeAnimado" 
                         WidthRequest="42" 
                         HeightRequest="42" 
@@ -430,6 +431,10 @@ BorderColor="#00ED2D2D">
     Padding="0"
     BackgroundColor="White">
 
+                            <ActivityIndicator 
+            x:Name="refreshList" 
+                                    
+            Color="Blue" />
                             <ScrollView VerticalScrollBarVisibility="Default"
                                         BackgroundColor="Wheat">
                                 <CollectionView 
@@ -437,7 +442,7 @@ BorderColor="#00ED2D2D">
             ItemsLayout="VerticalList"
                                     
             HorizontalOptions="FillAndExpand"
-            MinimumHeightRequest="0"
+            HeightRequest="440"
             BackgroundColor="Black"
                                     
                                     SelectionMode="Single"

@@ -425,6 +425,10 @@ namespace Gerador_de_Pedidos
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
+            refreshList.IsVisible = true;
+            refreshList.IsRunning = true;
+            listaProdutosExcel.IsVisible = false;
+
             int tentativas = 0;
             int maxTentativas = 3;
 
@@ -521,6 +525,10 @@ namespace Gerador_de_Pedidos
                     break;
                 }
             }
+
+            refreshList.IsVisible = false;
+            refreshList.IsRunning = false;
+            listaProdutosExcel.IsVisible = true;
         }
 
         void CriarListaComProdutoPadrao()
