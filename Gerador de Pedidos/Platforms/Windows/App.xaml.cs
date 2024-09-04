@@ -15,7 +15,7 @@ namespace Gerador_de_Pedidos.WinUI
     {
         Microsoft.UI.Xaml.Window nativeWindow;
         int screenWidth, screenHeight;
-        const int desiredWidth = 1600;
+        const int desiredWidth = 1620;
         const int desiredHeight = 910;
         /// <summary
         /// Initializes the singleton application object.  This is the first line of authored code

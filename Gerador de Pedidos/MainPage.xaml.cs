@@ -268,12 +268,9 @@ namespace Gerador_de_Pedidos
 
             await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
 
-
-            if (!string.IsNullOrEmpty(selectedSheetName))
-            {
-                await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
-            }
+            // Evite chamar `LerExcelComColuna` novamente, já que isso é feito com base na seleção
         }
+
 
 
 
@@ -288,7 +285,7 @@ namespace Gerador_de_Pedidos
                     columnToUse = 3; // Ajuste com base na coluna correta
                     break;
                 case "Valor Oficina":
-                    
+
                     columnToUse = 4; // Ajuste com base na coluna correta
                     break;
                 case "Valor Cliente Final":
@@ -305,7 +302,7 @@ namespace Gerador_de_Pedidos
             }
 
             // Recarregar os dados da planilha usando a coluna correta
-           
+
 
             string cod = txtCodigo.Text;
 
@@ -331,7 +328,7 @@ namespace Gerador_de_Pedidos
 
                     // Atualizar o status do produto
                     lblStatusProduto.Text = "Produto Encontrado";
-                    lblStatusProduto.FontSize = 17;
+                    lblStatusProduto.FontSize = 15;
                     lblStatusProduto.TextColor = Color.FromHex("#00FF00"); // Verde para indicar sucesso
                 }
                 else
@@ -339,7 +336,7 @@ namespace Gerador_de_Pedidos
                     txtDescricao.Text = string.Empty;
                     txtValor.Text = string.Empty;
                     lblStatusProduto.Text = "Produto Não Encontrado";
-                    lblStatusProduto.FontSize = 13;
+                    lblStatusProduto.FontSize = 12;
                     lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
                 }
             }
@@ -347,7 +344,7 @@ namespace Gerador_de_Pedidos
             {
                 txtDescricao.Text = string.Empty;
                 txtValor.Text = string.Empty;
-                lblStatusProduto.FontSize = 18;
+                lblStatusProduto.FontSize = 17;
                 lblStatusProduto.Text = "Digite o Código...";
                 lblStatusProduto.TextColor = Color.FromHex("#FFFAFF00"); // Laranja para indicar aviso
             }
@@ -381,15 +378,15 @@ namespace Gerador_de_Pedidos
 
             // Inicia a rotação do ícone e do botão de busca
             btnBuscarProduto.Rotation = 0;
-            IconeAnimado.Rotation = 0;
 
-            var rotateIcon = IconeAnimado.RotateTo(360, 1000, Easing.Linear);
+
+
             var rotateButton = btnBuscarProduto.RotateTo(360, 1000, Easing.Linear);
 
             await ProcessarSelecao(selectedValue);
 
             // Parar a rotação e ocultar os ícones
-            IconeAnimado.Rotation = 0;
+
             btnBuscarProduto.Rotation = 0;
             btnBuscarProduto.IsVisible = false;
             lblStatusProduto.IsVisible = true;
@@ -425,6 +422,13 @@ namespace Gerador_de_Pedidos
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
+            // Mostrar o indicador de carregamento e desativar o ScrollView
+           
+            disableFrame.IsVisible = false;
+            loadingIndicator.IsRunning = true;
+            loadingIndicator.IsVisible = true;
+            listaProdutosExcel.IsVisible = false;
+
             int tentativas = 0;
             int maxTentativas = 3;
 
@@ -462,42 +466,41 @@ namespace Gerador_de_Pedidos
                                     var codigo = worksheet.Cells[row, 1]?.Text;
                                     var descricao = worksheet.Cells[row, 2]?.Text;
                                     var valor = worksheet.Cells[row, valorColumnIndex]?.Text;
-                                    var quantidade = worksheet.Cells[row, 4]?.Text;
+
 
                                     if (string.IsNullOrWhiteSpace(codigo) &&
                                         string.IsNullOrWhiteSpace(descricao) &&
-                                        string.IsNullOrWhiteSpace(valor) &&
-                                        string.IsNullOrWhiteSpace(quantidade))
+                                        string.IsNullOrWhiteSpace(valor))
                                     {
-                                        continue;
+                                        continue; // Ignorar linhas vazias
                                     }
 
                                     var produto = new Produto
-                                    {
-                                        Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
-                                        Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
-                                        Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A",
-                                        Quantidade = !string.IsNullOrWhiteSpace(quantidade) ? quantidade : "N/A"
-                                    };
+                                        {
+                                            Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
+                                            Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
+                                            Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A"
+
+                                        };
 
                                     Lista.Add(produto);
-                                    linhaVazia = false;
-                                }
+                                        linhaVazia = false;
+                                    }
 
-                                // Se todas as linhas estiverem vazias, adicionar uma linha padrão
                                 if (linhaVazia)
                                 {
                                     CriarListaComProdutoPadrao();
                                 }
 
-                                // Atualizar a CollectionView
-                                listaProdutosExcel.ItemsSource = null;
+                                // Atualizar a visualização da lista
+                                listaProdutosExcel.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
                                 listaProdutosExcel.ItemsSource = Lista;
                             }
                         }
                     }
+                    
 
-                    break; // Se a operação foi bem-sucedida, sair do loop
+                    break; // Saia do loop se a operação foi bem-sucedida
                 }
                 catch (HttpRequestException ex)
                 {
@@ -511,7 +514,7 @@ namespace Gerador_de_Pedidos
                         break;
                     }
 
-                    await Task.Delay(5000); // Aguardar 5 segundos antes de reintentar
+                    await Task.Delay(5000); // Aguardar 5 segundos antes de tentar novamente
                 }
                 catch (Exception ex)
                 {
@@ -521,7 +524,15 @@ namespace Gerador_de_Pedidos
                     break;
                 }
             }
+            disableFrame.IsVisible = true;
+            loadingIndicator.IsRunning = false;
+            loadingIndicator.IsVisible = false;
+            listaProdutosExcel.IsVisible = true;
         }
+
+
+
+
 
         void CriarListaComProdutoPadrao()
         {
@@ -534,7 +545,7 @@ namespace Gerador_de_Pedidos
                 Quantidade = "N/A"
             });
 
-            listaProdutosExcel.ItemsSource = null;
+            listaProdutosExcel.ItemsSource = new List<Produto>();
             listaProdutosExcel.ItemsSource = Lista;
         }
 
@@ -544,7 +555,7 @@ namespace Gerador_de_Pedidos
 
 
 
-       
+
 
 
         private void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -695,6 +706,7 @@ namespace Gerador_de_Pedidos
             var saida = pedido.SelectedItem?.ToString();
             var tipofrete = TipoFrete.SelectedItem?.ToString();
             var pagamento = pag.SelectedItem?.ToString();
+            var freteTotal = "";
 
             decimal frete = 0m;
             bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
@@ -746,6 +758,7 @@ namespace Gerador_de_Pedidos
                 }
 
                 texto += $"Pagamento: {pagamento}\n";
+                freteTotal = " + FRETE";
             }
 
 
@@ -764,20 +777,24 @@ namespace Gerador_de_Pedidos
                 texto += $"N/S EQUIPAMENTO: {txtNS.Text}\n\n";
                 texto += $"{nota.SelectedItem?.ToString()}:\nNº Nota: {txtnota.Text}\n";
 
+
+
                 if (nota.SelectedItem?.ToString() == "Nota Externa")
                 {
                     texto += $"CHAVE NOTA EXTERNA: {txtChaveNotaExterna.Text}\n";
                 }
             }
 
-            texto += $"\nTOTAL VALOR + FRETE = R$ {totalGeral:F2}";
+
+
+            texto += $"\nTOTAL VALOR{freteTotal} = R$ {totalGeral:F2}";
 
             try
             {
                 await Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
                 btncopy.Text = "Copiado!";
                 iconCopy.Color = Color.FromHex("#000000");
-                await Task.Delay(10000);
+                await Task.Delay(5000);
                 btncopy.Text = "Copiar";
                 iconCopy.Color = Color.FromHex("#FF008000");
             }
@@ -873,10 +890,10 @@ namespace Gerador_de_Pedidos
         public class Produto
         {
 
-            
-            public string Codigo { get; set; } 
-            public string Descricao { get; set; } 
-            public string Valor { get; set; } 
+
+            public string Codigo { get; set; }
+            public string Descricao { get; set; }
+            public string Valor { get; set; }
             public string Quantidade { get; set; }
 
 

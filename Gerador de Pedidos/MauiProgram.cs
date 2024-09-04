@@ -17,6 +17,9 @@ namespace Gerador_de_Pedidos
                    fonts.AddFont("FontAwesome5Brands-Regular.ttf", "FontAwesome5BrandsRegular");
                    fonts.AddFont("FontAwesome5Free-Regular.ttf", "FontAwesome5FreeRegular");
                    fonts.AddFont("FontAwesome5Free-Solid.ttf", "FontAwesome5FreeSolid");
+                   fonts.AddFont("Poppins-ExtraBold.ttf", "Poppins-ExtraBold");
+                   fonts.AddFont("Poppins-Medium.ttf", "Poppins-Medium");
+                   fonts.AddFont("Poppins-Bold.ttf", "Poppins-Bold");
                    fonts.AddFont("fontello.ttf","IconsFont");
                });
 
