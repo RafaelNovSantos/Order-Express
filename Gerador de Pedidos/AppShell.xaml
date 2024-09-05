@@ -5,12 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Gerador_de_Pedidos"
     Shell.FlyoutBehavior="Flyout"
+
+    Shell.TitleColor="Black"
     BackgroundColor="{StaticResource ShellBackgroundColor}">
 
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="ShellBackgroundColor">#00000000</Color>
             <Color x:Key="ShellTitleColor">White</Color>
+            
             <!-- Cor de fundo da barra -->
             <!-- Cor do texto da barra -->
         </ResourceDictionary>
@@ -21,7 +24,21 @@
 
 
     <!-- ShellContent -->
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+    <FlyoutItem 
+    Title="Pedido" 
+    FlyoutDisplayOptions="AsSingleItem" 
+    Shell.BackgroundColor="#00c4b4" 
+    Shell.TitleColor="Black">
+
+        <!-- Definindo o ícone usando FontImageSource -->
+        <FlyoutItem.Icon>
+            <FontImageSource 
+            FontFamily="IconsFont" 
+            Glyph="&#xE801;" 
+            Size="30" 
+            Color="Yellow" />
+        </FlyoutItem.Icon>
+
         <ShellContent
         Title="Gerador De Pedidos"
         ContentTemplate="{DataTemplate local:MainPage}"
@@ -31,14 +48,35 @@
             </ShellContent.Icon>
         </ShellContent>
 
- 
-    </FlyoutItem>
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent
-        Title="Garantia"
-           
-        ContentTemplate="{DataTemplate local:Garantia}"
-        Route="Garantia">
+ Title="Garantia"
+    
+ ContentTemplate="{DataTemplate local:Garantia}"
+ Route="Garantia">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
+            </ShellContent.Icon>
+        </ShellContent>
+
+
+    </FlyoutItem>
+    <FlyoutItem 
+       Title="Reembolso" FlyoutDisplayOptions="AsSingleItem" Shell.TitleColor="Black">
+
+        <FlyoutItem.Icon>
+            <FontImageSource 
+     FontFamily="IconsFont" 
+     Glyph="&#xE807;" 
+     Size="30" 
+     Color="#00FF00" />
+        </FlyoutItem.Icon>
+
+        <ShellContent
+ Title="Garantia"
+    
+ ContentTemplate="{DataTemplate local:Garantia}"
+ Route="Garantia"
+            Shell.TitleColor="Black">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>

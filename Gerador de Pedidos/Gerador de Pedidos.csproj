@@ -94,7 +94,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Garantia.xaml">
+	  <MauiXaml Update="Garantia\Garantia.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="MainWindow.xaml">

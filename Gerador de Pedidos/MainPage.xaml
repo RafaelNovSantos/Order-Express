@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿ ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.MainPage"
@@ -68,7 +68,7 @@
 
 
             <!-- Seção de entrada de dados -->
-            <VerticalStackLayout Padding="10" Spacing="10">
+            <VerticalStackLayout Padding="10" Spacing="10" HeightRequest="600">
 
 
 
@@ -193,26 +193,38 @@
                 <!-- Seção de botões -->
 
             </VerticalStackLayout>
+            <!-- Lista de Produtos Da Planilha -->
 
             <!-- Seção de lista de produtos selecionados -->
-            <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End">
-                
-                <!-- Lista de Produtos Selecionados -->
-                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End"
-                                     WidthRequest="334"
+            <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" >
+                <Frame 
+             BackgroundColor="#1e1e1e"
+CornerRadius="10" 
+             
+HasShadow="True" 
+Padding="4"
+Margin="1">
+                    <Frame.Shadow>
+                        <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
+                    </Frame.Shadow>
+                    <HorizontalStackLayout>
+
+                        <!-- Lista de Produtos Selecionados -->
+                        <VerticalStackLayout Padding="7"  Spacing="0" HorizontalOptions="Center"
+                                     WidthRequest="340"
                                      
 >
-                    <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="End">
-                        <!-- Definindo as colunas -->
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <!-- Coluna 1 ocupa o espaço restante -->
-                            <ColumnDefinition Width="Auto" />
-                            <!-- Coluna 2 ajusta-se ao tamanho do conteúdo -->
-                        </Grid.ColumnDefinitions>
+                            <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
+                                <!-- Definindo as colunas -->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Coluna 1 ocupa o espaço restante -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Coluna 2 ajusta-se ao tamanho do conteúdo -->
+                                </Grid.ColumnDefinitions>
 
-                        <!-- Label na coluna 1 -->
-                        <Label Grid.Column="0" 
+                                <!-- Label na coluna 1 -->
+                                <Label Grid.Column="0" 
            Text="Produtos no Pedido" 
            FontAttributes="Bold" 
            VerticalOptions="Start" 
@@ -220,136 +232,186 @@
            FontSize="25" 
            TextColor="White" />
 
-                        <!-- Image na coluna 2 -->
-                        <Image Grid.Column="1" 
+                                <!-- Image na coluna 2 -->
+                                <Image Grid.Column="1" 
            VerticalOptions="Center" 
            HorizontalOptions="Start">
-                            <Image.Source>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
-                            </Image.Source>
-                        </Image>
-                    </Grid>
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Padding="10">
-                        <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="120"  HorizontalOptions="Start">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
-                            </Button.ImageSource>
-                        </Button>
-                        <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
-                            </Button.ImageSource>
-                        </Button>
-                    </HorizontalStackLayout>
+                                    <Image.Source>
+                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Padding="13">
+                                <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="120"  HorizontalOptions="Start">
+                                    <Button.ImageSource>
+                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
+                                    </Button.ImageSource>
+                                </Button>
+                                <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
+                                    <Button.ImageSource>
+                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
+                                    </Button.ImageSource>
+                                </Button>
+                            </HorizontalStackLayout>
 
-                    <Frame BackgroundColor="#00c4b4" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="293" Padding="0" HorizontalOptions="End">
-                        <Grid  Padding="10" ColumnSpacing="28" VerticalOptions="FillAndExpand" HorizontalOptions="End">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="37" />
-                                <ColumnDefinition Width="79" />
-                                <ColumnDefinition Width="42" />
-                                <ColumnDefinition Width="35" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label Grid.Column="2" Text="Valor" Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label Grid.Column="3" Text="Qnt." Style="{StaticResource HeaderLabelStyle}"/>
-                        </Grid>
-                    </Frame>
-                    
+                            <Frame BackgroundColor="#00c4b4" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="325" Padding="0" HorizontalOptions="End">
+                                <Grid  Padding="10" ColumnSpacing="28"  >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="37" />
+                                        <ColumnDefinition Width="79" />
+                                        <ColumnDefinition Width="42" />
+                                        <ColumnDefinition Width="55" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}"/>
+                                    <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
+                                    <Label Grid.Column="2" Text="Valor" Style="{StaticResource HeaderLabelStyle}"/>
+                                    <Label Grid.Column="3" Text="Qnt." Style="{StaticResource HeaderLabelStyle}"/>
+                                </Grid>
+                            </Frame>
 
-                    <CollectionView x:Name="listaProdutosSelect"
-SelectionMode="Multiple"
-SelectionChanged="OnCollectionViewSelectionChanged"
-VerticalOptions="Start"
-HeightRequest="430"
->
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame Padding="10"
-   HasShadow="False"
-   BorderColor="Black"  
-                    BackgroundColor="White">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup Name="CommonStates">
-                                            <!-- Estado quando o item não está selecionado -->
-                                            <VisualState Name="Normal">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="White" />
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <!-- Estado quando o item está selecionado -->
-                                            <VisualState Name="Selected">
-                                                <VisualState.Setters>
-                                                    <Setter Property="BackgroundColor" Value="Gray" />
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <HorizontalStackLayout Spacing="5">
-                                        <Label TextColor="Black"
-           Text="{Binding Codigo}"
-           HorizontalTextAlignment="Start"
-           WidthRequest="50"
-           VerticalTextAlignment="Center"/>
-                                        <Label TextColor="Black"
-           Text="{Binding Descricao}"
-           HorizontalTextAlignment="Start"
-           WidthRequest="120"
-           VerticalTextAlignment="Center"/>
-                                        <Label Text="{Binding Valor, StringFormat='R${0:F2}'}"
-           TextColor="Black"
-           HorizontalTextAlignment="Center"
-           VerticalTextAlignment="Center"
-           VerticalOptions="Center"
-           WidthRequest="60"/>
-                                        <Label TextColor="Black"
-           Text="{Binding Quantidade}"
-           HorizontalTextAlignment="Center"
-           WidthRequest="30"
-           VerticalTextAlignment="Center"/>
-                                    </HorizontalStackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                   
-                </VerticalStackLayout>
-                <HorizontalStackLayout Spacing="10" Padding="10"></HorizontalStackLayout>
 
-                <HorizontalStackLayout Spacing="10" Padding="10"></HorizontalStackLayout>
-                <!-- Lista de Produtos Da Planilha -->
-                <Frame 
+                            <Frame BorderColor="#00c4b4" 
+CornerRadius="5" 
+HasShadow="True" 
+                         WidthRequest="320"  
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                      Margin="3"   
+                           
+Padding="0"
+BackgroundColor="Transparent">
+
+                                <Grid HorizontalOptions="Center" VerticalOptions="Center" >
+
+
+                                    <CollectionView 
+    x:Name="listaProdutosSelect"
+    SelectionMode="Multiple"
+    SelectionChanged="OnCollectionViewSelectionChanged"
+    VerticalOptions="Start"
+    WidthRequest="380"
+    HeightRequest="430"
+    ItemsSource="{Binding Produtos}">
+
+                                        <!-- Exibe uma mensagem quando a lista está vazia -->
+                                        <CollectionView.EmptyView>
+                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                                <!-- Texto de instrução -->
+                                                <Label Text="Adicione algum produto da Planilha..."
+               VerticalTextAlignment="Center"
+               Padding="30"
+               HorizontalOptions="Center" 
+               FontSize="15"
+               VerticalOptions="Center" 
+               TextColor="Gray" />
+
+                                                <!-- Ícone usando FontImageSource -->
+                                                <Image HorizontalOptions="Center" VerticalOptions="Center" Margin="0,60,0,0"
+               WidthRequest="30" HeightRequest="30">
+                                                    <Image.Source>
+                                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
+                                                    </Image.Source>
+                                                </Image>
+                                            </Grid>
+                                        </CollectionView.EmptyView>
+
+
+
+
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame Padding="8"
+                   HasShadow="False"
+                   BorderColor="Black"
+                   BackgroundColor="White">
+
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup Name="CommonStates">
+                                                            <VisualState Name="Normal">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#101010" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                            <VisualState Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#1d1d1d" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+
+                                                    <HorizontalStackLayout Spacing="0">
+                                                        <Label TextColor="White"
+                           Text="{Binding Codigo}"
+                           HorizontalTextAlignment="Center"
+                           WidthRequest="60"
+                           VerticalTextAlignment="Center"/>
+
+                                                        <Label TextColor="White"
+                           Text="{Binding Descricao}"
+                           HorizontalTextAlignment="Center"
+                           WidthRequest="120"
+                           VerticalTextAlignment="Center"/>
+
+                                                        <Label Text="{Binding Valor, StringFormat='R${0:F2}'}"
+                           TextColor="White"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           WidthRequest="88"/>
+
+                                                        <Label TextColor="White"
+                           Text="{Binding Quantidade}"
+                           HorizontalTextAlignment="Center"
+                           WidthRequest="50"
+                           VerticalTextAlignment="Center"/>
+                                                    </HorizontalStackLayout>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+
+                                </Grid>
+                            </Frame>
+
+                        </VerticalStackLayout>
+
+                        <HorizontalStackLayout  Spacing="10" Padding="20"></HorizontalStackLayout>
+
+
+                        <!-- Lista de Produtos Da Planilha -->
+                        <Frame 
                     BackgroundColor="#1e1e1e"
        CornerRadius="10" 
                     
        HasShadow="True" 
        Padding="4"
        Margin="1">
-                    <Frame.Shadow>
-                        <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
-                    </Frame.Shadow>
-                    <VerticalStackLayout Padding="5"  
+                            <Frame.Shadow>
+                                <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
+                            </Frame.Shadow>
+                            <VerticalStackLayout Padding="5"  
                                          
                          HorizontalOptions="FillAndExpand"
                                          WidthRequest="350"
                                          HeightRequest="614"
                          BackgroundColor="#1e1e1e">
-                        
-                        <Grid Padding="10" 
+
+                                <Grid Padding="10" 
               ColumnSpacing="10" 
                               
               HorizontalOptions="Center">
-                            <!-- Definindo as colunas -->
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <!-- Coluna 1 ocupa o espaço restante -->
-                                <ColumnDefinition Width="Auto" />
-                                <!-- Coluna 2 ajusta-se ao tamanho do conteúdo -->
-                            </Grid.ColumnDefinitions>
+                                    <!-- Definindo as colunas -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Coluna 1 ocupa o espaço restante -->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!-- Coluna 2 ajusta-se ao tamanho do conteúdo -->
+                                    </Grid.ColumnDefinitions>
 
-                            <!-- Label na coluna 1 -->
-                            <Label Grid.Column="0" 
+                                    <!-- Label na coluna 1 -->
+                                    <Label Grid.Column="0" 
                    Text="Produtos da Planilha" 
                    FontAttributes="Bold" 
                    VerticalOptions="Start" 
@@ -357,91 +419,102 @@ HeightRequest="430"
                    FontSize="25" 
                    TextColor="White" />
 
-                            <!-- Image na coluna 2 -->
-                            <Image Grid.Column="1" 
+                                    <!-- Image na coluna 2 -->
+                                    <Image Grid.Column="1" 
                    VerticalOptions="Center" 
                    HorizontalOptions="Start">
-                                <Image.Source>
-                                    <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="40" Color="#00FF00"/>
-                                </Image.Source>
-                            </Image>
-                        </Grid>
-                        
-                        <HorizontalStackLayout HorizontalOptions="End" Spacing="5" Padding="10">
-                            
-                            <Picker x:Name="equipamentos" 
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="40" Color="#00FF00"/>
+                                        </Image.Source>
+                                    </Image>
+                                </Grid>
+
+                                <HorizontalStackLayout HorizontalOptions="End" Spacing="5" Padding="10">
+
+                                    <Picker x:Name="equipamentos" 
                     Style="{StaticResource HeaderPickerStyleplanilha}" 
                     SelectedIndexChanged="OnPickerSelectionChanged" 
                     WidthRequest="150" 
                     HeightRequest="39">
-                                <Picker.Items>
-                                    <x:String>Clipse</x:String>
-                                    <x:String>Passer</x:String>
-                                    <x:String>Passer Check-out</x:String>
-                                    <x:String>Cuora Max</x:String>
-                                    <x:String>Cuora Neo</x:String>
-                                    <x:String>Quo Novo</x:String>
-                                    <x:String>Neo 2</x:String>
-                                    <x:String>Micra</x:String>
-                                    <x:String>Fasticket</x:String>
-                                    <x:String>Impressor Max-Neo</x:String>
-                                </Picker.Items>
-                            </Picker>
-                            <HorizontalStackLayout HorizontalOptions="Center">
-                                <Button Clicked="OnAlterarLinkClicked"  WidthRequest="42" 
+                                        <Picker.Items>
+                                            <x:String>Clipse</x:String>
+                                            <x:String>Passer</x:String>
+                                            <x:String>Passer Check-out</x:String>
+                                            <x:String>Cuora Max</x:String>
+                                            <x:String>Cuora Neo</x:String>
+                                            <x:String>Quo Novo</x:String>
+                                            <x:String>Neo 2</x:String>
+                                            <x:String>Micra</x:String>
+                                            <x:String>Fasticket</x:String>
+                                            <x:String>Impressor Max-Neo</x:String>
+                                        </Picker.Items>
+                                    </Picker>
+                                    <HorizontalStackLayout HorizontalOptions="Center">
+                                        <Button Clicked="OnAlterarLinkClicked"  WidthRequest="42" 
 HeightRequest="42" 
 BackgroundColor="#00FFFFFF" 
 BorderColor="#00ED2D2D">
-                                    <Button.ImageSource>
-                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="20" Color="#FFFFFF"/>
-                                    </Button.ImageSource>
-                                </Button>
-                                <Button Text="Atualizar" 
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="20" Color="#FFFFFF"/>
+                                            </Button.ImageSource>
+                                        </Button>
+                                        <Button Text="Atualizar" 
                         
                         
                                         Clicked="OnAtualizarClicked">
-                                    <Button.ImageSource>
-                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF"/>
-                                    </Button.ImageSource>
-                                </Button>
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF"/>
+                                            </Button.ImageSource>
+                                        </Button>
 
-                            </HorizontalStackLayout>
-                        </HorizontalStackLayout>
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
 
-                        <Frame HasShadow="False" 
+                                <Frame HasShadow="False" 
                BorderColor="Transparent" 
                CornerRadius="10" 
                                VerticalOptions="Center"
                               BackgroundColor="Transparent"
                                
                Padding="0">
-                            
-                            <Grid BackgroundColor="#00c4b4" 
+
+                                    <Grid BackgroundColor="White" 
                   Padding="9"
                                   HeightRequest="40"
                                  
                   ColumnSpacing="0" 
                  >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" 
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" 
                        Text="Código" 
                        Style="{StaticResource HeaderLabelStyle}"/>
-                                <Label Grid.Column="1" 
+                                        <Label Grid.Column="1" 
                        Text="Descrição" 
                        Style="{StaticResource HeaderLabelStyle}"/>
-                                <Label Grid.Column="2" 
+                                        <Label Grid.Column="2" 
                        Text="Valor" 
                        Style="{StaticResource HeaderLabelStyle}"/>
-                            </Grid>
-                        </Frame>
-                        
-                        <ActivityIndicator 
-x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" WidthRequest="40" HeightRequest="40"/>
-                        <Frame BorderColor="White" 
+                                    </Grid>
+                                </Frame>
+
+
+                                <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                    <!-- Texto de instrução -->
+                                    <ActivityIndicator 
+x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" WidthRequest="40" HeightRequest="40" VerticalOptions="Center"/>
+
+                                    <!-- Ícone usando FontImageSource -->
+                                    <Image HorizontalOptions="Center" VerticalOptions="Center" Margin="0,50,0,0">
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="42" Color="Transparent" />
+                                        </Image.Source>
+                                    </Image>
+
+                                    <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
                                x:Name="disableFrame"
@@ -451,12 +524,12 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                
     Padding="0"
     BackgroundColor="White">
-                            
 
 
-                                <ScrollView x:Name="mainScrollView">
-                                
-                                <CollectionView 
+
+                                        <ScrollView>
+
+                                            <CollectionView 
             x:Name="listaProdutosExcel"
             ItemsLayout="VerticalList"
                                     
@@ -468,63 +541,65 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                     SelectionMode="Single"
                                     SelectionChanged="SelectionChangedCopyCod"
                                    >
-                                    
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
+
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
                         Padding="10" 
                         HasShadow="False" 
                         BackgroundColor="White"
                                                   >
-                                                <VisualStateManager.VisualStateGroups>
-                                                    <VisualStateGroup Name="CommonStates">
-                                                       
-                                                        <VisualState Name="Normal">
-                                                            <VisualState.Setters>
-                                                                <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
-                                                            </VisualState.Setters>
-                                                        </VisualState>
-                                                        
-                                                        <VisualState Name="Selected">
-                                                            <VisualState.Setters>
-                                                                <Setter Property="BackgroundColor" Value="White" />
-                                                            </VisualState.Setters>
-                                                        </VisualState>
-                                                    </VisualStateGroup>
-                                                </VisualStateManager.VisualStateGroups>
-                                                <HorizontalStackLayout Spacing="0">
-                                                    <Label TextColor="White" 
+                                                            <VisualStateManager.VisualStateGroups>
+                                                                <VisualStateGroup Name="CommonStates">
+
+                                                                    <VisualState Name="Normal">
+                                                                        <VisualState.Setters>
+                                                                            <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
+                                                                        </VisualState.Setters>
+                                                                    </VisualState>
+
+                                                                    <VisualState Name="Selected">
+                                                                        <VisualState.Setters>
+                                                                            <Setter Property="BackgroundColor" Value="White" />
+                                                                        </VisualState.Setters>
+                                                                    </VisualState>
+                                                                </VisualStateGroup>
+                                                            </VisualStateManager.VisualStateGroups>
+                                                            <HorizontalStackLayout Spacing="8">
+                                                                <Label TextColor="White" 
                                 Text="{Binding Codigo}" 
                                                            HorizontalOptions="Start"
                                 HorizontalTextAlignment="Start" 
                                 VerticalOptions="Center" 
                                 WidthRequest="60" 
                                 VerticalTextAlignment="Center"/>
-                                                    <Label TextColor="White" 
+                                                                <Label TextColor="White" 
                                 Text="{Binding Descricao}" 
                                 HorizontalTextAlignment="Start" 
                                 VerticalOptions="Center" 
-                                WidthRequest="150" 
+                                WidthRequest="130" 
                                 VerticalTextAlignment="Center"/>
-                                                    <Label Text="{Binding Valor, StringFormat='{0:F2}'}" 
+                                                                <Label Text="{Binding Valor, StringFormat='{0:F2}'}" 
                                 TextColor="White" 
                                 HorizontalTextAlignment="End" 
                                 VerticalTextAlignment="Center" 
                                 VerticalOptions="Center" 
-                                WidthRequest="70"/>
-                                                </HorizontalStackLayout>
-                                            </Frame>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </ScrollView>
-                            
+                                WidthRequest="100"/>
+                                                            </HorizontalStackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </ScrollView>
+
+                                    </Frame>
+
+                                </Grid>
+                            </VerticalStackLayout>
                         </Frame>
 
-                       
-                    </VerticalStackLayout>
+                    </HorizontalStackLayout>
                 </Frame>
-
             </HorizontalStackLayout>
 
         </Grid>

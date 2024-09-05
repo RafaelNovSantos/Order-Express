@@ -208,27 +208,6 @@ namespace Gerador_de_Pedidos
         {
             var entry = sender as Entry;
 
-            if (!string.IsNullOrEmpty(e.NewTextValue))
-            {
-
-                if (e.NewTextValue.Length > 9)
-                {
-                    DisplayAlert("Limite de Dígitos Excedido", "O código não pode ter mais que 9 dígitos.", "OK");
-                    entry.Text = e.NewTextValue.Substring(0, 9); // Trunca o texto para 10 dígitos
-                    return;
-                }
-                // Validação numérica
-                if (!int.TryParse(((e.NewTextValue).Replace("-", "").Replace("M", "").Replace("m", "")), out _))
-                {
-                    DisplayAlert("Entrada Inválida", "Por favor, insira apenas os números do código.", "OK");
-                    entry.Text = e.OldTextValue;
-                    return; // Retorna para evitar executar a próxima lógica caso o texto não seja numérico.
-                }
-
-                // Verificação do limite de 10 dígitos
-
-            }
-
 
             // Chama o método para atualizar o Picker, ou qualquer outra lógica adicional
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
@@ -741,7 +720,7 @@ namespace Gerador_de_Pedidos
             }
             else
             {
-                await DisplayAlert("Erro", "Adicione algum produto no pedido", "OK");
+                await DisplayAlert("Atênção!", "Adicione algum produto no pedido", "OK");
                 return; // Retorna para que o código de cópia não seja executado
             }
 
@@ -895,8 +874,6 @@ namespace Gerador_de_Pedidos
             public string Descricao { get; set; }
             public string Valor { get; set; }
             public string Quantidade { get; set; }
-
-
 
         }
 
