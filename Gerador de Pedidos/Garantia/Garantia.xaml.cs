@@ -5,58 +5,28 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using System;
-using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Gerador_de_Pedidos
 {
     public partial class Garantia : ContentPage
     {
         // Defina a lista como um campo da classe
-        public List<Equipamentos> Lista { get; set; } = new List<Equipamentos>();
+        public ObservableCollection<Produto> Lista { get; set; } = new ObservableCollection<Produto>();
 
-        private string linkplanilha;
+        private const string DefaultLinkPlanilha = "https://docs.google.com/spreadsheets/d/1AWp_sTLnWgcM7zVRR4x3zit8wbOucJ9m43s7M4yNuYU/export?usp=sharing";
 
         public Garantia()
         {
             InitializeComponent();
-
-            LoadLink();
+            _ = LerExcelComColuna(DefaultLinkPlanilha, "Equipamentos");
         }
 
-        private void EditarClicked(object sender, EventArgs e)
+        private async void EditarClicked(object sender, EventArgs e)
         {
             DownloadSheet.EditarClicked(sender, e, this);
         }
 
-
-        private async void LoadLink()
-        {
-            string fileName = "link.txt";
-            string filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
-
-            try
-            {
-                if (System.IO.File.Exists(filePath))
-                {
-                    linkplanilha = System.IO.File.ReadAllText(filePath);
-                    
-                }
-                else
-                {
-                    linkplanilha = "https://docs.google.com/spreadsheets/d/197z0M4GrqaY3Kl6BvtEgGt-tYMX4IdpcW2dm8Ze5bZQ/export?usp=sharing";
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Erro ao ler o link: {ex.Message}", "OK");
-                linkplanilha = "https://docs.google.com/spreadsheets/d/197z0M4GrqaY3Kl6BvtEgGt-tYMX4IdpcW2dm8Ze5bZQ/export?usp=sharing";
-               
-
-            }
-        }
-
-        async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
+        public async Task LerExcelComColuna(string fileUrl, string sheetName)
         {
             int tentativas = 0;
             int maxTentativas = 3;
@@ -78,51 +48,48 @@ namespace Gerador_de_Pedidos
                             {
                                 var worksheet = package.Workbook.Worksheets[sheetName];
 
-                                if (worksheet == null || worksheet.Dimension == null || worksheet.Cells == null)
+                                if (worksheet == null || worksheet.Dimension == null)
                                 {
+                                    await DisplayAlert("Erro", $"Planilha '{sheetName}' não encontrada ou está vazia.", "OK");
                                     return;
                                 }
 
-                                Lista.Clear();  // Limpe a lista antes de adicionar novos itens
+                                Lista.Clear();
 
                                 var rowCount = worksheet.Dimension.Rows;
-                                bool linhaVazia = true;
+                                bool listaVazia = true;
 
                                 for (int row = 2; row <= rowCount; row++)
                                 {
                                     var codigo = worksheet.Cells[row, 1]?.Text;
                                     var descricao = worksheet.Cells[row, 2]?.Text;
 
-
-                                    if (string.IsNullOrWhiteSpace(codigo) &&
-                                        string.IsNullOrWhiteSpace(descricao))
+                                    if (string.IsNullOrWhiteSpace(codigo) && string.IsNullOrWhiteSpace(descricao))
                                     {
-                                        continue; // Ignorar linhas vazias
+                                        continue;
                                     }
 
-                                    var produto = new Equipamentos
+                                    var produto = new Produto
                                     {
                                         Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
                                         Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
                                     };
 
                                     Lista.Add(produto);
-                                    linhaVazia = false;
+                                    listaVazia = false;
                                 }
 
-                                if (linhaVazia)
+                                if (listaVazia)
                                 {
+                                    await DisplayAlert("Aviso", "Nenhum produto encontrado. Adicionando produto padrão.", "OK");
                                     CriarListaComProdutoPadrao();
                                 }
 
-                                // Atualizar a visualização da lista
-                                equipamentos.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
                                 equipamentos.ItemsSource = Lista;
                             }
                         }
                     }
-
-                    break; // Saia do loop se a operação foi bem-sucedida
+                    break;
                 }
                 catch (HttpRequestException ex)
                 {
@@ -131,59 +98,37 @@ namespace Gerador_de_Pedidos
 
                     if (tentativas >= maxTentativas)
                     {
+                        await DisplayAlert("Erro", "Falha ao carregar a planilha. Verifique sua conexão ou tente novamente mais tarde.", "OK");
                         break;
                     }
 
-                    await Task.Delay(5000); // Aguardar 5 segundos antes de tentar novamente
+                    await Task.Delay(5000);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Erro inesperado: {ex.Message}");
+                    await DisplayAlert("Erro", $"Ocorreu um erro inesperado: {ex.Message}", "OK");
                     break;
                 }
             }
         }
+
         void CriarListaComProdutoPadrao()
         {
             Lista.Clear();
-            Lista.Add(new Equipamentos
+            Lista.Add(new Produto
             {
                 Codigo = "N/A",
                 Descricao = "N/A"
             });
 
-            equipamentos.ItemsSource = new List<Equipamentos>();
             equipamentos.ItemsSource = Lista;
         }
     }
 
-
-
-
-
-    public class Equipamentos
+    public class Produto
     {
         public string Codigo { get; set; }
         public string Descricao { get; set; }
-    }
-
-    public class Diagnostico
-    {
-        public string Codigo { get; set; }
-        public string Descricao { get; set; }
-    }
-
-    public class Causa
-    {
-        public string Codigo { get; set; }
-        public string Descricao { get; set; }
-        public string Tipo { get; set; }
-    }
-
-    public class Solucao
-    {
-        public string Codigo { get; set; }
-        public string Descricao { get; set; }
-        public string Tipo { get; set; }
     }
 }

@@ -8,5 +8,6 @@ public class DownloadSheet
     {
         // Use a instância da página para chamar DisplayAlert
         page.DisplayAlert("Botão clicado!", "teste", "OK");
+       
     }
 }

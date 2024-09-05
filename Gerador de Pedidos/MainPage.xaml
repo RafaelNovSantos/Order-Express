@@ -1,4 +1,4 @@
-﻿ ﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.MainPage"
@@ -11,8 +11,6 @@
         <ResourceDictionary>
             <!-- Estilo para os Labels -->
             <Style x:Key="HeaderLabelStyle" TargetType="Label">
-                <Setter Property="FontFamily" Value="Poppins-Medium"/>
-                <Setter Property="FontSize" Value="15"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="TextColor" Value="Black"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>
@@ -48,10 +46,8 @@
 
 
     <ScrollView>
-
-
-
-        <Grid Padding="10" HorizontalOptions="Center"  VerticalOptions="Center">
+        
+        <Grid HorizontalOptions="Center"  VerticalOptions="Center">
 
 
             <Grid.RowDefinitions>
@@ -66,146 +62,155 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <Frame 
+             BackgroundColor="#333333"
+CornerRadius="10" 
+             BorderColor="#00c4b4"
+HasShadow="True" 
+Padding="4"
+Margin="1">
+                <Frame.Shadow>
+                    <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
+                </Frame.Shadow>
+                <!-- Seção de entrada de dados -->
+                <VerticalStackLayout Padding="10" Spacing="10">
 
-            <!-- Seção de entrada de dados -->
-            <VerticalStackLayout Padding="10" Spacing="10" HeightRequest="600">
 
 
+                    <HorizontalStackLayout HorizontalOptions="Center">
+                        <Label Text="Tipo de Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
 
-                <HorizontalStackLayout HorizontalOptions="Center">
-                    <Label Text="Tipo de Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                    </HorizontalStackLayout>
+                    <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
+                        <Picker.Items>
+                            <x:String>Venda</x:String>
+                            <x:String>Garantia com retorno</x:String>
+                            <x:String>Garantia sem retorno</x:String>
+                        </Picker.Items>
+                    </Picker>
+                    <Entry x:Name="txtVendedor" Placeholder="Vendedor" WidthRequest="526"/>
 
-                </HorizontalStackLayout>
-                <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
-                    <Picker.Items>
-                        <x:String>Venda</x:String>
-                        <x:String>Garantia com retorno</x:String>
-                        <x:String>Garantia sem retorno</x:String>
-                    </Picker.Items>
-                </Picker>
-                <Entry x:Name="txtVendedor" Placeholder="Vendedor"/>
+                    <HorizontalStackLayout Spacing="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                <HorizontalStackLayout Spacing="10">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Controles na primeira coluna (Index 0) -->
-                        <HorizontalStackLayout Grid.Column="0" Spacing="10" >
-                            <Entry x:Name="txtCodigo" Placeholder="Código" WidthRequest="138" Keyboard="Numeric" TextChanged="OnTxtCodigoTextChangedUnified" />
-                            <Picker x:Name="valores" 
+                            <!-- Controles na primeira coluna (Index 0) -->
+                            <HorizontalStackLayout Grid.Column="0" Spacing="10" >
+                                <Entry x:Name="txtCodigo" Placeholder="Código" WidthRequest="138" Keyboard="Numeric" TextChanged="OnTxtCodigoTextChangedUnified"/>
+                                <Picker x:Name="valores" 
                     Style="{StaticResource HeaderPickerStyle}" 
                     SelectedIndexChanged="OnPickerSelectionChangedPrice" WidthRequest="210" HeightRequest="39" TitleColor="#FFE600">
-                                <Picker.Items>
-                                    <x:String>Valor ATA</x:String>
-                                    <x:String>Valor Oficina</x:String>
-                                    <x:String>Valor Cliente Final</x:String>
-                                </Picker.Items>
-                            </Picker>
-                        </HorizontalStackLayout>
+                                    <Picker.Items>
+                                        <x:String>Valor ATA</x:String>
+                                        <x:String>Valor Oficina</x:String>
+                                        <x:String>Valor Cliente Final</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </HorizontalStackLayout>
 
 
-                        <!-- Botão centralizado -->
+                            <!-- Botão centralizado -->
 
-                    </Grid>
+                        </Grid>
 
-                    <!-- Label de status fora do Grid -->
-                    <Label x:Name="lblStatusProduto" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="17">
-                        Status Produto
-                    </Label>
-                    <Label x:Name="lblcenter" IsVisible="False" TextColor="#00000000">center</Label>
-                    <Button x:Name="btnBuscarProduto"
+                        <!-- Label de status fora do Grid -->
+                        <Label x:Name="lblStatusProduto" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="17">
+                            Status Produto
+                        </Label>
+                        <Label x:Name="lblcenter" IsVisible="False" TextColor="#00000000">center</Label>
+                        <Button x:Name="btnBuscarProduto"
                 Grid.Column="1"
                 WidthRequest="40" HeightRequest="39" BackgroundColor="Transparent" BorderColor="#00ED2D2D"
                 HorizontalOptions="End">
-                        <Button.ImageSource>
-                            <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF" />
-                        </Button.ImageSource>
-                    </Button>
-                </HorizontalStackLayout>
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF" />
+                            </Button.ImageSource>
+                        </Button>
+                    </HorizontalStackLayout>
 
 
 
-                <Entry x:Name="txtDescricao" Placeholder="Descrição"/>
+                    <Entry x:Name="txtDescricao" Placeholder="Descrição" WidthRequest="526"/>
 
-                <Entry x:Name="txtValor" Placeholder="Valor" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" />
+                    <Entry x:Name="txtValor" Placeholder="Valor" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" WidthRequest="526" />
 
-                <HorizontalStackLayout Spacing="10">
-                    <Entry x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" WidthRequest="280"/>
+                    <HorizontalStackLayout Spacing="10">
+                        <Entry x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" WidthRequest="266"/>
 
-                    <Button Text="Adicionar" Clicked="OnAdicionarClicked" HeightRequest="40" WidthRequest="116" HorizontalOptions="End">
+                        <Button Text="Adicionar" Clicked="OnAdicionarClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
 
-                        <Button.ImageSource>
-                            <FontImageSource FontFamily="IconsFont" Glyph="&#xE802;" Size="20"  Color="#00FF00"/>
-                        </Button.ImageSource>
-                    </Button>
-                    <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked" WidthRequest="110">
-                        <Button.ImageSource>
-                            <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
-                        </Button.ImageSource>
-                    </Button>
-                </HorizontalStackLayout>
-                <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
-                    <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
-                    <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE802;" Size="20"  Color="#00FF00"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked" WidthRequest="120">
+                            <Button.ImageSource>
+                                <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
+                        <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
+                        <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
+                            <Picker.Items>
+                                <x:String>SEDEX</x:String>
+                                <x:String>PAC</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </HorizontalStackLayout>
+
+                    <Label x:Name="txtpag"  Text="Pagamento:" FontSize="23" TextColor="White" />
+
+                    <Picker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPagamentoSelected">
                         <Picker.Items>
-                            <x:String>SEDEX</x:String>
-                            <x:String>PAC</x:String>
+                            <x:String>BOLETO</x:String>
+                            <x:String>PIX</x:String>
                         </Picker.Items>
                     </Picker>
-                </HorizontalStackLayout>
 
-                <Label x:Name="txtpag"  Text="Pagamento:" FontSize="23" TextColor="White" />
+                    <Entry x:Name="txtFaturamento" Placeholder="Faturamento" WidthRequest="526"/>
 
-                <Picker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPagamentoSelected">
-                    <Picker.Items>
-                        <x:String>BOLETO</x:String>
-                        <x:String>PIX</x:String>
-                    </Picker.Items>
-                </Picker>
+                    <Entry x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento"/>
 
-                <Entry x:Name="txtFaturamento" Placeholder="Faturamento"/>
+                    <Entry x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento"/>
 
-                <Entry x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento"/>
+                    <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
 
-                <Entry x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento"/>
+                    <Picker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnNotaSelected">
+                        <Picker.Items>
+                            <x:String>Nota Interna</x:String>
+                            <x:String>Nota Externa</x:String>
+                        </Picker.Items>
+                    </Picker>
 
-                <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
-
-                <Picker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnNotaSelected">
-                    <Picker.Items>
-                        <x:String>Nota Interna</x:String>
-                        <x:String>Nota Externa</x:String>
-                    </Picker.Items>
-                </Picker>
-
-                <HorizontalStackLayout Spacing="10">
-                    <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start"  />
-                    <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="357" HorizontalOptions="End" />
-                </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnIntegerTextChanged"/>
+                        <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="360" HorizontalOptions="End" Keyboard="Numeric" TextChanged="OnIntegerTextChanged"/>
+                    </HorizontalStackLayout>
 
 
 
 
-                <!-- Seção de botões -->
+                    <!-- Seção de botões -->
 
-            </VerticalStackLayout>
-            <!-- Lista de Produtos Da Planilha -->
+                </VerticalStackLayout>
+            </Frame>
 
             <!-- Seção de lista de produtos selecionados -->
             <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" >
                 <Frame 
              BackgroundColor="#1e1e1e"
-CornerRadius="10" 
-             
+CornerRadius="20" 
+             BorderColor="#333333"
 HasShadow="True" 
 Padding="4"
 Margin="1">
                     <Frame.Shadow>
-                        <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
+                        <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
                     </Frame.Shadow>
                     <HorizontalStackLayout>
 
@@ -254,15 +259,15 @@ Margin="1">
                                 </Button>
                             </HorizontalStackLayout>
 
-                            <Frame BackgroundColor="#00c4b4" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="325" Padding="0" HorizontalOptions="End">
-                                <Grid  Padding="10" ColumnSpacing="28"  >
+                            <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="325" Padding="0" HorizontalOptions="End">
+                                <Grid  Padding="10" ColumnSpacing="28"  VerticalOptions="Start">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="37" />
                                         <ColumnDefinition Width="79" />
                                         <ColumnDefinition Width="42" />
                                         <ColumnDefinition Width="55" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}"/>
+                                    <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}" VerticalTextAlignment="Start"/>
                                     <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
                                     <Label Grid.Column="2" Text="Valor" Style="{StaticResource HeaderLabelStyle}"/>
                                     <Label Grid.Column="3" Text="Qnt." Style="{StaticResource HeaderLabelStyle}"/>
@@ -270,7 +275,7 @@ Margin="1">
                             </Frame>
 
 
-                            <Frame BorderColor="#00c4b4" 
+                            <Frame BorderColor="White" 
 CornerRadius="5" 
 HasShadow="True" 
                          WidthRequest="320"  
@@ -334,7 +339,7 @@ BackgroundColor="Transparent">
                                                             </VisualState>
                                                             <VisualState Name="Selected">
                                                                 <VisualState.Setters>
-                                                                    <Setter Property="BackgroundColor" Value="#1d1d1d" />
+                                                                    <Setter Property="BackgroundColor" Value="#333333" />
                                                                 </VisualState.Setters>
                                                             </VisualState>
                                                         </VisualStateGroup>
@@ -377,7 +382,7 @@ BackgroundColor="Transparent">
 
                         </VerticalStackLayout>
 
-                        <HorizontalStackLayout  Spacing="10" Padding="20"></HorizontalStackLayout>
+                        <HorizontalStackLayout  Spacing="10" Padding="5"></HorizontalStackLayout>
 
 
                         <!-- Lista de Produtos Da Planilha -->
@@ -560,7 +565,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
 
                                                                     <VisualState Name="Selected">
                                                                         <VisualState.Setters>
-                                                                            <Setter Property="BackgroundColor" Value="White" />
+                                                                            <Setter Property="BackgroundColor" Value="#333333" />
                                                                         </VisualState.Setters>
                                                                     </VisualState>
                                                                 </VisualStateGroup>
