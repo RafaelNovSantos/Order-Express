@@ -73,6 +73,12 @@ namespace Gerador_de_Pedidos
         {
             string senha = await DisplayPromptAsync("Autenticação", "Digite a senha para alterar o link da planilha Sheet Google:");
 
+            var picker = sender as Picker;
+            if (picker == null || picker.SelectedItem == null)
+                return;
+
+            var selectedValue = picker.SelectedItem.ToString();
+
             if (senha == "Systelcapacitacao@1234")
             {
                 string novoLink = await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:");
@@ -94,7 +100,7 @@ namespace Gerador_de_Pedidos
                     }
 
                     await DisplayAlert("Link Atualizado", $"O link da planilha foi atualizado com sucesso para: {linkExportacao}", "OK");
-                    OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+                    await ExecuteTask(selectedValue);
 
                 }
             }

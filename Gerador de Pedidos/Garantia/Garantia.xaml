@@ -66,6 +66,7 @@
             </Grid.ColumnDefinitions>
 
             <Button  
+                Clicked="OnAlterarLinkClicked"
                 Grid.Column="3"
                 WidthRequest="50" 
                       VerticalOptions="Start"
@@ -430,13 +431,81 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                             </Grid>
                         </Frame>
 
-                        <Frame BorderColor="Black" 
+                        <ActivityIndicator 
+x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" WidthRequest="40" HeightRequest="40"
+                            />
+                        <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
+                               
+                               VerticalOptions="End"
+                               
+                          Margin="3"   
+                               
     Padding="0"
-    BackgroundColor="Black">
+    BackgroundColor="White">
 
 
+
+                            <ScrollView>
+
+                                <CollectionView 
+            x:Name="Diagnostico"
+            ItemsLayout="VerticalList"
+                                    
+            HorizontalOptions="FillAndExpand"
+            
+                                    HeightRequest="200"
+            BackgroundColor="Black"
+                                    
+                                    SelectionMode="Single"
+                                    
+                                   >
+
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
+                        Padding="10" 
+                        HasShadow="False" 
+                        BackgroundColor="White"
+                                                  >
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup Name="CommonStates">
+
+                                                        <VisualState Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <VisualState Name="Selected">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="White" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <HorizontalStackLayout Spacing="0">
+                                                    <Label TextColor="White" 
+                                Text="{Binding Codigo}" 
+                                                           HorizontalOptions="Start"
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="60" 
+                                VerticalTextAlignment="Center"/>
+                                                    <Label TextColor="White" 
+                                Text="{Binding Descricao}" 
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="150" 
+                                VerticalTextAlignment="Center"/>
+
+                                                </HorizontalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </ScrollView>
 
                         </Frame>
 
@@ -532,13 +601,81 @@ BorderColor="#00ED2D2D">
                             </Grid>
                         </Frame>
 
-                        <Frame BorderColor="Black" 
+                        <ActivityIndicator 
+x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" WidthRequest="40" HeightRequest="40"
+                            />
+                        <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
+                               
+                               VerticalOptions="End"
+                               
+                          Margin="3"   
+                               
     Padding="0"
-    BackgroundColor="Black">
+    BackgroundColor="White">
 
 
+
+                            <ScrollView>
+
+                                <CollectionView 
+            x:Name="Causa"
+            ItemsLayout="VerticalList"
+                                    
+            HorizontalOptions="FillAndExpand"
+            
+                                    HeightRequest="200"
+            BackgroundColor="Black"
+                                    
+                                    SelectionMode="Single"
+                                    
+                                   >
+
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
+                        Padding="10" 
+                        HasShadow="False" 
+                        BackgroundColor="White"
+                                                  >
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup Name="CommonStates">
+
+                                                        <VisualState Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <VisualState Name="Selected">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="White" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <HorizontalStackLayout Spacing="0">
+                                                    <Label TextColor="White" 
+                                Text="{Binding Codigo}" 
+                                                           HorizontalOptions="Start"
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="60" 
+                                VerticalTextAlignment="Center"/>
+                                                    <Label TextColor="White" 
+                                Text="{Binding Descricao}" 
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="150" 
+                                VerticalTextAlignment="Center"/>
+
+                                                </HorizontalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </ScrollView>
 
                         </Frame>
 
@@ -633,14 +770,81 @@ BorderColor="#00ED2D2D">
                        Style="{StaticResource HeaderLabelStyle}"/>
                             </Grid>
                         </Frame>
-
-                        <Frame BorderColor="Black" 
+                        <ActivityIndicator 
+x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" WidthRequest="40" HeightRequest="40"
+                            />
+                        <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
+                               
+                               VerticalOptions="End"
+                               
+                          Margin="3"   
+                               
     Padding="0"
-    BackgroundColor="Black">
+    BackgroundColor="White">
 
 
+
+                            <ScrollView>
+
+                                <CollectionView 
+            x:Name="Solucao"
+            ItemsLayout="VerticalList"
+                                    
+            HorizontalOptions="FillAndExpand"
+            
+                                    HeightRequest="200"
+            BackgroundColor="Black"
+                                    
+                                    SelectionMode="Single"
+                                    
+                                   >
+
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
+                        Padding="10" 
+                        HasShadow="False" 
+                        BackgroundColor="White"
+                                                  >
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup Name="CommonStates">
+
+                                                        <VisualState Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <VisualState Name="Selected">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="White" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <HorizontalStackLayout Spacing="0">
+                                                    <Label TextColor="White" 
+                                Text="{Binding Codigo}" 
+                                                           HorizontalOptions="Start"
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="60" 
+                                VerticalTextAlignment="Center"/>
+                                                    <Label TextColor="White" 
+                                Text="{Binding Descricao}" 
+                                HorizontalTextAlignment="Start" 
+                                VerticalOptions="Center" 
+                                WidthRequest="150" 
+                                VerticalTextAlignment="Center"/>
+
+                                                </HorizontalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </ScrollView>
 
                         </Frame>
 
