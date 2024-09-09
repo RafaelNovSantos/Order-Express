@@ -73,7 +73,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="NovaPasta\**" />
+	  <Compile Remove="NovaPasta\**" />
+	  <EmbeddedResource Remove="NovaPasta\**" />
+	  <MauiCss Remove="NovaPasta\**" />
+	  <MauiXaml Remove="NovaPasta\**" />
+	  <None Remove="NovaPasta\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="MenuPage.xaml.cs" />
+	  <Compile Remove="Platforms\Windows\CursorBehavior.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -94,9 +104,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Garantia\Garantia.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+	  <Compile Update="Garantia\GarantiaPage.xaml.cs">
+	    <DependentUpon>GarantiaPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="MainWindow.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

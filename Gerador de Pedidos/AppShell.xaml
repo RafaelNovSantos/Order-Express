@@ -51,8 +51,8 @@
         <ShellContent
  Title="Garantia"
     
- ContentTemplate="{DataTemplate local:Garantia}"
- Route="Garantia">
+ ContentTemplate="{DataTemplate local:GarantiaPage}"
+ Route="GarantiaPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>
@@ -74,8 +74,8 @@
         <ShellContent
  Title="Garantia"
     
- ContentTemplate="{DataTemplate local:Garantia}"
- Route="Garantia"
+ ContentTemplate="{DataTemplate local:GarantiaPage}"
+ Route="GarantiaPage"
             Shell.TitleColor="Black">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
+using Gerador_de_Pedidos; 
 using static System.Net.WebRequestMethods;
 
 
@@ -36,11 +37,15 @@ namespace Gerador_de_Pedidos
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
 
+          
+
             LoadLink();
 
         }
         public List<Produto> Lista = new List<Produto>();
         public List<Produto> ListaSelecionados = new List<Produto>();
+
+
 
         private async void LoadLink()
         {
@@ -736,14 +741,16 @@ namespace Gerador_de_Pedidos
                 {
                     totalGeral += frete;
                     texto += $"FRETE({tipofrete}): R$ {frete:F2}\n\n";
+                    freteTotal = " + FRETE";
                 }
                 else
                 {
+                    freteTotal = "";
                     texto += $"Frete a cotar\n\n";
                 }
 
                 texto += $"Pagamento: {pagamento}\n";
-                freteTotal = " + FRETE";
+                
             }
 
 

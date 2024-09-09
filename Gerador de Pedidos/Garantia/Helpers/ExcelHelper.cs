@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Gerador_de_Pedidos.Models;
+using Gerador_de_Pedidos.Garantia.Models;
 
-namespace Gerador_de_Pedidos.Garantia.Services
+namespace Gerador_de_Pedidos.Garantia.Helpers
 {
-    public class ExcelService
+    public class ExcelHelper
     {
-        public static async Task<List<Produtos>> LerExcelComColuna(string fileUrl, string sheetName, string codigoColuna, string descricaoColuna)
+        public static async Task<List<Produtos>> LerExcelComColuna(string fileUrl, string sheetName, int codigoColunaIndex, int descricaoColunaIndex, Page page)
         {
+           
             var produtos = new List<Produtos>();
             int tentativas = 0;
             int maxTentativas = 3;
@@ -36,13 +37,11 @@ namespace Gerador_de_Pedidos.Garantia.Services
                                     throw new Exception($"Planilha '{sheetName}' não encontrada ou está vazia.");
 
                                 var rowCount = worksheet.Dimension.Rows;
-                                int codigoIndex = worksheet.Cells[sheetName + codigoColuna].Start.Column;
-                                int descricaoIndex = worksheet.Cells[sheetName + descricaoColuna].Start.Column;
 
                                 for (int row = 2; row <= rowCount; row++)
                                 {
-                                    var codigo = worksheet.Cells[row, codigoIndex]?.Text;
-                                    var descricao = worksheet.Cells[row, descricaoIndex]?.Text;
+                                    var codigo = worksheet.Cells[row, codigoColunaIndex]?.Text;
+                                    var descricao = worksheet.Cells[row, descricaoColunaIndex]?.Text;
 
                                     if (string.IsNullOrWhiteSpace(codigo) && string.IsNullOrWhiteSpace(descricao))
                                         continue;
@@ -52,6 +51,8 @@ namespace Gerador_de_Pedidos.Garantia.Services
                                         Codigo = string.IsNullOrWhiteSpace(codigo) ? "N/A" : codigo,
                                         Descricao = string.IsNullOrWhiteSpace(descricao) ? "N/A" : descricao,
                                     });
+
+                                    Console.WriteLine($"Linha {row}: Código = {codigo}, Descrição = {descricao}"); // Log para depuração
                                 }
 
                                 return produtos.Count > 0 ? produtos : new List<Produtos> { new Produtos { Codigo = "N/A", Descricao = "N/A" } };
@@ -59,8 +60,9 @@ namespace Gerador_de_Pedidos.Garantia.Services
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"Erro: {ex.Message}"); // Log para depuração
                     if (++tentativas >= maxTentativas)
                         throw;
                     await Task.Delay(5000); // Tentar novamente após 5 segundos
@@ -68,5 +70,6 @@ namespace Gerador_de_Pedidos.Garantia.Services
             }
             return produtos;
         }
+
     }
 }

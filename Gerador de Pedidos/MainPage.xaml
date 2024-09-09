@@ -285,6 +285,7 @@ HasShadow="True"
                            
 Padding="0"
 BackgroundColor="Transparent">
+                                
 
                                 <Grid HorizontalOptions="Center" VerticalOptions="Center" >
 
@@ -294,6 +295,7 @@ BackgroundColor="Transparent">
     SelectionMode="Multiple"
     SelectionChanged="OnCollectionViewSelectionChanged"
     VerticalOptions="Start"
+                                        BackgroundColor="Black"
     WidthRequest="380"
     HeightRequest="430"
     ItemsSource="{Binding Produtos}">
@@ -326,17 +328,20 @@ BackgroundColor="Transparent">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
                                                 <Frame Padding="8"
+                                                       Style="{StaticResource AlternatingBackgroundStyle}"
                    HasShadow="False"
                    BorderColor="Black"
                    BackgroundColor="White">
 
                                                     <VisualStateManager.VisualStateGroups>
                                                         <VisualStateGroup Name="CommonStates">
+
                                                             <VisualState Name="Normal">
                                                                 <VisualState.Setters>
-                                                                    <Setter Property="BackgroundColor" Value="#101010" />
+                                                                    <Setter Property="BackgroundColor" Value="#1A9B9B9B" />
                                                                 </VisualState.Setters>
                                                             </VisualState>
+
                                                             <VisualState Name="Selected">
                                                                 <VisualState.Setters>
                                                                     <Setter Property="BackgroundColor" Value="#333333" />
@@ -455,12 +460,13 @@ BackgroundColor="Transparent">
                                         </Picker.Items>
                                     </Picker>
                                     <HorizontalStackLayout HorizontalOptions="Center">
-                                        <Button Clicked="OnAlterarLinkClicked"  WidthRequest="42" 
-HeightRequest="42" 
+                                        <Button x:Name="teste" Clicked="OnAlterarLinkClicked"  WidthRequest="44"
+                                                HeightRequest="44"
+                             VerticalOptions="Start"                 
 BackgroundColor="#00FFFFFF" 
 BorderColor="#00ED2D2D">
                                             <Button.ImageSource>
-                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="20" Color="#FFFFFF"/>
+                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE809;" Size="20" Color="#FFFFFF"/>
                                             </Button.ImageSource>
                                         </Button>
                                         <Button Text="Atualizar" 

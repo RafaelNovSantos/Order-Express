@@ -16,6 +16,7 @@
 
             <Style TargetType="Entry">
                 <Setter Property="BackgroundColor" Value="White" />
+                <Setter Property="HeightRequest" Value="20"></Setter>
                 <Setter Property="TextColor" Value="Black"></Setter>
                 <Setter Property="FontFamily" Value="Poppins-Bold"/>
                 <Setter Property="PlaceholderColor" Value="#9F000000"></Setter>
@@ -29,12 +30,14 @@
 
 
             <Style TargetType="Label">
+                
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="FontFamily" Value="Poppins-Bold"/>
                 <Setter Property="FontSize" Value="15"></Setter>
             </Style>
 
             <Style TargetType="Button">
+                
                 <Setter Property="FontFamily" Value="Poppins-Medium"/>
                 <Setter Property="BackgroundColor" Value="#800B1C41"/>
                 <Setter Property="FontAttributes" Value="Bold"/>

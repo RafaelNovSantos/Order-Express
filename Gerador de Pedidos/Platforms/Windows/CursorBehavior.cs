@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gerador_de_Pedidos.Pages
+namespace Gerador_de_Pedidos.Platforms.Windows
 {
-    internal class SolucaoPage
+    internal class CursorBehavior
     {
     }
 }
