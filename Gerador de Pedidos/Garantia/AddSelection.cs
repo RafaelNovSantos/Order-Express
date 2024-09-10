@@ -10,28 +10,87 @@ namespace Gerador_de_Pedidos.Garantia
         private ObservableCollection<Produtos> ListaSelecionados;
         private CollectionView listaGarantiaSelect;
 
-        public AddSelection(ObservableCollection<Produtos> listaSelecionados, CollectionView listaGarantiaSelect)
+        // Armazenar o item selecionado por tipo
+        private Produtos equipamentoSelecionado;
+        private Produtos diagnosticoSelecionado;
+        private Produtos causaSelecionada;
+        private Produtos solucaoSelecionada;
+
+        private CollectionView EquipamentosCollectionView;
+        private CollectionView DiagnosticoCollectionView;
+        private CollectionView CausaCollectionView;
+        private CollectionView SolucaoCollectionView;
+
+        public AddSelection(ObservableCollection<Produtos> listaSelecionados, CollectionView listaGarantiaSelect, CollectionView EquipamentosCollectionView,
+        CollectionView DiagnosticoCollectionView,
+        CollectionView CausaCollectionView,
+        CollectionView SolucaoCollectionView)
         {
             this.ListaSelecionados = listaSelecionados;
             this.listaGarantiaSelect = listaGarantiaSelect;
+            this.EquipamentosCollectionView = EquipamentosCollectionView;
+            this.DiagnosticoCollectionView = DiagnosticoCollectionView;
+            this.CausaCollectionView = CausaCollectionView;
+            this.SolucaoCollectionView = SolucaoCollectionView;
         }
 
         public void EquipamentosCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ProcessSelectionChange(e, ref equipamentoSelecionado);
+
+
+
+        }
+
+        public void DiagnosticoCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ProcessSelectionChange(e, ref diagnosticoSelecionado);
+            DiagnosticoCollectionView.SelectedItem = null;
+        }
+
+        public void CausaCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ProcessSelectionChange(e, ref causaSelecionada);
+            CausaCollectionView.SelectedItem = null;
+        }
+
+        public void SolucaoCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ProcessSelectionChange(e, ref solucaoSelecionada);
+            SolucaoCollectionView.SelectedItem = null;
+        }
+
+        private void ProcessSelectionChange(SelectionChangedEventArgs e, ref Produtos itemSelecionado)
+        {
             if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
-                var selectedEquipamentos = e.CurrentSelection.Cast<Produtos>().ToList();
+                
+                itemSelecionado = e.CurrentSelection.Cast<Produtos>().FirstOrDefault();
+                AtualizarLista();
+            }
+        }
 
-                foreach (var item in selectedEquipamentos)
-                {
-                    if (!ListaSelecionados.Contains(item))
-                    {
-                        ListaSelecionados.Add(item);
-                    }
-                }
+        private void AtualizarLista()
+        {
+            // Limpar a lista atual
+            ListaSelecionados.Clear();
 
-                listaGarantiaSelect.ItemsSource = null;
-                listaGarantiaSelect.ItemsSource = ListaSelecionados;
+            // Adicionar os itens selecionados
+            AddItemIfNotNull(equipamentoSelecionado);
+            AddItemIfNotNull(diagnosticoSelecionado);
+            AddItemIfNotNull(causaSelecionada);
+            AddItemIfNotNull(solucaoSelecionada);
+
+            // Atualizar a CollectionView
+            listaGarantiaSelect.ItemsSource = null;
+            listaGarantiaSelect.ItemsSource = ListaSelecionados;
+        }
+
+        private void AddItemIfNotNull(Produtos item)
+        {
+            if (item != null && !ListaSelecionados.Contains(item))
+            {
+                ListaSelecionados.Add(item);
             }
         }
     }

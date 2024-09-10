@@ -61,14 +61,14 @@ namespace Gerador_de_Pedidos
                 }
                 else
                 {
-                    linkplanilha = "https://docs.google.com/spreadsheets/d/197z0M4GrqaY3Kl6BvtEgGt-tYMX4IdpcW2dm8Ze5bZQ/export?usp=sharing";
+                    linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Erro", $"Erro ao ler o link: {ex.Message}", "OK");
-                linkplanilha = "https://docs.google.com/spreadsheets/d/197z0M4GrqaY3Kl6BvtEgGt-tYMX4IdpcW2dm8Ze5bZQ/export?usp=sharing";
+                linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
                 OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
 
             }
@@ -76,13 +76,10 @@ namespace Gerador_de_Pedidos
 
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
+
+            var selectedValue = valores.SelectedItem?.ToString();
+
             string senha = await DisplayPromptAsync("Autenticação", "Digite a senha para alterar o link da planilha Sheet Google:");
-
-            var picker = sender as Picker;
-            if (picker == null || picker.SelectedItem == null)
-                return;
-
-            var selectedValue = picker.SelectedItem.ToString();
 
             if (senha == "Systelcapacitacao@1234")
             {

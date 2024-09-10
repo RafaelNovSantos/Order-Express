@@ -457,6 +457,7 @@ BackgroundColor="Transparent">
                                             <x:String>Micra</x:String>
                                             <x:String>Fasticket</x:String>
                                             <x:String>Impressor Max-Neo</x:String>
+                                            <x:String>Equipamentos</x:String>
                                         </Picker.Items>
                                     </Picker>
                                     <HorizontalStackLayout HorizontalOptions="Center">

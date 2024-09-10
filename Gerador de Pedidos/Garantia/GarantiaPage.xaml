@@ -66,12 +66,12 @@
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
+           
+
             <Button  
                 Clicked="OnAlterarLinkClicked"
-                
                 Grid.Column="2"
                 WidthRequest="60" 
-               
                       VerticalOptions="Start"
 HeightRequest="60" 
 BackgroundColor="#00FFFFFF" 
@@ -84,7 +84,7 @@ BorderColor="#00ED2D2D">
             <!-- Seção de lista de produtos selecionados -->
             <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.ColumnSpan="10" Margin="10">
                 <!-- Lista de Produtos Selecionados -->
-                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" WidthRequest="310">
+                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" WidthRequest="410">
                     <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
                         <!-- Definindo as colunas -->
                         <Grid.ColumnDefinitions>
@@ -95,30 +95,44 @@ BorderColor="#00ED2D2D">
                         </Grid.ColumnDefinitions>
 
                     </Grid>
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Padding="10" >
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="10" >
+                        <Button  
+                Clicked="FileSearchButton"
+                Grid.Column="2"
+                WidthRequest="40" 
+                           Padding="0"
+HeightRequest="45" 
+BackgroundColor="Red"  
+BorderColor="Black">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="IconsFont" Glyph="&#xF1C1;" Size="30" Color="White" />
+                            </Button.ImageSource>
+                        </Button>
                         <Button 
-                            Text="Editar" Clicked="EditarClicked" HeightRequest="40" WidthRequest="120"  HorizontalOptions="Start">
+                            Text="Editar" Clicked="EditarClicked" HeightRequest="40" WidthRequest="95"  HorizontalOptions="Start">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button Text="Excluir"  HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
+                        <Button Clicked="ExcluirSelect" Text="Excluir"  HeightRequest="40" WidthRequest="98" HorizontalOptions="End">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
+                        <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked" WidthRequest="120">
+                            <Button.ImageSource>
+                                <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
+                            </Button.ImageSource>
+                        </Button>
                     </HorizontalStackLayout>
 
-                    <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="293" Padding="0" HorizontalOptions="End">
-                        <Grid  Padding="10" ColumnSpacing="50" VerticalOptions="FillAndExpand" HorizontalOptions="Center" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Código" Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
+                    <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="393" Padding="0" HorizontalOptions="End">
+                        <HorizontalStackLayout  Padding="10" Spacing="100"  VerticalOptions="FillAndExpand" HorizontalOptions="Center" >
 
-                        </Grid>
+                            <Label  Text="Código" Style="{StaticResource HeaderLabelStyle}"/>
+                            <Label  HorizontalOptions="Start" WidthRequest="200" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
+
+                        </HorizontalStackLayout>
                     </Frame>
 
 
@@ -126,7 +140,7 @@ BorderColor="#00ED2D2D">
 CornerRadius="5" 
 HasShadow="True" 
                            
-                         WidthRequest="290"  
+                         WidthRequest="390"  
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                       Margin="3"   
@@ -142,7 +156,7 @@ BackgroundColor="Transparent">
     SelectionMode="Multiple"
    SelectionChanged="listaProdutosSelect_SelectionChanged"
     VerticalOptions="Start"
-    WidthRequest="380"
+    WidthRequest="480"
     HeightRequest="200"
     ItemsSource="{Binding Produtos}">
 
@@ -203,7 +217,7 @@ BackgroundColor="Transparent">
                                                 <Label TextColor="White"
                            Text="{Binding Descricao}"
                            HorizontalTextAlignment="Center"
-                           WidthRequest="120"
+                           WidthRequest="250"
                            VerticalTextAlignment="Center"/>
 
                                             </HorizontalStackLayout>
@@ -421,7 +435,7 @@ ColumnSpacing="0"
 HorizontalOptions="FillAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="220" />
 
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" 
@@ -467,7 +481,7 @@ x:Name="loadingIndicatorDiagnostico" IsRunning="False" IsVisible="False" Color="
                                     <CollectionView 
             x:Name="DiagnosticoCollectionView"
             ItemsLayout="VerticalList"
-                                    
+                                    SelectionChanged="DiagnosticoCollectionView_SelectionChanged"
             HorizontalOptions="FillAndExpand"
             
                                     HeightRequest="230"
@@ -619,7 +633,7 @@ x:Name="loadingIndicatorCausa" IsRunning="False" IsVisible="False" Color="Blue" 
                                     <CollectionView 
             x:Name="CausaCollectionView"
             ItemsLayout="VerticalList"
-                                    
+                                    SelectionChanged="CausaCollectionView_SelectionChanged"
             HorizontalOptions="FillAndExpand"
             
                                     HeightRequest="230"
@@ -728,7 +742,7 @@ x:Name="loadingIndicatorCausa" IsRunning="False" IsVisible="False" Color="Blue" 
                   HorizontalOptions="FillAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="220" />
                                     
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" 
@@ -744,7 +758,7 @@ x:Name="loadingIndicatorCausa" IsRunning="False" IsVisible="False" Color="Blue" 
                             </Grid>
                         </Frame>
 
-
+                       
                         <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="238">
                             <!-- Texto de instrução -->
                             <ActivityIndicator 
@@ -775,7 +789,7 @@ x:Name="loadingIndicatorSolucao" IsRunning="False" IsVisible="False" Color="Blue
                                     <CollectionView 
             x:Name="SolucaoCollectionView"
             ItemsLayout="VerticalList"
-                                    
+                                    SelectionChanged="SolucaoCollectionView_SelectionChanged"
             HorizontalOptions="FillAndExpand"
             
                                     HeightRequest="230"
