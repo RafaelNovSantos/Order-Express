@@ -79,7 +79,7 @@ Margin="1">
 
 
                     <HorizontalStackLayout HorizontalOptions="Center">
-                        <Label Text="Tipo de Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                        <Label Text="Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
 
                     </HorizontalStackLayout>
                     <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
@@ -119,18 +119,13 @@ Margin="1">
                         </Grid>
 
                         <!-- Label de status fora do Grid -->
-                        <Label x:Name="lblStatusProduto" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="17">
-                            Status Produto
-                        </Label>
                         <Label x:Name="lblcenter" IsVisible="False" TextColor="#00000000">center</Label>
-                        <Button x:Name="btnBuscarProduto"
-                Grid.Column="1"
-                WidthRequest="40" HeightRequest="39" BackgroundColor="Transparent" BorderColor="#00ED2D2D"
-                HorizontalOptions="End">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF" />
-                            </Button.ImageSource>
-                        </Button>
+                        <Label x:Name="lblStatusProduto" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="17">
+                           
+                        </Label>
+
+                        <ActivityIndicator 
+x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 
 

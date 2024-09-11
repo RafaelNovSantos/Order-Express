@@ -138,21 +138,39 @@ BorderColor="Black">
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="btncopy" Text="Copiar" Clicked="btncopy_Clicked"         WidthRequest="120">
+                        <Button x:Name="btncopy" Text="Copiar" Clicked="btncopy_Clicked"   HeightRequest="40"      WidthRequest="120">
                             <Button.ImageSource>
                                 <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                             </Button.ImageSource>
                         </Button>
+                        
+
                     </HorizontalStackLayout>
+                   
 
-                    <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="393"  HorizontalOptions="Center">
-                  <HorizontalStackLayout  HorizontalOptions="Center" Padding="20" Spacing="130"  VerticalOptions="FillAndExpand"  >
-                     
-                      <Label HorizontalOptions="Center"  Text="Código" Style="{StaticResource HeaderLabelStyle}"/>
-                      <Label  Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
+                    <!-- Frame externo ajustado -->
+                    <Frame BackgroundColor="White" 
+       HasShadow="False" 
+       BorderColor="Transparent" 
+       CornerRadius="10" 
+       HeightRequest="40" 
+       WidthRequest="393" 
+       Padding="0" 
+       HorizontalOptions="Center">
+                        <HorizontalStackLayout Padding="10" 
+                           Spacing="130" 
+                           VerticalOptions="FillAndExpand" 
+                           HorizontalOptions="Center">
+                            <Label Text="Código" 
+               Style="{StaticResource HeaderLabelStyle}"/>
+                            <Label HorizontalOptions="Start" 
+               WidthRequest="160" 
+               Text="Descrição" 
+               Style="{StaticResource HeaderLabelStyle}"/>
+                        </HorizontalStackLayout>
+                    </Frame>
 
-                  </HorizontalStackLayout>
-              </Frame>
+
 
 
                     <Frame BorderColor="White" 
@@ -226,7 +244,7 @@ BackgroundColor="Transparent">
                                                 </VisualStateGroup>
                                             </VisualStateManager.VisualStateGroups>
 
-                                            <HorizontalStackLayout Spacing="0">
+                                            <HorizontalStackLayout Spacing="20">
                                                 <Label TextColor="White"
                            Text="{Binding Codigo}"
                            HorizontalTextAlignment="Center"

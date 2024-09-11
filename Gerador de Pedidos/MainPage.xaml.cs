@@ -246,7 +246,8 @@ namespace Gerador_de_Pedidos
                     break;
                 default:
                     await DisplayAlert("Erro", "Tipo de valor não selecionado.", "OK");
-                    btnBuscarProduto.IsVisible = false; // Ocultar o botão se houve erro
+                    loadingIndicatorPedido.IsVisible = false; // Ocultar o botão se houve erro
+                    loadingIndicatorPedido.IsRunning = false;
                     lblStatusProduto.IsVisible = true; // Mostrar o texto de status se houve erro
                     lblStatusProduto.Text = "Tipo de valor não selecionado.";
                     lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
@@ -281,7 +282,8 @@ namespace Gerador_de_Pedidos
                     break;
                 default:
                     await DisplayAlert("Erro", "Tipo de valor não selecionado.", "OK");
-                    btnBuscarProduto.IsVisible = false; // Ocultar o botão se houve erro
+                    loadingIndicatorPedido.IsVisible = false; // Ocultar o botão se houve erro
+                    loadingIndicatorPedido.IsRunning = false;
                     lblStatusProduto.IsVisible = true; // Mostrar o texto de status se houve erro
                     lblStatusProduto.Text = "Tipo de valor não selecionado.";
                     lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
@@ -358,24 +360,21 @@ namespace Gerador_de_Pedidos
             }
 
             // Mostrar o botão de busca e ocultar o texto de status enquanto a busca está em andamento
-            btnBuscarProduto.IsVisible = true;
+            loadingIndicatorPedido.IsVisible = true;
+            loadingIndicatorPedido.IsRunning = true;
             lblStatusProduto.IsVisible = true;
             lblStatusProduto.Text = "center";
             lblStatusProduto.TextColor = Color.FromHex("#00000000");
 
             // Inicia a rotação do ícone e do botão de busca
-            btnBuscarProduto.Rotation = 0;
 
-
-
-            var rotateButton = btnBuscarProduto.RotateTo(360, 1000, Easing.Linear);
 
             await ProcessarSelecao(selectedValue);
 
             // Parar a rotação e ocultar os ícones
 
-            btnBuscarProduto.Rotation = 0;
-            btnBuscarProduto.IsVisible = false;
+            loadingIndicatorPedido.IsRunning = false;
+            loadingIndicatorPedido.IsVisible = false;
             lblStatusProduto.IsVisible = true;
         }
 
