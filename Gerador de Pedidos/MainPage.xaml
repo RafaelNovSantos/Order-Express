@@ -65,6 +65,7 @@
             <Frame 
              BackgroundColor="#333333"
 CornerRadius="10" 
+                HeightRequest="635"
              BorderColor="#00c4b4"
 HasShadow="True" 
 Padding="4"
@@ -73,7 +74,7 @@ Margin="1">
                     <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
                 </Frame.Shadow>
                 <!-- Seção de entrada de dados -->
-                <VerticalStackLayout Padding="10" Spacing="10">
+                <VerticalStackLayout Padding="10" Spacing="10" >
 
 
 
@@ -201,17 +202,15 @@ Margin="1">
             </Frame>
 
             <!-- Seção de lista de produtos selecionados -->
-            <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" >
+            <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" Margin="10">
                 <Frame 
              BackgroundColor="#1e1e1e"
 CornerRadius="20" 
-             BorderColor="#333333"
+             BorderColor="White"
 HasShadow="True" 
 Padding="4"
 Margin="1">
-                    <Frame.Shadow>
-                        <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
-                    </Frame.Shadow>
+                  
                     <HorizontalStackLayout>
 
                         <!-- Lista de Produtos Selecionados -->
@@ -263,9 +262,9 @@ Margin="1">
                                 <Grid  Padding="10" ColumnSpacing="28"  VerticalOptions="Start">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="37" />
-                                        <ColumnDefinition Width="79" />
+                                        <ColumnDefinition Width="105" />
                                         <ColumnDefinition Width="42" />
-                                        <ColumnDefinition Width="55" />
+                                        <ColumnDefinition Width="35" />
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}" VerticalTextAlignment="Start"/>
                                     <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
@@ -302,18 +301,18 @@ BackgroundColor="Transparent">
 
                                         <!-- Exibe uma mensagem quando a lista está vazia -->
                                         <CollectionView.EmptyView>
-                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#1e1e1e" HeightRequest="430">
                                                 <!-- Texto de instrução -->
                                                 <Label Text="Adicione algum produto da Planilha..."
                VerticalTextAlignment="Center"
                Padding="30"
                HorizontalOptions="Center" 
                FontSize="15"
-               VerticalOptions="Center" 
+               VerticalOptions="Start" 
                TextColor="Gray" />
 
                                                 <!-- Ícone usando FontImageSource -->
-                                                <Image HorizontalOptions="Center" VerticalOptions="Center" Margin="0,60,0,0"
+                                                <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
                WidthRequest="30" HeightRequest="30">
                                                     <Image.Source>
                                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
@@ -330,7 +329,7 @@ BackgroundColor="Transparent">
                                                 <Frame Padding="8"
                                                        Style="{StaticResource AlternatingBackgroundStyle}"
                    HasShadow="False"
-                   BorderColor="Black"
+                  
                    BackgroundColor="White">
 
                                                     <VisualStateManager.VisualStateGroups>
@@ -491,14 +490,14 @@ BorderColor="#00ED2D2D">
                Padding="0">
 
                                     <Grid BackgroundColor="White" 
-                  Padding="9"
-                                  HeightRequest="40"
+                  Padding="7"
                                  
-                  ColumnSpacing="0" 
+                                 
+                  ColumnSpacing="28" 
                  >
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="115" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" 
@@ -559,6 +558,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                                         <Frame Style="{StaticResource AlternatingBackgroundStyle}" 
                         Padding="10" 
                         HasShadow="False" 
+
                         BackgroundColor="White"
                                                   >
                                                             <VisualStateManager.VisualStateGroups>
@@ -587,7 +587,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                 VerticalTextAlignment="Center"/>
                                                                 <Label TextColor="White" 
                                 Text="{Binding Descricao}" 
-                                HorizontalTextAlignment="Start" 
+                                HorizontalTextAlignment="Center" 
                                 VerticalOptions="Center" 
                                 WidthRequest="130" 
                                 VerticalTextAlignment="Center"/>

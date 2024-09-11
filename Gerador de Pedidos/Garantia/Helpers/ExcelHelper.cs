@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Gerador_de_Pedidos;
 using Gerador_de_Pedidos.Garantia.Models;
 
 namespace Gerador_de_Pedidos.Garantia.Helpers
 {
     public class ExcelHelper
     {
-        public static async Task<List<Produtos>> LerExcelComColuna(string fileUrl, string sheetName, int codigoColunaIndex, int descricaoColunaIndex, Page page)
+        public static async Task<List<Produtos>> LerExcelComColuna(string fileUrl, string sheetName, int codigoColunaIndex, int descricaoColunaIndex, GarantiaPage GarantiaPage, ContentPage page)
         {
-           
             var produtos = new List<Produtos>();
             int tentativas = 0;
             int maxTentativas = 3;
@@ -34,7 +34,10 @@ namespace Gerador_de_Pedidos.Garantia.Helpers
                             {
                                 var worksheet = package.Workbook.Worksheets[sheetName];
                                 if (worksheet == null || worksheet.Dimension == null)
-                                    throw new Exception($"Planilha '{sheetName}' não encontrada ou está vazia.");
+                                {
+                                    await page.DisplayAlert("Erro", $"Planilha '{sheetName}' não encontrada ou está vazia.", "OK");
+                                    return produtos;
+                                }
 
                                 var rowCount = worksheet.Dimension.Rows;
 
@@ -68,8 +71,10 @@ namespace Gerador_de_Pedidos.Garantia.Helpers
                     await Task.Delay(5000); // Tentar novamente após 5 segundos
                 }
             }
+
             return produtos;
         }
+
 
     }
 }

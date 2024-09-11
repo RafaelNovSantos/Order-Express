@@ -63,24 +63,43 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <!-- Ajustado para ocupar o espaço restante -->
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
 
-           
 
-            <Button  
+            <Grid Grid.Column="2">
+                <HorizontalStackLayout HorizontalOptions="End" Margin="10">
+              
+            <Button Text="Atualizar" 
+                      WidthRequest="120" 
+                     HeightRequest="40"
+                   Clicked="Button_Clicked"
+                   Margin="10"
+                    
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+>
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="IconsFont" Glyph="&#xE832;" Size="16" Color="#006EFF"/>
+                </Button.ImageSource>
+            </Button>
+                    <Button  
                 Clicked="OnAlterarLinkClicked"
-                Grid.Column="2"
-                WidthRequest="60" 
+                
+               HorizontalOptions="End"
+                WidthRequest="49" 
                       VerticalOptions="Start"
 HeightRequest="60" 
 BackgroundColor="#00FFFFFF" 
 BorderColor="#00ED2D2D">
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="IconsFont" Glyph="&#xE809;" Size="25" Color="#FFFFFF"/>
-                </Button.ImageSource>
-            </Button>
 
+
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="IconsFont" Glyph="&#xE809;" Size="25" Color="#FFFFFF"/>
+                        </Button.ImageSource>
+                    </Button>
+                </HorizontalStackLayout>
+            </Grid>
             <!-- Seção de lista de produtos selecionados -->
             <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.ColumnSpan="10" Margin="10">
                 <!-- Lista de Produtos Selecionados -->
@@ -119,21 +138,21 @@ BorderColor="Black">
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="btncopy" Text="Copiar" Clicked="OnCopiarClicked" WidthRequest="120">
+                        <Button x:Name="btncopy" Text="Copiar" Clicked="btncopy_Clicked"         WidthRequest="120">
                             <Button.ImageSource>
                                 <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                             </Button.ImageSource>
                         </Button>
                     </HorizontalStackLayout>
 
-                    <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="393" Padding="0" HorizontalOptions="End">
-                        <HorizontalStackLayout  Padding="10" Spacing="100"  VerticalOptions="FillAndExpand" HorizontalOptions="Center" >
+                    <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="393"  HorizontalOptions="Center">
+                  <HorizontalStackLayout  HorizontalOptions="Center" Padding="20" Spacing="130"  VerticalOptions="FillAndExpand"  >
+                     
+                      <Label HorizontalOptions="Center"  Text="Código" Style="{StaticResource HeaderLabelStyle}"/>
+                      <Label  Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
 
-                            <Label  Text="Código" Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label  HorizontalOptions="Start" WidthRequest="200" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
-
-                        </HorizontalStackLayout>
-                    </Frame>
+                  </HorizontalStackLayout>
+              </Frame>
 
 
                     <Frame BorderColor="White" 
@@ -156,7 +175,7 @@ BackgroundColor="Transparent">
     SelectionMode="Multiple"
    SelectionChanged="listaProdutosSelect_SelectionChanged"
     VerticalOptions="Start"
-    WidthRequest="480"
+    WidthRequest="450"
     HeightRequest="200"
     ItemsSource="{Binding Produtos}">
 
@@ -240,10 +259,11 @@ BackgroundColor="Transparent">
             <HorizontalStackLayout  Padding="0" Grid.Row="1" Grid.ColumnSpan="10" HorizontalOptions="Center">
                 
                 <Frame 
-                    BackgroundColor="#2F2B2B"
+                    BackgroundColor="#1e1e1e"
        CornerRadius="10" 
        HasShadow="True" 
        Padding="3"
+                    BorderColor="Black"
        Margin="1">
                     <VerticalStackLayout Padding="5"  
                          HorizontalOptions="FillAndExpand" 
@@ -392,11 +412,12 @@ x:Name="loadingIndicatorEquipamentos" IsRunning="False" IsVisible="False" Color=
                 </Frame>
                 <HorizontalStackLayout Spacing="10" Padding="5"></HorizontalStackLayout>
                 <Frame 
-                    BackgroundColor="#2F2B2B"
-       CornerRadius="10" 
-       HasShadow="True" 
-       Padding="3"
-       Margin="1">
+                               BackgroundColor="#1e1e1e"
+CornerRadius="10" 
+HasShadow="True" 
+Padding="3"
+             BorderColor="Black"
+Margin="1">
                     <VerticalStackLayout Padding="5"  
                          HorizontalOptions="FillAndExpand" 
                          BackgroundColor="#1e1e1e">
@@ -526,7 +547,7 @@ x:Name="loadingIndicatorDiagnostico" IsRunning="False" IsVisible="False" Color="
                                 Text="{Binding Descricao}" 
                                 HorizontalTextAlignment="Center" 
                                 VerticalOptions="Center" 
-                                WidthRequest="210" 
+                                WidthRequest="200" 
                                 VerticalTextAlignment="Center"/>
 
                                                     </HorizontalStackLayout>
@@ -544,11 +565,12 @@ x:Name="loadingIndicatorDiagnostico" IsRunning="False" IsVisible="False" Color="
                 <HorizontalStackLayout Spacing="10" Padding="5"></HorizontalStackLayout>
                 <!-- Lista de Produtos Da Planilha -->
                 <Frame 
-                    BackgroundColor="#2F2B2B"
-       CornerRadius="10" 
-       HasShadow="True" 
-       Padding="3"
-       Margin="1">
+                               BackgroundColor="#1e1e1e"
+CornerRadius="10" 
+HasShadow="True" 
+Padding="3"
+             BorderColor="Black"
+Margin="1">
                     <VerticalStackLayout Padding="5"  
                          HorizontalOptions="FillAndExpand" 
                          BackgroundColor="#1e1e1e">
@@ -696,11 +718,12 @@ x:Name="loadingIndicatorCausa" IsRunning="False" IsVisible="False" Color="Blue" 
                 <HorizontalStackLayout Spacing="10" Padding="5"></HorizontalStackLayout>
                 <!-- Lista de Produtos Da Planilha -->
                 <Frame 
-                    BackgroundColor="#2F2B2B"
-       CornerRadius="10" 
-       HasShadow="True" 
-       Padding="3"
-       Margin="1">
+                                BackgroundColor="#1e1e1e"
+CornerRadius="10" 
+HasShadow="True" 
+Padding="3"
+             BorderColor="Black"
+Margin="1">
                     <VerticalStackLayout Padding="5"  
                          HorizontalOptions="FillAndExpand" 
                          BackgroundColor="#1e1e1e">
@@ -742,7 +765,7 @@ x:Name="loadingIndicatorCausa" IsRunning="False" IsVisible="False" Color="Blue" 
                   HorizontalOptions="FillAndExpand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="220" />
+                                    <ColumnDefinition Width="210" />
                                     
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" 
@@ -834,7 +857,7 @@ x:Name="loadingIndicatorSolucao" IsRunning="False" IsVisible="False" Color="Blue
                                 Text="{Binding Descricao}" 
                                 HorizontalTextAlignment="Center" 
                                 VerticalOptions="Center" 
-                                WidthRequest="210" 
+                                WidthRequest="190" 
                                 VerticalTextAlignment="Center"/>
 
                                                     </HorizontalStackLayout>

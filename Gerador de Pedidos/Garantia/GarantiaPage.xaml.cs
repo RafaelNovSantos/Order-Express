@@ -81,54 +81,57 @@ namespace Gerador_de_Pedidos
 
         public async Task CarregarPlanilhas()
         {
-            try
-            {
-                ToggleActivityIndicators(true);
-                ToggleFramesVisibility(false);
 
-                var equipamentos = await ExcelHelper.LerExcelComColuna(linkplanilha, "Equipamentos", 1, 2, this);
-                var diagnostico = await ExcelHelper.LerExcelComColuna(linkplanilha, "Diagnostico", 1, 2, this);
-                var causa = await ExcelHelper.LerExcelComColuna(linkplanilha, "Causa", 1, 2, this);
-                var solucao = await ExcelHelper.LerExcelComColuna(linkplanilha, "Solucao", 1, 2, this);
+            // Inicializar todos os indicadores de carregamento e desabilitar os frames
+            ToggleLoading(loadingIndicatorEquipamentos, true);
+            ToggleLoading(loadingIndicatorDiagnostico, true);
+            ToggleLoading(loadingIndicatorCausa, true);
+            ToggleLoading(loadingIndicatorSolucao, true);
 
-                Equipamentos.Clear();
-                Diagnostico.Clear();
-                Causa.Clear();
-                Solucao.Clear();
+            ToggleFrame(disableFrameEquipamentos, false);
+            ToggleFrame(disableFrameDiagnostico, false);
+            ToggleFrame(disableFrameCausa, false);
+            ToggleFrame(disableFrameSolucao, false);
 
-                foreach (var item in equipamentos) Equipamentos.Add(item);
-                foreach (var item in diagnostico) Diagnostico.Add(item);
-                foreach (var item in causa) Causa.Add(item);
-                foreach (var item in solucao) Solucao.Add(item);
 
-                ToggleActivityIndicators(false);
-                ToggleFramesVisibility(true);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Erro ao carregar as planilhas: {ex.Message}", "OK");
-            }
+            // Carregar planilha de Equipamentos
+            await CarregarPlanilha("Equipamentos", Equipamentos, loadingIndicatorEquipamentos, disableFrameEquipamentos);
+
+            // Carregar planilha de Diagnostico
+            await CarregarPlanilha("Diagnostico", Diagnostico, loadingIndicatorDiagnostico, disableFrameDiagnostico);
+
+            // Carregar planilha de Causa
+            await CarregarPlanilha("Causa", Causa, loadingIndicatorCausa, disableFrameCausa);
+
+            // Carregar planilha de Solucao
+            await CarregarPlanilha("Solucao", Solucao, loadingIndicatorSolucao, disableFrameSolucao);
         }
 
-        private void ToggleActivityIndicators(bool isVisible)
+        private async Task CarregarPlanilha(string sheetName, ObservableCollection<Produtos> listaProdutos, ActivityIndicator loadingIndicator, Frame disableFrame)
         {
-            loadingIndicatorEquipamentos.IsVisible = isVisible;
-            loadingIndicatorCausa.IsVisible = isVisible;
-            loadingIndicatorSolucao.IsVisible = isVisible;
-            loadingIndicatorDiagnostico.IsVisible = isVisible;
-            loadingIndicatorEquipamentos.IsRunning = isVisible;
-            loadingIndicatorCausa.IsRunning = isVisible;
-            loadingIndicatorSolucao.IsRunning = isVisible;
-            loadingIndicatorDiagnostico.IsRunning = isVisible;
+            ToggleLoading(loadingIndicator, true);
+            ToggleFrame(disableFrame, false);
+
+            listaProdutos.Clear();
+            var produtos = await ExcelHelper.LerExcelComColuna(linkplanilha, sheetName, 1, 2, this, this);
+            foreach (var item in produtos) listaProdutos.Add(item);
+
+            ToggleLoading(loadingIndicator, false);
+            ToggleFrame(disableFrame, true);
+            
         }
 
-        private void ToggleFramesVisibility(bool isVisible)
+        private void ToggleLoading(ActivityIndicator indicator, bool isVisible)
         {
-            disableFrameEquipamentos.IsVisible = isVisible;
-            disableFrameSolucao.IsVisible = isVisible;
-            disableFrameCausa.IsVisible = isVisible;
-            disableFrameDiagnostico.IsVisible = isVisible;
+            indicator.IsVisible = isVisible;
+            indicator.IsRunning = isVisible;
         }
+
+        private void ToggleFrame(Frame frame, bool isVisible)
+        {
+            frame.IsVisible = isVisible;
+        }
+
 
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
@@ -211,5 +214,14 @@ namespace Gerador_de_Pedidos
 
         }
 
+        private void btncopy_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            LoadLink();
+        }
     }
 }
