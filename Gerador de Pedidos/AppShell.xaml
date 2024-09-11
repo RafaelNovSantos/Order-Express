@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Gerador_de_Pedidos"
     Shell.FlyoutBehavior="Flyout"
-
     Shell.TitleColor="Black"
     BackgroundColor="{StaticResource ShellBackgroundColor}">
 
@@ -13,70 +12,45 @@
         <ResourceDictionary>
             <Color x:Key="ShellBackgroundColor">#00000000</Color>
             <Color x:Key="ShellTitleColor">White</Color>
-            
-            <!-- Cor de fundo da barra -->
-            <!-- Cor do texto da barra -->
         </ResourceDictionary>
     </Shell.Resources>
 
+    <!-- Personalização do TitleView do Shell -->
+    <Shell.TitleView>
+        
+        
+        <HorizontalStackLayout HorizontalOptions="Center" >
+           
+            <Label Text="Planilha Garantia" FontSize="20" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
     <!-- Definição dos ShellContents -->
-    <!-- Definir o TitleView para o Shell -->
-
-
-    <!-- ShellContent -->
-    <FlyoutItem 
-    Title="Pedido" 
-    FlyoutDisplayOptions="AsSingleItem" 
-    Shell.BackgroundColor="#00c4b4" 
-    Shell.TitleColor="Black">
-
-        <!-- Definindo o ícone usando FontImageSource -->
+    <FlyoutItem Title="Pedido" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">
         <FlyoutItem.Icon>
-            <FontImageSource 
-            FontFamily="IconsFont" 
-            Glyph="&#xE801;" 
-            Size="30" 
-            Color="Yellow" />
+            <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="30" Color="Yellow" />
         </FlyoutItem.Icon>
 
-        <ShellContent
-        Title="Gerador De Pedidos"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage">
+        <ShellContent Title="Gerador De Pedidos" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
             </ShellContent.Icon>
         </ShellContent>
 
-        <ShellContent
- Title="Garantia"
-    
- ContentTemplate="{DataTemplate local:GarantiaPage}"
- Route="GarantiaPage">
+        <ShellContent Title="Garantia" ContentTemplate="{DataTemplate local:GarantiaPage}" Route="GarantiaPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>
         </ShellContent>
-
-
     </FlyoutItem>
-    <FlyoutItem 
-       Title="Reembolso" FlyoutDisplayOptions="AsSingleItem" Shell.TitleColor="Black">
 
+    <FlyoutItem Title="Reembolso" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">
         <FlyoutItem.Icon>
-            <FontImageSource 
-     FontFamily="IconsFont" 
-     Glyph="&#xE807;" 
-     Size="30" 
-     Color="#00FF00" />
+            <FontImageSource FontFamily="IconsFont" Glyph="&#xE807;" Size="30" Color="#00FF00" />
         </FlyoutItem.Icon>
 
-        <ShellContent
- Title="Garantia"
-    
- ContentTemplate="{DataTemplate local:GarantiaPage}"
- Route="GarantiaPage"
-            Shell.TitleColor="Black">
+        <ShellContent Title="Planilha" ContentTemplate="{DataTemplate local:PlanilhaPage}" Route="Planilha">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>

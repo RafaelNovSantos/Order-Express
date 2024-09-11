@@ -22,7 +22,7 @@ namespace Gerador_de_Pedidos
 {
     public partial class GarantiaPage : ContentPage
     {
-        private string linkplanilha;
+        public string linkplanilha;
         private LinkManager linkManager = new LinkManager(); // Verifique se LinkManager está implementado corretamente.
 
         private ObservableCollection<Produtos> ListaSelecionados = new ObservableCollection<Produtos>();

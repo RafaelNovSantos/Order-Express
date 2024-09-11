@@ -73,11 +73,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="NovaPasta1\**" />
 	  <AndroidResource Remove="NovaPasta\**" />
+	  <Compile Remove="NovaPasta1\**" />
 	  <Compile Remove="NovaPasta\**" />
+	  <EmbeddedResource Remove="NovaPasta1\**" />
 	  <EmbeddedResource Remove="NovaPasta\**" />
+	  <MauiCss Remove="NovaPasta1\**" />
 	  <MauiCss Remove="NovaPasta\**" />
+	  <MauiXaml Remove="NovaPasta1\**" />
 	  <MauiXaml Remove="NovaPasta\**" />
+	  <None Remove="NovaPasta1\**" />
 	  <None Remove="NovaPasta\**" />
 	</ItemGroup>
 
@@ -115,6 +121,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Orcamento.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Planilha\PlanilhaPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

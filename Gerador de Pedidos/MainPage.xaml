@@ -65,7 +65,7 @@
             <Frame 
              BackgroundColor="#333333"
 CornerRadius="10" 
-                HeightRequest="635"
+                HeightRequest="634"
              BorderColor="#00c4b4"
 HasShadow="True" 
 Padding="4"
@@ -201,7 +201,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                 <Frame 
              BackgroundColor="#1e1e1e"
 CornerRadius="20" 
-             BorderColor="White"
+             BorderColor="Transparent"
 HasShadow="True" 
 Padding="4"
 Margin="1">
