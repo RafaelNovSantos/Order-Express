@@ -17,8 +17,12 @@
 
     <!-- Personalização do TitleView do Shell -->
     <Shell.TitleView>
-        
-        
+
+
+
+
+
+
         <HorizontalStackLayout HorizontalOptions="Center" >
            
             <Label Text="Planilha Garantia" FontSize="20" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>

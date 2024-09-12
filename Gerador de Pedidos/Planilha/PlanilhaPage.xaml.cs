@@ -23,5 +23,33 @@ public partial class PlanilhaPage : ContentPage
    
     }
 
-    
+    private void OnBackClicked(object sender, EventArgs e)
+    {
+        if (linkPlanilhaWebView.CanGoBack)
+        {
+            linkPlanilhaWebView.GoBack();
+        }
+    }
+
+    private void OnReloadClicked(object sender, EventArgs e)
+    {
+        linkPlanilhaWebView.Reload();
+    }
+
+    private void OnSettingsClicked(object sender, EventArgs e)
+    {
+        // Navegar para uma página de configurações ou exibir um menu de configurações
+        DisplayAlert("Settings", "Settings are not implemented yet.", "OK");
+    }
+
+   
+
+    private void OnForwardClicked(object sender, EventArgs e)
+    {
+        if (linkPlanilhaWebView.CanGoForward)
+        {
+            linkPlanilhaWebView.GoForward();
+        }
+    }
+
 }

@@ -324,7 +324,7 @@ BackgroundColor="Transparent">
                                 <CollectionView.EmptyView>
                                     <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                                         <!-- Texto de instrução -->
-                                        <Label Text="Adicione algum produto da Planilha..."
+                                        <Label Text="Clique no ícone de PDF acima e adicione um novo pedido de garantia..."
                VerticalTextAlignment="Center"
                Padding="30"
                HorizontalOptions="Center" 

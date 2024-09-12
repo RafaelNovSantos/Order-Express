@@ -6,23 +6,32 @@
          Title="Planilha Garantia">
 
 
+    <StackLayout>
+        <!-- Toolbar com botões de controle -->
+        <Grid Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-    <ContentPage.MenuBarItems>
-    <MenuBarItem Text="⚙ Configurações">
-        <MenuFlyoutItem Text="Alterar Link Planilha Garantia"
-                        Command="{Binding AlterarLinkCommand}" />
-        <MenuFlyoutItem Text="Adicionar Local"
-                        Command="{Binding AddLocationCommand}" />
-    </MenuBarItem>
+            <Button Text="Back" Clicked="OnBackClicked" Grid.Column="0"/>
+            <Button Text="Forward" Clicked="OnForwardClicked" Grid.Column="1"/>
 
-    
-</ContentPage.MenuBarItems>
+            <Button Text="Reload" Clicked="OnReloadClicked" Grid.Column="2"/>
+            <Button Text="Settings" Clicked="OnSettingsClicked" Grid.Column="3"/>
+            
+            
+        </Grid>
 
+        <!-- WebView -->
+        <WebView 
+          
+        x:Name="linkPlanilhaWebView"
+        Source= ""
+                  VerticalOptions="FillAndExpand" />
+    </StackLayout>
 
-    <WebView 
-              
-            x:Name="linkPlanilhaWebView"
-            Source= ""
-                      VerticalOptions="FillAndExpand" />
-        
 </ContentPage>
