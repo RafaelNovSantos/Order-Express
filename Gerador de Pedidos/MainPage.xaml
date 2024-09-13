@@ -184,8 +184,8 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     </Picker>
 
                     <HorizontalStackLayout Spacing="10">
-                        <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnIntegerTextChanged"/>
-                        <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="360" HorizontalOptions="End" Keyboard="Numeric" TextChanged="OnIntegerTextChanged"/>
+                        <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start" />
+                        <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="360" HorizontalOptions="End"/>
                     </HorizontalStackLayout>
 
 

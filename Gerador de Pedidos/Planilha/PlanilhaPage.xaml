@@ -1,37 +1,61 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.PlanilhaPage"
-             
-         Title="Planilha Garantia">
+             BackgroundColor="White">
+
+    <Shell.ToolbarItems>
+        <ToolbarItem 
+        Text="Voltar" 
+        Clicked="OnBackClicked"
+        IconImageSource="{FontImageSource 
+            FontFamily='IconsFont', 
+            Glyph='&#xF112;', 
+            Size=24, 
+            Color=Black}" />
+
+        <ToolbarItem 
+        Text="Avançar" 
+        Clicked="OnForwardClicked"
+        IconImageSource="{FontImageSource 
+            FontFamily='IconsFont', 
+            Glyph='&#xE80B;', 
+            Size=24, 
+            Color=Black}" />
+
+        <ToolbarItem 
+        Text="Recarregar" 
+        Clicked="OnReloadClicked"
+        IconImageSource="{FontImageSource 
+            FontFamily='IconsFont', 
+            Glyph='&#xE832;', 
+            Size=24, 
+            Color=Black}" />
+
+        <ToolbarItem 
+        Text="Alterar Link" 
+        Clicked="OnLinkChangedClicked"
+        IconImageSource="{FontImageSource 
+            FontFamily='IconsFont', 
+            Glyph='&#xE805;', 
+            Size=24, 
+            Color=Black}" />
+    </Shell.ToolbarItems>
+
 
 
     <StackLayout>
         <!-- Toolbar com botões de controle -->
-        <Grid Padding="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
 
-            <Button Text="Back" Clicked="OnBackClicked" Grid.Column="0"/>
-            <Button Text="Forward" Clicked="OnForwardClicked" Grid.Column="1"/>
-
-            <Button Text="Reload" Clicked="OnReloadClicked" Grid.Column="2"/>
-            <Button Text="Settings" Clicked="OnSettingsClicked" Grid.Column="3"/>
-            
-            
-        </Grid>
 
         <!-- WebView -->
-        <WebView 
-          
-        x:Name="linkPlanilhaWebView"
-        Source= ""
-                  VerticalOptions="FillAndExpand" />
-    </StackLayout>
+        <WebView x:Name="linkPlanilhaWebView"
+                 Source=""
+                 VerticalOptions="FillAndExpand"
+                 HorizontalOptions="FillAndExpand"
+/>
+        <!-- Margin added to account for toolbar height -->
 
+        <!-- Status Bar -->
+       
+    </StackLayout>
 </ContentPage>

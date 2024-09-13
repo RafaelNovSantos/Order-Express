@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Gerador_de_Pedidos"
     Shell.FlyoutBehavior="Flyout"
+
     Shell.TitleColor="Black"
     BackgroundColor="{StaticResource ShellBackgroundColor}">
 
@@ -23,11 +24,11 @@
 
 
 
-        <HorizontalStackLayout HorizontalOptions="Center" >
-           
-            <Label Text="Planilha Garantia" FontSize="20" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <StackLayout HorizontalOptions="Start" >
+            <Label Text="Planilha Garantia" FontSize="25" Margin="10,5,0,0" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
 
-        </HorizontalStackLayout>
+
+        </StackLayout>
     </Shell.TitleView>
 
     <!-- Definição dos ShellContents -->
@@ -49,9 +50,9 @@
         </ShellContent>
     </FlyoutItem>
 
-    <FlyoutItem Title="Reembolso" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">
+    <FlyoutItem Title="Planilha" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">
         <FlyoutItem.Icon>
-            <FontImageSource FontFamily="IconsFont" Glyph="&#xE807;" Size="30" Color="#00FF00" />
+            <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="30" Color="#00FF00" />
         </FlyoutItem.Icon>
 
         <ShellContent Title="Planilha" ContentTemplate="{DataTemplate local:PlanilhaPage}" Route="Planilha">

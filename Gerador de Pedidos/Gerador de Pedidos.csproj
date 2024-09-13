@@ -88,6 +88,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="customWebViewHandler .cs" />
+	  <Compile Remove="Garantia\Models\CNPJItem.cs" />
+	  <Compile Remove="Garantia\Models\DataItem.cs" />
+	  <Compile Remove="Garantia\Models\NomeFantasiaItem.cs" />
+	  <Compile Remove="Garantia\Models\SerieItem.cs" />
+	  <Compile Remove="Garantia\Models\TelefoneItem.cs" />
 	  <Compile Remove="MenuPage.xaml.cs" />
 	  <Compile Remove="Platforms\Windows\CursorBehavior.cs" />
 	</ItemGroup>
@@ -97,6 +103,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Garantia\DataTemplateSelector.json" />
 	  <None Remove="Resources\Images\background.jpg" />
 	  <None Remove="Resources\Images\background_2.jpg" />
 	</ItemGroup>

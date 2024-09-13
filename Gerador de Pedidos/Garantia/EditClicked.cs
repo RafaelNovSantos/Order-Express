@@ -53,4 +53,6 @@ namespace Gerador_de_Pedidos
             listaGarantiaSelect.ItemsSource = ListaSelecionados;
         }
     }
+
+    
 }

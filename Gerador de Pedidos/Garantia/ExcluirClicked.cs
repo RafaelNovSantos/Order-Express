@@ -6,6 +6,7 @@ using Microsoft.Maui.Controls; // Atualize para o namespace correto
 
 public class ExcluirClicked
 {
+
     public static async Task ExcluirSelectAsync(CollectionView collectionView, ObservableCollection<Produtos> listaSelecionados)
     {
         var selectedItems = collectionView.SelectedItems.Cast<Produtos>().ToList();
@@ -31,6 +32,34 @@ public class ExcluirClicked
         collectionView.SelectedItems.Clear(); // Limpa a seleção
         collectionView.ItemsSource = null;
         collectionView.ItemsSource = listaSelecionados;
+
+    }
+
+    public static async Task ExcluirSelectFileAsync(CollectionView collectionView, List<BaseItem> Lista)
+    {
+        var selectedItemsFile = collectionView.SelectedItems.Cast<BaseItem>().ToList();
+
+        if (selectedItemsFile.Count == 0)
+        {
+            await Application.Current.MainPage.DisplayAlert("Aviso", "Nenhum item selecionado para excluir.", "OK");
+            return;
+        }
+
+        // Confirmação para excluir os itens selecionados
+        bool confirm = await Application.Current.MainPage.DisplayAlert("Confirmação", $"Deseja realmente excluir {selectedItemsFile.Count} item(s) selecionado(s)?", "Sim", "Não");
+        if (!confirm)
+            return;
+
+        foreach (var item in selectedItemsFile)
+        {
+            Lista.Remove(item);
+
+        }
+
+        // Atualiza a CollectionView e limpa a seleção
+        collectionView.SelectedItems.Clear(); // Limpa a seleção
+        collectionView.ItemsSource = null;
+        collectionView.ItemsSource = Lista;
 
     }
 }

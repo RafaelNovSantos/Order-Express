@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
+
+
 namespace Gerador_de_Pedidos
 {
     public partial class GarantiaPage : ContentPage
@@ -26,6 +28,7 @@ namespace Gerador_de_Pedidos
         private LinkManager linkManager = new LinkManager(); // Verifique se LinkManager está implementado corretamente.
 
         private ObservableCollection<Produtos> ListaSelecionados = new ObservableCollection<Produtos>();
+
         private AddSelection addSelection;
 
         public ObservableCollection<Produtos> Equipamentos { get; set; } = new ObservableCollection<Produtos>();
@@ -36,6 +39,8 @@ namespace Gerador_de_Pedidos
         public GarantiaPage()
         {
             InitializeComponent();
+
+            var fileSearch = new FileSearch();
 
             EquipamentosCollectionView.ItemsSource = Equipamentos;
             DiagnosticoCollectionView.ItemsSource = Diagnostico;
@@ -57,7 +62,10 @@ namespace Gerador_de_Pedidos
 
             // Carregar o link ao inicializar a página
             LoadLink();
+            
         }
+
+
 
         private async void EditarClicked(object sender, EventArgs e)
         {
@@ -65,6 +73,7 @@ namespace Gerador_de_Pedidos
             await EditClicked.EditarClicked(sender, e, this, listaGarantiaSelect, observableListaSelecionados);
         }
 
+    
         public async void LoadLink()
         {
             linkplanilha = linkManager.CarregarLink("linkgarantia.txt");
@@ -179,12 +188,30 @@ namespace Gerador_de_Pedidos
 
         private async void FileSearchButton(object sender, EventArgs e)
         {
-            await FileSearch.SelectAndSearchPdfAsync();
+            try {
+                Lista.Clear();
+                
+                var fileSearch = new FileSearch();
+            await fileSearch.SelectAndSearchPdfAsync(this); // Chamada de método em uma instância
+                
+            }
+            catch(Exception ex) 
+            {
+                DisplayAlert("Erro", $"{ex}", "Ok");
+            }
         }
+
+
 
         private async void ExcluirSelect(object sender, EventArgs e)
         {
             await ExcluirClicked.ExcluirSelectAsync(listaGarantiaSelect, ListaSelecionados);
+
+        }
+
+        private async void ExcluirSelectFile(object sender, EventArgs e)
+        {
+            await ExcluirClicked.ExcluirSelectFileAsync(listaGarantiaSelectFile, Lista);
 
         }
 
@@ -193,6 +220,12 @@ namespace Gerador_de_Pedidos
             var selectedItems = e.CurrentSelection.Cast<Produtos>().ToList();
         }
 
+        
+
+        private void listaProdutosSelectFile_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItemsFile = e.CurrentSelection.Cast<BaseItem>().ToList();
+        }
         private void EquipamentosCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             
@@ -214,14 +247,114 @@ namespace Gerador_de_Pedidos
 
         }
 
-        private void btncopy_Clicked(object sender, EventArgs e)
-        {
-
-        }
 
         private void Button_Clicked(object sender, EventArgs e)
         {
             LoadLink();
+        }
+
+        public List<BaseItem> Lista { get; set; } = new List<BaseItem>();
+
+        public void AddProdutoBase(FileSearch fileSearch)
+        {
+            try
+            {
+                Lista.Add(new ProdutosFile
+                {
+                    Codigo = fileSearch.Codigo,
+                    Descricao = fileSearch.Descricao.Replace("-", "").Trim(),
+                    Unidade = fileSearch.Unidade
+                });
+
+                listaGarantiaSelectFile.ItemsSource = new List<BaseItem>();
+                listaGarantiaSelectFile.ItemsSource = Lista;
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Erro", $"{ex}", "Ok");
+            }
+        }
+
+        public void AddProdutoDetalhes(FileSearch fileSearch)
+        {
+            Lista.Add(new DataItem
+            {
+                Data = fileSearch.Data
+            });
+
+            Lista.Add(new NomeFantasiaItem
+            {
+                NomeFantasia = fileSearch.NomeFantasia
+            });
+
+            Lista.Add(new CNPJItem
+            {
+                CNPJ = fileSearch.CNPJ
+            });
+
+            Lista.Add(new TelefoneItem
+            {
+                Telefone = fileSearch.Telefone
+            });
+
+            Lista.Add(new SerieItem
+            {
+                Serie = fileSearch.Serie
+            });
+
+            listaGarantiaSelectFile.ItemsSource = new List<BaseItem>();
+            listaGarantiaSelectFile.ItemsSource = Lista;
+        }
+
+        public void btncopyFile_Clicked_1(object sender, EventArgs e)
+        {
+            FileSearch fileSearch = new FileSearch();
+            var texto = "";
+
+            // Verifica se listaProdutosSelect.ItemsSource não é nulo e contém itens
+            if (listaGarantiaSelect.ItemsSource != null && listaGarantiaSelect.ItemsSource.Cast<Produtos>().Any())
+            {
+                var count = 0;
+
+                foreach (var product in listaGarantiaSelect.ItemsSource.Cast<Produtos>())
+                {
+
+                    texto += $" {product.Codigo}\t{product.Descricao}\t";
+                    
+                    if (count == 0)
+                    {
+                        texto += $"{fileSearch.Serie}";
+                        
+
+                    }
+
+                    count++;
+                }
+
+                count = 0;
+            }
+            else
+            {
+                DisplayAlert("Atênção!", "Adicione algum produto no pedido", "OK");
+                return; // Retorna para que o código de cópia não seja executado
+            }
+
+
+
+
+            try
+            {
+                Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
+                btncopyFile.Text = "Copiado!";
+                iconCopyFile.Color = Color.FromHex("#000000");
+                Task.Delay(5000);
+                btncopyFile.Text = "Copiar";
+                iconCopyFile.Color = Color.FromHex("#FF008000");
+            }
+            catch (Exception ex)
+            {
+               DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
+            }
         }
     }
 }

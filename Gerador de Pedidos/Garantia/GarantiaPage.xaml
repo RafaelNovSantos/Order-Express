@@ -94,11 +94,7 @@
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="btncopy" Text="Copiar" Clicked="btncopy_Clicked"   HeightRequest="40"      WidthRequest="120">
-                            <Button.ImageSource>
-                                <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
-                            </Button.ImageSource>
-                        </Button>
+                     
                         
 
                     </HorizontalStackLayout>
@@ -109,7 +105,7 @@
        HasShadow="False" 
        BorderColor="Transparent" 
        CornerRadius="10" 
-       HeightRequest="40" 
+       HeightRequest="41" 
        WidthRequest="593" 
        Padding="0" 
        HorizontalOptions="Center">
@@ -243,25 +239,20 @@ BackgroundColor="Transparent">
                 Grid.Column="2"
                 WidthRequest="40" 
                            Padding="0"
-HeightRequest="45" 
-BackgroundColor="Red"  
-BorderColor="Black">
+HeightRequest="40" 
+BackgroundColor="Transparent"  
+BorderColor="Transparent">
                             <Button.ImageSource>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xF1C1;" Size="30" Color="White" />
+                                <FileImageSource File="pdf.png" />
                             </Button.ImageSource>
                         </Button>
-                        <Button 
-                            Text="Editar" Clicked="EditarClicked" HeightRequest="40" WidthRequest="95"  HorizontalOptions="Start">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
-                            </Button.ImageSource>
-                        </Button>
-                        <Button Clicked="ExcluirSelect" Text="Excluir"  HeightRequest="40" WidthRequest="98" HorizontalOptions="End">
+                     
+                        <Button Clicked="ExcluirSelectFile" Text="Excluir"  HeightRequest="40" WidthRequest="98" HorizontalOptions="End">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="btncopyFile" Text="Copiar" Clicked="btncopy_Clicked"   HeightRequest="40"      WidthRequest="120">
+                        <Button x:Name="btncopyFile" Text="Copiar" Clicked="btncopyFile_Clicked_1"   HeightRequest="40"      WidthRequest="120">
                             <Button.ImageSource>
                                 <FontImageSource x:Name="iconCopyFile" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                             </Button.ImageSource>
@@ -276,65 +267,55 @@ BorderColor="Black">
        HasShadow="False" 
        BorderColor="Transparent" 
        CornerRadius="10" 
-       HeightRequest="40" 
+       HeightRequest="41" 
        WidthRequest="593" 
        Padding="0" 
        HorizontalOptions="Center">
                         <HorizontalStackLayout Padding="10" 
-                           Spacing="215" 
+                          
                            VerticalOptions="FillAndExpand" 
                            HorizontalOptions="Center">
-                            <Label Text="Código" 
+                            <Label Text="Informações do pedido em PDF" 
                Style="{StaticResource HeaderLabelStyle}"/>
-                            <Label HorizontalOptions="Start" 
-               WidthRequest="275" 
-               Text="Descrição" 
-               Style="{StaticResource HeaderLabelStyle}"/>
+                           
                         </HorizontalStackLayout>
                     </Frame>
 
 
 
 
-                    <Frame BorderColor="White" 
-CornerRadius="5" 
-HasShadow="True" 
-                           
-                         WidthRequest="590"  
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center"
-                      Margin="3"   
-                           
-Padding="0"
-BackgroundColor="Transparent">
+                    <Frame BorderColor="White"
+       CornerRadius="5"
+       HasShadow="True"
+       WidthRequest="590"
+       VerticalOptions="Center"
+       HorizontalOptions="Center"
+       Margin="3"
+       Padding="0"
+       BackgroundColor="Transparent">
 
-                        <Grid HorizontalOptions="Center" VerticalOptions="Center" >
+                        <Grid HorizontalOptions="Center" VerticalOptions="Center">
 
-
-                            <CollectionView 
-    x:Name="listaGarantiaSelectFile"
-    SelectionMode="Multiple"
-   SelectionChanged="listaProdutosSelect_SelectionChanged"
-    VerticalOptions="Start"
-    WidthRequest="650"
-    HeightRequest="200"
-    ItemsSource="{Binding Produtos}">
+                            <CollectionView x:Name="listaGarantiaSelectFile"
+                        SelectionMode="Multiple"
+                        VerticalOptions="Start"
+                        WidthRequest="650"
+                        HeightRequest="200"
+                        ItemsSource="{Binding Produtos}"
+                                            SelectionChanged="listaProdutosSelectFile_SelectionChanged">
 
                                 <!-- Exibe uma mensagem quando a lista está vazia -->
                                 <CollectionView.EmptyView>
                                     <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                                        <!-- Texto de instrução -->
                                         <Label Text="Clique no ícone de PDF acima e adicione um novo pedido de garantia..."
-               VerticalTextAlignment="Center"
-               Padding="30"
-               HorizontalOptions="Center" 
-               FontSize="15"
-               VerticalOptions="Center" 
-               TextColor="Gray" />
-
-                                        <!-- Ícone usando FontImageSource -->
+                           VerticalTextAlignment="Center"
+                           Padding="30"
+                           HorizontalOptions="Center"
+                           FontSize="15"
+                           VerticalOptions="Center"
+                           TextColor="Gray" />
                                         <Image HorizontalOptions="Center" VerticalOptions="Center" Margin="0,60,0,0"
-               WidthRequest="30" HeightRequest="30">
+                           WidthRequest="30" HeightRequest="30">
                                             <Image.Source>
                                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
                                             </Image.Source>
@@ -342,16 +323,14 @@ BackgroundColor="Transparent">
                                     </Grid>
                                 </CollectionView.EmptyView>
 
-
-
-
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Frame Padding="8"
-                   HasShadow="False"
-                   BorderColor="Black"
-                   BackgroundColor="White">
+                           HasShadow="False"
+                           BorderColor="Black"
+                           BackgroundColor="White">
 
+                                            <!-- Gerencia os estados Normal e Selecionado -->
                                             <VisualStateManager.VisualStateGroups>
                                                 <VisualStateGroup Name="CommonStates">
                                                     <VisualState Name="Normal">
@@ -367,29 +346,69 @@ BackgroundColor="Transparent">
                                                 </VisualStateGroup>
                                             </VisualStateManager.VisualStateGroups>
 
-                                            <HorizontalStackLayout Spacing="20">
-                                                <Label TextColor="White"
-                           Text="{Binding Codigo}"
-                           HorizontalTextAlignment="Center"
-                           WidthRequest="100"
-                           VerticalTextAlignment="Center"/>
+                                            <!-- Layout para exibir os dados -->
+                                            <Grid HorizontalOptions="Center">
+                                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="30">
+                                                    <Label TextColor="White"
+               Text="{Binding Codigo, StringFormat='Código: {0}'}"
+ Padding="10,0,0,0"
+               VerticalTextAlignment="Center"
+              />
+                                                    <Label TextColor="White"
+               Text="{Binding Descricao, StringFormat='Descrição: {0}'}"
 
-                                                <Label TextColor="White"
-                           Text="{Binding Descricao}"
-                           HorizontalTextAlignment="Center"
-                           WidthRequest="420"
-                           VerticalTextAlignment="Center"/>
+                                                           WidthRequest="300"
+               VerticalTextAlignment="Center"
+              />
+                                                    <Label TextColor="White"
+              Text="{Binding Unidade, StringFormat='Unidade: {0}'}"
 
-                                            </HorizontalStackLayout>
+                                                          WidthRequest="400"
+              VerticalTextAlignment="Center"
+             />
+                                                </HorizontalStackLayout>
+
+                                                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                                    <Label TextColor="White"
+               Text="{Binding Data, StringFormat='Data: {0:dd/MM/yyyy}'}"
+               HorizontalTextAlignment="Center"
+                                                         
+               VerticalTextAlignment="Center"/>
+                                                   </HorizontalStackLayout>
+                                                <HorizontalStackLayout HorizontalOptions="Center">
+                                                    <Label TextColor="White"
+               Text="{Binding NomeFantasia, StringFormat='Nome Fantasia: {0}'}"
+             HorizontalTextAlignment="Center"
+                                                          WidthRequest="600"
+               VerticalTextAlignment="Center"/>
+                                                </HorizontalStackLayout>
+
+                                                <HorizontalStackLayout HorizontalOptions="Center">
+                                                    <Label TextColor="White"
+               Text="{Binding CNPJ, StringFormat='CNPJ: {0}'}"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"/>
+                                                    <Label TextColor="White"
+               Text="{Binding Telefone, StringFormat='Telefone: {0}'}"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"/>
+                                                    <Label TextColor="White"
+               Text="{Binding Serie, StringFormat='N° de Série Equipamento: {0}'}"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"/>
+                                                </HorizontalStackLayout>
+
+                                            </Grid>
+
                                         </Frame>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
 
-
                         </Grid>
                     </Frame>
-                    
+
+
                 </VerticalStackLayout>
                 <Button  
                 Clicked="OnAlterarLinkClicked"
