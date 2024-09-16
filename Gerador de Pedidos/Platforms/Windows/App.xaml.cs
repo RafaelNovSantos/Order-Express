@@ -42,6 +42,7 @@ namespace Gerador_de_Pedidos.WinUI
                 {
                     presenter.IsMaximizable = true;
                     presenter.IsResizable = true;
+                    presenter.Maximize(); // Maximiza a janela
                 }
             }
 

@@ -277,15 +277,34 @@ namespace Gerador_de_Pedidos
 
         public void AddProdutoDetalhes(FileSearch fileSearch)
         {
+
+            Lista.Add(new VendedorItem
+            {
+                Vendedor = fileSearch.Vendedor
+            });
+
             Lista.Add(new DataItem
             {
                 Data = fileSearch.Data
             });
 
-            Lista.Add(new NomeFantasiaItem
-            {
-                NomeFantasia = fileSearch.NomeFantasia
-            });
+            if (fileSearch.NomeFantasia == "-") { 
+
+                Lista.Add(new RazaoSocialItem
+                {
+                    RazaoSocial = fileSearch.RazaoSocial
+                });
+            }
+            else
+                {
+                Lista.Add(new NomeFantasiaItem
+                {
+                    NomeFantasia = fileSearch.NomeFantasia
+                });
+
+            }
+            
+
 
             Lista.Add(new CNPJItem
             {
@@ -306,55 +325,103 @@ namespace Gerador_de_Pedidos
             listaGarantiaSelectFile.ItemsSource = Lista;
         }
 
-        public void btncopyFile_Clicked_1(object sender, EventArgs e)
+        public async void btncopyFile_Clicked_1(object sender, EventArgs e)
         {
             FileSearch fileSearch = new FileSearch();
             var texto = "";
 
-            // Verifica se listaProdutosSelect.ItemsSource não é nulo e contém itens
+          
+
+            if (FileSearch.Dicionario.ContainsKey("Data"))
+            {
+                // Adiciona o valor associado à chave "Serie" ao texto
+                texto += $"{FileSearch.Dicionario["Data"]}\t";
+                texto += $"{FileSearch.Dicionario["Data"]}\t\t";
+                texto += $"systel\t";
+            }
+
+            if (FileSearch.Dicionario.ContainsKey("Vendedor"))
+            {
+                // Adiciona o valor associado à chave "Serie" ao texto
+                texto += $"{FileSearch.Dicionario["Vendedor"]}\t";
+            }
+
+
+            if (FileSearch.Dicionario.ContainsKey("NomeFantasia"))
+            {
+                // Verifica se o valor associado a "NomeFantasia" é igual a "-"
+                if (FileSearch.Dicionario["NomeFantasia"] == "-")
+                {
+                    // Se "NomeFantasia" for "-", adiciona "RazaoSocial" ao texto
+                    texto += $"{FileSearch.Dicionario["RazaoSocial"]}\t";
+                }
+                else
+                {
+                    // Caso contrário, adiciona "NomeFantasia" ao texto
+                    texto += $"{FileSearch.Dicionario["NomeFantasia"]}\t";
+                }
+            }
+
+
+
+            if (FileSearch.Dicionario.ContainsKey("Telefone"))
+            {
+                // Adiciona o valor associado à chave "Serie" ao texto
+                texto += $"'{FileSearch.Dicionario["Telefone"]}\t";
+                texto += $"'+55 11 97453-6689\t";
+            }
+
+
+            // Verifica se listaGarantiaSelect.ItemsSource não é nulo e contém itens
             if (listaGarantiaSelect.ItemsSource != null && listaGarantiaSelect.ItemsSource.Cast<Produtos>().Any())
             {
                 var count = 0;
 
                 foreach (var product in listaGarantiaSelect.ItemsSource.Cast<Produtos>())
                 {
-
+                    // Adiciona informações do produto ao texto
                     texto += $" {product.Codigo}\t{product.Descricao}\t";
-                    
+
+                    // Na primeira iteração, adiciona também os itens do dicionário
                     if (count == 0)
                     {
-                        texto += $"{fileSearch.Serie}";
-                        
 
+                        // Verifica se a chave "Serie" está presente no dicionário
+                        if (FileSearch.Dicionario.ContainsKey("Serie"))
+                        {
+                            // Adiciona o valor associado à chave "Serie" ao texto
+                            texto += $"{FileSearch.Dicionario["Serie"]}\t";
+                        }
+
+                        else
+                        {
+                            await DisplayAlert("Erro", "O dicionário não contém dados.", "OK");
+                        }
                     }
 
                     count++;
                 }
 
                 count = 0;
+
+                // Aqui você pode copiar o texto para a área de transferência ou exibir conforme necessário
+                await Clipboard.SetTextAsync(texto);
+                await DisplayAlert("Sucesso", "Texto copiado para a área de transferência!", "OK");
             }
             else
             {
-                DisplayAlert("Atênção!", "Adicione algum produto no pedido", "OK");
+                await DisplayAlert("Atenção!", "Adicione algum produto no pedido", "OK");
                 return; // Retorna para que o código de cópia não seja executado
             }
 
 
-
-
-            try
+            foreach (var item in FileSearch.ProdutosDicionario)
             {
-                Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
-                btncopyFile.Text = "Copiado!";
-                iconCopyFile.Color = Color.FromHex("#000000");
-                Task.Delay(5000);
-                btncopyFile.Text = "Copiar";
-                iconCopyFile.Color = Color.FromHex("#FF008000");
+                texto += $"{item.Value}";
             }
-            catch (Exception ex)
-            {
-               DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
-            }
+
+            Clipboard.SetTextAsync(texto);
         }
+
     }
 }

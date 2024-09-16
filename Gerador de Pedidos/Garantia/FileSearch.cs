@@ -11,6 +11,7 @@ namespace Gerador_de_Pedidos.Garantia.Models
 {
     public class FileSearch
     {
+        public string Vendedor { get; private set; }
         public string Codigo { get; private set; }
         public string Descricao { get; private set; }
         public string Data { get; private set; }
@@ -19,7 +20,10 @@ namespace Gerador_de_Pedidos.Garantia.Models
         public string Telefone { get; private set; }
         public string Serie { get; private set; }
         public string Unidade { get; private set; }
+        public string RazaoSocial { get; private set; }
 
+        public static Dictionary<string, string> Dicionario { get; private set; } = new Dictionary<string, string>();
+        public static Dictionary<string, string> ProdutosDicionario { get; private set; } = new Dictionary<string, string>();
         public async Task SelectAndSearchPdfAsync(GarantiaPage garantiaPage)
         {
             try
@@ -51,17 +55,28 @@ namespace Gerador_de_Pedidos.Garantia.Models
                         Match dataMatch = Regex.Match(content, dataPattern);
                         Data = dataMatch.Success ? dataMatch.Groups[1].Value : "Data não encontrada";
 
+                        string razaoSocialPattern = @"\bRazão\s*Social:\s*(.*?)\s+(?=CNPJ|$)";
+                        Match razaoSocialMatch = Regex.Match(content, razaoSocialPattern);
+                        RazaoSocial = razaoSocialMatch.Success ? razaoSocialMatch.Groups[1].Value.Trim() : "Razão Social não encontrado";
+
+                        Debug.WriteLine($"{RazaoSocial}");
+
                         string nomeFantasiaPattern = @"\bNome\s*Fantasia:\s*(.+)";
                         Match nomeFantasiaMatch = Regex.Match(content, nomeFantasiaPattern);
                         NomeFantasia = nomeFantasiaMatch.Success ? nomeFantasiaMatch.Groups[1].Value.Trim() : "Nome Fantasia não encontrado";
+
+                        string vendedorPattern = @"(?i)\bVendedor:\s*(.+)";
+                        Match vendedorMatch = Regex.Match(content, vendedorPattern);
+                        Vendedor = vendedorMatch.Success ? vendedorMatch.Groups[1].Value.Replace(";", "").Trim() : "Vendedor não encontrado";
+                   
 
                         string cnpjPattern = @"\bCNPJ:\s*(\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})\b";
                         Match cnpjMatch = Regex.Match(content, cnpjPattern);
                         CNPJ = cnpjMatch.Success ? cnpjMatch.Groups[1].Value : "CNPJ não encontrado";
 
-                        string telefonePattern = @"\+55\s*\d{2}\s*\d{5}-\d{4}";
+                        string telefonePattern = @"\bTelefone:\s*(.+)";
                         Match telefoneMatch = Regex.Match(content, telefonePattern);
-                        Telefone = telefoneMatch.Success ? telefoneMatch.Value : "Telefone não encontrado";
+                        Telefone = telefoneMatch.Success ? telefoneMatch.Groups[1].Value : "Telefone não encontrado";
 
                         string seriePattern = @"N/S\s+EQUIPAMENTO:\s*(?:\d+\s*)?(.+)";
                         Match serieMatch = Regex.Match(content, seriePattern);
@@ -77,13 +92,27 @@ namespace Gerador_de_Pedidos.Garantia.Models
 
                         garantiaPage.AddProdutoDetalhes(this);
 
-                        garantiaPage.btncopyFile_Clicked_1(null, this);
+                        // Cria o dicionário com dados principais
+                        Dicionario = new Dictionary<string, string>
+{  { "Vendedor", Vendedor },
+{ "RazaoSocial", RazaoSocial },
+    { "Data", Data },
+    { "NomeFantasia", NomeFantasia },
+    { "CNPJ", CNPJ },
+    { "Telefone", Telefone },
+    { "Unidade", Unidade },
+    { "Serie", Serie }
+};
 
+                        ProdutosDicionario = new Dictionary<string, string>
+{
 
+};
 
-                        List<string> produtos = new List<string>(); // Lista para armazenar os dados
+                        // Lista para armazenar os dados dos produtos
+                        List<string> produtos = new List<string>();
 
-                        foreach (Match match in matches)
+                       foreach (Match match in matches)
                         {
                             if (match.Success)
                             {
@@ -96,21 +125,29 @@ namespace Gerador_de_Pedidos.Garantia.Models
                                 descricao = descricao.Replace("-", "").Trim();
 
                                 // Adiciona as informações formatadas à lista
-                                produtos.Add($"Codigo: {codigo}, Descricao: {descricao}, Unidade: {Unidade}");
+
+                                produtos.Add($"{codigo} {descricao} Unidade: {Unidade}");
 
                                 // Se necessário, adicione o produto a uma página
                                 garantiaPage.AddProdutoBase(this);
                             }
                         }
 
-                        // Converta a lista para um array
-                        string[] produtosArray = produtos.ToArray();
+                        string textoFormatado = string.Empty;
+                        if (produtos.Count >= 1)
+                        {
+                            textoFormatado = string.Join(" + ", produtos);
+                        }
+
+                        // Adiciona a lista de produtos ao dicionário
+                        ProdutosDicionario["Produtos"] = textoFormatado;
 
                         // Mostre todos os dados no console
-                        foreach (string produto in produtosArray)
+                        foreach (var item in ProdutosDicionario)
                         {
-                            Debug.WriteLine(produto);
+                            Debug.WriteLine($"{item.Value}");
                         }
+
 
                     }
 
@@ -121,5 +158,7 @@ namespace Gerador_de_Pedidos.Garantia.Models
                 Debug.WriteLine($"Erro ao selecionar ou ler o arquivo PDF: {ex.Message}");
             }
         }
+
+
     }
 }

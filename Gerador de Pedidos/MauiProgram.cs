@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls.Hosting;
+using CommunityToolkit.Maui; // Não se esqueça de importar o pacote CommunityToolkit
 
 namespace Gerador_de_Pedidos
 {
@@ -11,7 +12,8 @@ namespace Gerador_de_Pedidos
         {
             var builder = MauiApp.CreateBuilder();
             builder
-               .UseMauiApp<App>()
+               .UseMauiApp<App>() // Inicializa o aplicativo MAUI
+               .UseMauiCommunityToolkit() // Encadeia o uso do Maui Community Toolkit
                .ConfigureFonts(fonts =>
                {
                    fonts.AddFont("FontAwesome5Brands-Regular.ttf", "FontAwesome5BrandsRegular");
@@ -20,14 +22,10 @@ namespace Gerador_de_Pedidos
                    fonts.AddFont("Poppins-ExtraBold.ttf", "Poppins-ExtraBold");
                    fonts.AddFont("Poppins-Medium.ttf", "Poppins-Medium");
                    fonts.AddFont("Poppins-Bold.ttf", "Poppins-Bold");
-                   fonts.AddFont("fontello.ttf","IconsFont");
+                   fonts.AddFont("fontello.ttf", "IconsFont");
                });
 
-#if DEBUG
-            builder.Logging.AddDebug();
-#endif
-
-            return builder.Build();
+            return builder.Build(); // Certifique-se de retornar a instância do MauiApp
         }
     }
 }

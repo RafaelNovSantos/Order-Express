@@ -370,6 +370,12 @@ BorderColor="Transparent">
 
                                                 <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                                     <Label TextColor="White"
+  Text="{Binding Vendedor, StringFormat='Vendedor: {0}'}"
+HorizontalTextAlignment="Center"
+                                            
+  VerticalTextAlignment="Center"/>
+                                                    
+                                                    <Label  TextColor="White"
                Text="{Binding Data, StringFormat='Data: {0:dd/MM/yyyy}'}"
                HorizontalTextAlignment="Center"
                                                          
@@ -381,6 +387,13 @@ BorderColor="Transparent">
              HorizontalTextAlignment="Center"
                                                           WidthRequest="600"
                VerticalTextAlignment="Center"/>
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout HorizontalOptions="Center">
+                                                    <Label TextColor="White"
+  Text="{Binding RazaoSocial, StringFormat='Nome Razão Social: {0}'}"
+HorizontalTextAlignment="Center"
+                                             WidthRequest="600"
+  VerticalTextAlignment="Center"/>
                                                 </HorizontalStackLayout>
 
                                                 <HorizontalStackLayout HorizontalOptions="Center">
