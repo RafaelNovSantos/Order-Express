@@ -461,7 +461,7 @@ BackgroundColor="Transparent">
 BackgroundColor="#00FFFFFF" 
 BorderColor="#00ED2D2D">
                                             <Button.ImageSource>
-                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE809;" Size="20" Color="#FFFFFF"/>
+                                                <FontImageSource FontFamily="IconsFont" Glyph="&#xE805;" Size="20" Color="#FFFFFF"/>
                                             </Button.ImageSource>
                                         </Button>
                                         <Button Text="Atualizar" 

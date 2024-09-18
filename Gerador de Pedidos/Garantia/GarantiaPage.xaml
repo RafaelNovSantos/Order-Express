@@ -69,9 +69,9 @@
 
           
             <!-- Seção de lista de produtos selecionados -->
-            <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.ColumnSpan="10" Margin="10" WidthRequest="1260">
+            <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.ColumnSpan="10" Margin="10" >
                 <!-- Lista de Produtos Selecionados -->
-                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" WidthRequest="610">
+                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" >
                     <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
                         <!-- Definindo as colunas -->
                         <Grid.ColumnDefinitions>
@@ -94,9 +94,9 @@
                                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
                         </Button>
-                     
-                        
 
+
+                        
                     </HorizontalStackLayout>
                    
 
@@ -222,7 +222,7 @@ BackgroundColor="Transparent">
 
                 <!-- Lista de Produtos Da Planilha -->
 
-                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" WidthRequest="610">
+                <VerticalStackLayout Padding="7" Spacing="0" HorizontalOptions="End" >
                     <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
                         <!-- Definindo as colunas -->
                         <Grid.ColumnDefinitions>
@@ -282,7 +282,7 @@ BorderColor="Transparent">
                     </Frame>
 
 
-
+                   
 
                     <Frame BorderColor="White"
        CornerRadius="5"
@@ -423,26 +423,29 @@ HorizontalTextAlignment="Center"
 
 
                 </VerticalStackLayout>
+                
                 <Button  
                 Clicked="OnAlterarLinkClicked"
                 
                HorizontalOptions="End"
                 WidthRequest="49" 
                       VerticalOptions="Start"
+                    Margin="0,0,10,0"
 HeightRequest="60" 
 BackgroundColor="#00FFFFFF" 
 BorderColor="#00ED2D2D">
 
-
+                    
                     <Button.ImageSource>
-                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE809;" Size="25" Color="#FFFFFF"/>
+                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE805;" Size="20" Color="#FFFFFF"/>
                     </Button.ImageSource>
                 </Button>
+               
             </HorizontalStackLayout>
-
+            
 
             <HorizontalStackLayout  Padding="0" Grid.Row="1" Grid.ColumnSpan="10" HorizontalOptions="End">
-                <HorizontalStackLayout Spacing="10" Padding="30"></HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="10" Padding="10"></HorizontalStackLayout>
                 <Frame 
                     BackgroundColor="#1e1e1e"
        CornerRadius="10" 
@@ -1063,7 +1066,7 @@ x:Name="loadingIndicatorSolucao" IsRunning="False" IsVisible="False" Color="Blue
                       WidthRequest="50" 
                      HeightRequest="50"
                    Clicked="Button_Clicked"
-                   Margin="10"
+                   Margin="0,0,18,0"
                     BackgroundColor="Transparent"
                     BorderColor="Transparent"
                     VerticalOptions="Start"

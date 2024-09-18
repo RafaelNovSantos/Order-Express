@@ -41,21 +41,23 @@
             Color=Black}" />
     </Shell.ToolbarItems>
 
-
-
-    <StackLayout>
-        <!-- Toolbar com botões de controle -->
-
-
+    
+    <Grid>
         <!-- WebView -->
         <WebView x:Name="linkPlanilhaWebView"
                  Source=""
+                 Navigating="OnNavigating"
+                 Navigated="OnNavigated"
                  VerticalOptions="FillAndExpand"
-                 HorizontalOptions="FillAndExpand"
-/>
-        <!-- Margin added to account for toolbar height -->
+                 HorizontalOptions="FillAndExpand"/>
 
-        <!-- Status Bar -->
-       
-    </StackLayout>
+        <!-- ActivityIndicator centralizado sobre o WebView -->
+        <ProgressBar 
+            x:Name="progressBar" 
+            IsVisible="False" 
+            ProgressColor="Blue"
+            HeightRequest="10"
+            VerticalOptions="Start"
+            HorizontalOptions="FillAndExpand"/>
+    </Grid>
 </ContentPage>

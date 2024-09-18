@@ -368,7 +368,7 @@ namespace Gerador_de_Pedidos
             {
                 // Adiciona o valor associado à chave "Serie" ao texto
                 texto += $"'{FileSearch.Dicionario["Telefone"]}\t";
-                texto += $"'+55 11 97453-6689\t";
+                texto += $"'+55 11 97453-6688\t";
             }
 
 
@@ -406,11 +406,15 @@ namespace Gerador_de_Pedidos
 
                 // Aqui você pode copiar o texto para a área de transferência ou exibir conforme necessário
                 await Clipboard.SetTextAsync(texto);
-                await DisplayAlert("Sucesso", "Texto copiado para a área de transferência!", "OK");
+                btncopyFile.Text = "Copiado!";
+                iconCopyFile.Color = Color.FromHex("#000000");
+                await Task.Delay(5000);
+                btncopyFile.Text = "Copiar";
+                iconCopyFile.Color = Color.FromHex("#FF008000");
             }
             else
             {
-                await DisplayAlert("Atenção!", "Adicione algum produto no pedido", "OK");
+                await DisplayAlert("Atenção!", "Adicione as informações de Equipamento, Diagnóstico, Causa e Solução", "OK");
                 return; // Retorna para que o código de cópia não seja executado
             }
 

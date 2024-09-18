@@ -55,11 +55,13 @@ namespace Gerador_de_Pedidos.Garantia.Models
                         Match dataMatch = Regex.Match(content, dataPattern);
                         Data = dataMatch.Success ? dataMatch.Groups[1].Value : "Data não encontrada";
 
-                        string razaoSocialPattern = @"\bRazão\s*Social:\s*(.*?)\s+(?=CNPJ|$)";
+                        string razaoSocialPattern = @"\bRazão\s*Social:\s*([\s\S]*?)\s+(?=CNPJ|$)";
                         Match razaoSocialMatch = Regex.Match(content, razaoSocialPattern);
-                        RazaoSocial = razaoSocialMatch.Success ? razaoSocialMatch.Groups[1].Value.Trim() : "Razão Social não encontrado";
+                        RazaoSocial = razaoSocialMatch.Success
+     ? Regex.Replace(razaoSocialMatch.Groups[1].Value.Trim(), @"\r\n|\r|\n", " ")
+     : "Razão Social não encontrado";
 
-                        Debug.WriteLine($"{RazaoSocial}");
+
 
                         string nomeFantasiaPattern = @"\bNome\s*Fantasia:\s*(.+)";
                         Match nomeFantasiaMatch = Regex.Match(content, nomeFantasiaPattern);
@@ -91,6 +93,8 @@ namespace Gerador_de_Pedidos.Garantia.Models
                         MatchCollection matches = Regex.Matches(content, simplifiedPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
                         garantiaPage.AddProdutoDetalhes(this);
+
+                        Debug.WriteLine($"{content}");
 
                         // Cria o dicionário com dados principais
                         Dicionario = new Dictionary<string, string>
