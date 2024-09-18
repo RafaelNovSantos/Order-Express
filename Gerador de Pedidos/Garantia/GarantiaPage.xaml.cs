@@ -337,7 +337,7 @@ namespace Gerador_de_Pedidos
                 // Adiciona o valor associado à chave "Serie" ao texto
                 texto += $"{FileSearch.Dicionario["Data"]}\t";
                 texto += $"{FileSearch.Dicionario["Data"]}\t\t";
-                texto += $"systel\t";
+                texto += $"SYSTEL\t";
             }
 
             if (FileSearch.Dicionario.ContainsKey("Vendedor"))
