@@ -792,83 +792,72 @@ namespace Gerador_de_Pedidos
             }
         }
 
+        private void OnVerificarSelecoesClicked()
+        {
+            // Obtém as seleções de cada Picker
+            var pickerPedido = pedido.SelectedItem as string;
+            var pickerNota = nota.SelectedItem as string;
+            var pickerPagamento = pag.SelectedItem as string;
+
+            // Determina os estados com base nas seleções
+            bool isVenda = pickerPedido == "Venda";
+            bool isPix = pickerPagamento == "PIX";
+            bool isGarantia = pickerPedido == "Garantia com retorno" || pickerPedido == "Garantia sem retorno";
+            bool isNotaExterna = pickerNota == "Nota Externa" && isGarantia;
+            bool isNotaInterna = pickerNota == "Nota Interna" && isGarantia;
+
+
+
+            // Atualiza a visibilidade com base nos estados calculados
+            SetVisibility(txtFaturamento, isVenda && !isPix);
+            SetVisibility(txtChaveNotaExterna, isNotaExterna);
+
+            SetVisibility(txtDefeitos, !isVenda);
+            SetVisibility(txtNS, !isVenda);
+            SetVisibility(typeNota, !isVenda);
+            SetVisibility(nota, !isVenda);
+            SetVisibility(txtnota, !isVenda);
+
+            SetVisibility(pag, !isGarantia);
+            SetVisibility(txtpag, !isGarantia);
+
+            SetVisibility(txtFrete, !isGarantia);
+            SetVisibility(TipoFrete, !isGarantia);
+            SetVisibility(secaofrete, !isGarantia);
+        }
+
+        /// <summary>
+        /// Define a visibilidade de um elemento de forma centralizada.
+        /// </summary>
+        /// <param name="control">O controle cuja visibilidade será alterada.</param>
+        /// <param name="isVisible">True para visível, False para invisível.</param>
+        private void SetVisibility(View control, bool isVisible)
+        {
+            if (control != null)
+            {
+                control.IsVisible = isVisible;
+            }
+        }
 
 
 
         private void OnPedidoSelected(object sender, EventArgs e)
         {
-            // Identifica o Picker que disparou o evento
-            Picker picker = sender as Picker;
 
-            if (picker != null)
-            {
-                var selectedValue = picker.SelectedItem.ToString();
-
-                // Verifica qual Picker foi acionado e define a visibilidade do Label correspondente
-                if (picker == pedido)
-                {
-                    bool isVenda = selectedValue == "Venda";
-                    bool isGarantia = selectedValue == "Garantia com retorno" || selectedValue == "Garantia sem retorno";
-
-                    // Atualiza a visibilidade dos campos com base no valor selecionado
-                    txtDefeitos.Text = "";
-                    txtNS.Text = "";
-                    txtnota.Text = "";
-                    txtFaturamento.Text = "";
-                    txtDefeitos.IsVisible = !isVenda;
-                    txtNS.IsVisible = !isVenda;
-                    typeNota.IsVisible = !isVenda;
-                    nota.IsVisible = !isVenda;
-                    txtnota.IsVisible = !isVenda;
-                    pag.IsVisible = !isGarantia;
-                    txtpag.IsVisible = !isGarantia;
-                    txtFaturamento.IsVisible = !isGarantia;
-                    txtFrete.IsVisible = !isGarantia;
-                    TipoFrete.IsVisible = !isGarantia;
-                    secaofrete.IsVisible = !isGarantia;
-                }
-            }
+            OnVerificarSelecoesClicked();
+           
         }
 
 
         private void OnNotaSelected(object sender, EventArgs e)
         {
-            // Identifica o Picker que disparou o evento
-            Picker picker = sender as Picker;
-
-            if (picker != null)
-            {
-                var selectedValue = picker.SelectedItem.ToString();
-
-                // Verifica qual Picker foi acionado e define a visibilidade do Label correspondente
-                if (picker == nota)
-                {
-                    txtChaveNotaExterna.IsVisible = selectedValue != "Nota Interna";
-
-                }
-
-                // Adicione mais condições se tiver mais pickers
-            }
+            OnVerificarSelecoesClicked();
         }
 
 
         private void OnPagamentoSelected(object sender, EventArgs e)
         {
-            // Identifica o Picker que disparou o evento
-            Picker picker = sender as Picker;
-
-            if (picker != null)
-            {
-                var selectedValue = picker.SelectedItem.ToString();
-
-                if (picker == pag)
-                {
-                    txtFaturamento.IsVisible = selectedValue != "PIX";
-
-
-                }
-
-            }
+   OnVerificarSelecoesClicked();
 
         }
 
@@ -877,7 +866,6 @@ namespace Gerador_de_Pedidos
 
         public class Produto
         {
-
 
             public string Codigo { get; set; }
             public string Descricao { get; set; }
