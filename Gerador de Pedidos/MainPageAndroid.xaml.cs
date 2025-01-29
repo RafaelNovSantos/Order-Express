@@ -17,10 +17,10 @@ using static System.Net.WebRequestMethods;
 
 namespace Gerador_de_Pedidos
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPageAndroid : ContentPage
     {
         private string linkplanilha;
-        public MainPage()
+        public MainPageAndroid()
         {
 
             InitializeComponent();
@@ -404,6 +404,7 @@ namespace Gerador_de_Pedidos
         }
 
 
+  
 
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)

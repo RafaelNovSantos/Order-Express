@@ -37,13 +37,25 @@
             <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="30" Color="Yellow" />
         </FlyoutItem.Icon>
 
-        <ShellContent Title="Gerador De Pedidos" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage">
+        <ShellContent Title="Gerador De Pedidos"   x:Name="MainPageContent"
+     
+        ContentTemplate="{DataTemplate local:MainPage}"
+        IsVisible="False">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
             </ShellContent.Icon>
         </ShellContent>
 
-        <ShellContent Title="Garantia" ContentTemplate="{DataTemplate local:GarantiaPage}" Route="GarantiaPage">
+        <ShellContent Title="Gerador De Pedidos"    x:Name="MainPageAndroidContent"
+   
+        ContentTemplate="{DataTemplate local:MainPageAndroid}"
+        IsVisible="False">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <ShellContent x:Name="PageGarantia" Title="Garantia" IsVisible="True" ContentTemplate="{DataTemplate local:GarantiaPage}" Route="GarantiaPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>

@@ -149,6 +149,9 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                             </Button.ImageSource>
                         </Button>
                     </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <Entry x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text"  WidthRequest="526"/>
+                    </HorizontalStackLayout>
                     <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
                         <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
                         <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
@@ -170,9 +173,9 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                     <Entry x:Name="txtFaturamento" Placeholder="Faturamento" WidthRequest="526"/>
 
-                    <Entry x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento"/>
+                    <Entry x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento" WidthRequest="526"/>
 
-                    <Entry x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento"/>
+                    <Entry x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento" WidthRequest="526"/>
 
                     <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
 
@@ -185,7 +188,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                     <HorizontalStackLayout Spacing="10">
                         <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start" />
-                        <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="360" HorizontalOptions="End"/>
+                        <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="357" HorizontalOptions="End"/>
                     </HorizontalStackLayout>
 
 
