@@ -37,14 +37,17 @@ namespace Gerador_de_Pedidos
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
 
-          
+
 
             LoadLink();
+
+            MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
+            BindingContext = this;
 
         }
         public List<Product> Lista = new List<Product>();
         public List<Product> ListaSelecionados = new List<Product>();
-
+        public Budget MeuBudget { get; set; }
 
 
         private async void LoadLink()
@@ -166,13 +169,13 @@ namespace Gerador_de_Pedidos
                     entry.Text = e.OldTextValue;
                 }
             }
+
+            CalValorTotal();
         }
 
 
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
-
-
 
             // Obtém os itens selecionados na CollectionView
             var selectedItems = e.CurrentSelection.Cast<Product>().ToList();
@@ -187,8 +190,8 @@ namespace Gerador_de_Pedidos
                     txtCodigo.Text = null;
                     // Atualiza o txtCodigo com o código do produto selecionado
                     txtCodigo.Text = selectedItem.Codigo;
-                    listaProdutosExcel.SelectedItems.Clear(); // Limpa a seleção
-                    listaProdutosExcel.SelectedItem = null;
+                    txtVendedor.Focus();
+                    txtQuantidade.Focus();
                     // Força a chamada ao método OnTxtCodigoTextChangedUnified
                     OnTxtCodigoTextChangedUnified(txtCodigo, new TextChangedEventArgs(string.Empty, txtCodigo.Text));
                 }
@@ -406,10 +409,11 @@ namespace Gerador_de_Pedidos
 
 
 
+
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
             // Mostrar o indicador de carregamento e desativar o ScrollView
-           
+
             disableFrame.IsVisible = false;
             loadingIndicator.IsRunning = true;
             loadingIndicator.IsVisible = true;
@@ -463,15 +467,15 @@ namespace Gerador_de_Pedidos
 
                                     var produto = new Product
                                     {
-                                            Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
-                                            Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
-                                            Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A"
+                                        Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
+                                        Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
+                                        Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A"
 
-                                        };
+                                    };
 
                                     Lista.Add(produto);
-                                        linhaVazia = false;
-                                    }
+                                    linhaVazia = false;
+                                }
 
                                 if (linhaVazia)
                                 {
@@ -484,7 +488,7 @@ namespace Gerador_de_Pedidos
                             }
                         }
                     }
-                    
+
 
                     break; // Saia do loop se a operação foi bem-sucedida
                 }
@@ -557,26 +561,37 @@ namespace Gerador_de_Pedidos
 
         private async void OnEditarClicked(object sender, EventArgs e)
         {
-            var selectedItems = listaProdutosSelect.SelectedItems.Cast<Product>().ToList();
+            var selectedItems = listaProdutosSelect.SelectedItems?.Cast<Product>().ToList();
 
-            if (selectedItems.Count == 0)
+            if (selectedItems == null || selectedItems.Count == 0)
             {
                 await DisplayAlert("Aviso", "Nenhum item selecionado.", "OK");
                 return;
             }
 
-            // Mostra o menu de opções para o usuário
-            string action = await DisplayActionSheet("Escolha o campo a editar", "Cancelar", null, "Código", "Descrição", "Valor", "Quantidade");
+            string action = await DisplayActionSheet("Escolha o campo a editar", "Cancelar", null, "Código", "Descrição", "Valor", "Quantidade", "Versão Peça");
 
             if (action == "Cancelar")
                 return;
 
-            // Solicita o novo valor com base na escolha do usuário
-            string newValue = await DisplayPromptAsync("Editar", $"Digite o novo valor para {action}:", "OK", "Cancelar");
+            // Pega o valor do primeiro item selecionado como referência para pré-preencher o campo
+            string valorAtual = action switch
+            {
+                "Código" => selectedItems[0].Codigo,
+                "Descrição" => selectedItems[0].Descricao,
+                "Valor" => selectedItems[0].Valor,
+                "Quantidade" => selectedItems[0].Quantidade,
+                "Versão Peça" => selectedItems[0].Versao_Peca,
+                _ => ""
+            };
+
+            // Abre o prompt com o valor atual preenchido
+            string newValue = await DisplayPromptAsync("Editar", $"Digite o novo valor para {action}:", "OK", "Cancelar", initialValue: valorAtual);
 
             if (string.IsNullOrEmpty(newValue))
                 return;
 
+            // Atualiza todos os itens selecionados
             foreach (var item in selectedItems)
             {
                 switch (action)
@@ -593,12 +608,19 @@ namespace Gerador_de_Pedidos
                     case "Quantidade":
                         item.Quantidade = newValue;
                         break;
+                    case "Versão Peça":
+                        item.Versao_Peca = newValue;
+                        break;
                 }
             }
 
-            // Atualiza a CollectionView com os itens editados
+            // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+      
+
+        CalValorTotal();
         }
 
 
@@ -626,6 +648,8 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+            CalValorTotal();
         }
 
 
@@ -684,6 +708,8 @@ namespace Gerador_de_Pedidos
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
+
+            CalValorTotal();
         }
 
 
@@ -694,7 +720,7 @@ namespace Gerador_de_Pedidos
             var saida = pedido.SelectedItem?.ToString();
             var tipofrete = TipoFrete.SelectedItem?.ToString();
             var pagamento = pag.SelectedItem?.ToString();
-           
+
             var freteTotal = "";
 
             decimal frete = 0m;
@@ -720,7 +746,7 @@ namespace Gerador_de_Pedidos
                     {
                         texto += $"Versão da Peça: {product.Versao_Peca}\n";
                     }
-                   
+
                     texto += $"Valor/Un: R$ {valorUnidade:F2}\n";
 
                     if (decimal.TryParse(product.Quantidade, out var quantidade) && quantidade != 1)
@@ -731,7 +757,7 @@ namespace Gerador_de_Pedidos
                     {
                         texto += $"Qntd: {product.Quantidade}\n\n";
                     }
-                                        
+
                 }
             }
             else
@@ -755,7 +781,7 @@ namespace Gerador_de_Pedidos
                 }
 
                 texto += $"Pagamento: {pagamento}\n";
-                
+
             }
 
 
@@ -786,6 +812,7 @@ namespace Gerador_de_Pedidos
 
             texto += $"\nTOTAL VALOR{freteTotal} = R$ {totalGeral:F2}";
 
+
             try
             {
                 await Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
@@ -800,6 +827,34 @@ namespace Gerador_de_Pedidos
                 await DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
             }
         }
+
+        private decimal CalValorTotal()
+        {
+            decimal frete = 0m;
+            bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
+                                 decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim().Replace(".", ","), out frete);
+
+            decimal totalGeral = 0m;
+
+            if (listaProdutosSelect.ItemsSource != null)
+            {
+                foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
+                {
+                    var valorUnidade = decimal.TryParse(product.Valor, out var val) ? val : 0m;
+                    var quantidade = decimal.TryParse(product.Quantidade, out var qnt) ? qnt : 0m;
+                    totalGeral += valorUnidade * quantidade;
+                }
+            }
+
+            // Adiciona o frete apenas uma vez, fora do loop
+            if (isFreteParsed)
+            {
+                totalGeral += frete;
+            }
+            MeuBudget.Valor_Total = $"{totalGeral:F2}";
+            return totalGeral;
+        }
+
 
         private void OnVerificarSelecoesClicked()
         {
@@ -854,7 +909,7 @@ namespace Gerador_de_Pedidos
         {
 
             OnVerificarSelecoesClicked();
-           
+
         }
 
 
@@ -866,7 +921,7 @@ namespace Gerador_de_Pedidos
 
         private void OnPagamentoSelected(object sender, EventArgs e)
         {
-   OnVerificarSelecoesClicked();
+            OnVerificarSelecoesClicked();
 
         }
 

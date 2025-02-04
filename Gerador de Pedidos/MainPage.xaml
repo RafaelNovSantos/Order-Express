@@ -74,6 +74,7 @@ Margin="1">
                     <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
                 </Frame.Shadow>
                 <!-- Seção de entrada de dados -->
+                <ScrollView>
                 <VerticalStackLayout Padding="10" Spacing="10" >
 
 
@@ -197,6 +198,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     <!-- Seção de botões -->
 
                 </VerticalStackLayout>
+                </ScrollView>
             </Frame>
 
             <!-- Seção de lista de produtos selecionados -->
@@ -213,7 +215,7 @@ Margin="1">
 
                         <!-- Lista de Produtos Selecionados -->
                         <VerticalStackLayout Padding="7"  Spacing="0" HorizontalOptions="Center"
-                                     WidthRequest="340"
+                                     WidthRequest="410"
                                      
 >
                             <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
@@ -256,18 +258,20 @@ Margin="1">
                                 </Button>
                             </HorizontalStackLayout>
 
-                            <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="325" Padding="0" HorizontalOptions="End">
-                                <Grid  Padding="10" ColumnSpacing="28"  VerticalOptions="Start">
+                            <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="395" Padding="0" HorizontalOptions="End">
+                                <Grid  Padding="10" ColumnSpacing="19"  VerticalOptions="Start">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="37" />
-                                        <ColumnDefinition Width="105" />
                                         <ColumnDefinition Width="42" />
-                                        <ColumnDefinition Width="35" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="59" />
+                                        <ColumnDefinition Width="33" />
+                                        <ColumnDefinition Width="60" />
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" Text="Cod." Style="{StaticResource HeaderLabelStyle}" VerticalTextAlignment="Start"/>
                                     <Label Grid.Column="1" Text="Descrição" Style="{StaticResource HeaderLabelStyle}"/>
                                     <Label Grid.Column="2" Text="Valor" Style="{StaticResource HeaderLabelStyle}"/>
                                     <Label Grid.Column="3" Text="Qnt." Style="{StaticResource HeaderLabelStyle}"/>
+                                    <Label Grid.Column="4" Text="Versão" Style="{StaticResource HeaderLabelStyle}"/>
                                 </Grid>
                             </Frame>
 
@@ -275,7 +279,7 @@ Margin="1">
                             <Frame BorderColor="White" 
 CornerRadius="5" 
 HasShadow="True" 
-                         WidthRequest="320"  
+                         WidthRequest="390"  
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                       Margin="3"   
@@ -293,13 +297,13 @@ BackgroundColor="Transparent">
     SelectionChanged="OnCollectionViewSelectionChanged"
     VerticalOptions="Start"
                                         BackgroundColor="Black"
-    WidthRequest="380"
-    HeightRequest="430"
+    WidthRequest="450"
+    HeightRequest="370"
     ItemsSource="{Binding Produtos}">
 
                                         <!-- Exibe uma mensagem quando a lista está vazia -->
                                         <CollectionView.EmptyView>
-                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#1e1e1e" HeightRequest="430">
+                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#1e1e1e" HeightRequest="480">
                                                 <!-- Texto de instrução -->
                                                 <Label Text="Adicione algum produto da Planilha..."
                VerticalTextAlignment="Center"
@@ -372,6 +376,12 @@ BackgroundColor="Transparent">
                            HorizontalTextAlignment="Center"
                            WidthRequest="50"
                            VerticalTextAlignment="Center"/>
+
+                                                        <Label TextColor="White"
+Text="{Binding Versao_Peca}"
+HorizontalTextAlignment="Center"
+WidthRequest="50"
+VerticalTextAlignment="Center"/>
                                                     </HorizontalStackLayout>
                                                 </Frame>
                                             </DataTemplate>
@@ -380,8 +390,46 @@ BackgroundColor="Transparent">
 
 
                                 </Grid>
+                                
                             </Frame>
 
+                            <Frame BackgroundColor="#00c4b4"
+       BorderColor="Black"
+       HasShadow="True"
+       CornerRadius="12"
+       HeightRequest="50"
+       Padding="5,0"
+                               
+       Margin="0,5,0,5"
+       HorizontalOptions="FillAndExpand">
+
+                                <Grid Padding="12" ColumnSpacing="15" HorizontalOptions="End" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Rótulo -->
+                                    <Label Grid.Column="0"
+               Text="Valor Total:"
+               Style="{StaticResource HeaderLabelStyle}"
+               VerticalTextAlignment="Center"
+               FontSize="18"
+                                       HorizontalOptions="End"
+               FontAttributes="Bold"
+               TextColor="Black"/>
+
+                                    <!-- Valor (Placeholder para exibição dinâmica) -->
+                                    <Label Grid.Column="1"
+               x:Name="lblValorTotal"
+               Text="{Binding MeuBudget.Valor_Total}"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="Black"
+               VerticalTextAlignment="Center"
+               HorizontalTextAlignment="End"/>
+                                </Grid>
+                            </Frame>
                         </VerticalStackLayout>
 
                         <HorizontalStackLayout  Spacing="10" Padding="5"></HorizontalStackLayout>
@@ -606,6 +654,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
 
                                 </Grid>
                             </VerticalStackLayout>
+                            
                         </Frame>
 
                     </HorizontalStackLayout>

@@ -17,23 +17,16 @@ namespace Gerador_de_Pedidos
             // Configurar ShellContent com base na plataforma e tamanho
             if (DeviceInfo.Platform == DevicePlatform.Android)
             {
-                if (screenWidth > 600) // Exemplo de ajuste para tablets
-                {
+                
                     MainPageAndroidContent.IsVisible = true; // Mostra MainPageAndroid
                     CurrentItem = MainPageAndroidContent; // Define como página inicial
                     PageGarantia.IsVisible = false;
-                }
-                else
-                {
-                    MainPageAndroidContent.IsVisible = true; // Mostra MainPage
-                    CurrentItem = MainPageAndroidContent; // Define como página inicial
-                    PageGarantia.IsVisible = false;
-                }
+               
             }
             else
             {
-                MainPageAndroidContent.IsVisible = true; // Mostra MainPage para outras plataformas
-                CurrentItem = MainPageAndroidContent; // Define como página inicial
+                MainPageContent.IsVisible = true; // Mostra MainPage para outras plataformas
+                CurrentItem = MainPageContent; // Define como página inicial
             }
         }
     }
