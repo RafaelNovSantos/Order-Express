@@ -11,7 +11,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using Gerador_de_Pedidos;
+using Gerador_de_Pedidos.Historico;
 using static System.Net.WebRequestMethods;
+using SQLite;
 
 
 
@@ -37,10 +39,10 @@ namespace Gerador_de_Pedidos
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
 
-
+            GetProximoNumeroPedidoAsync();
 
             LoadLink();
-
+            MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
             BindingContext = this;
 
@@ -48,6 +50,22 @@ namespace Gerador_de_Pedidos
         public List<Product> Lista = new List<Product>();
         public List<Product> ListaSelecionados = new List<Product>();
         public Budget MeuBudget { get; set; }
+
+        public async Task<int> GetProximoNumeroPedidoAsync()
+        {
+            // Cria a conexão usando o banco de dados assíncrono
+            var connection = App.Database.GetConnection();
+
+            // Consulta para pegar o último NumeroPedido
+            var ultimoPedido = await connection.Table<Pedido>().OrderByDescending(p => p.NumeroPedido).FirstOrDefaultAsync();
+
+            MeuBudget.Numero_Pedido = ultimoPedido?.NumeroPedido + 1 ?? 1;
+
+            // Se houver pedidos, incrementa o último NumeroPedido + 1, senão começa com 1
+            return ultimoPedido?.NumeroPedido + 1 ?? 1;
+        }
+
+
 
 
         private async void LoadLink()
@@ -712,10 +730,35 @@ namespace Gerador_de_Pedidos
             CalValorTotal();
         }
 
+        private async void OnSalvarClicked(object sender, EventArgs e)
+        {
+            int novoNumeroPedido = await GetProximoNumeroPedidoAsync();
+            if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
+            {
+                foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
+                {
+                    var novoPedido = new Pedido
+                    {
+                        NumeroPedido = novoNumeroPedido,
+                        Codigo = product.Codigo,
+                        Descricao = product.Descricao,
+                        Valor = product.Valor,
+                        Quantidade = product.Quantidade,
+                        VersaoPeca = product.Versao_Peca,
+                        DataPedido = DateTime.Now
+                    };
 
+                    await App.Database.SalvarPedidoAsync(novoPedido);
+                }
+
+            }
+
+            await GetProximoNumeroPedidoAsync();
+        }
 
         private async void OnCopiarClicked(object sender, EventArgs e)
         {
+            
             var vendedor = txtVendedor.Text;
             var saida = pedido.SelectedItem?.ToString();
             var tipofrete = TipoFrete.SelectedItem?.ToString();
@@ -757,6 +800,8 @@ namespace Gerador_de_Pedidos
                     {
                         texto += $"Qntd: {product.Quantidade}\n\n";
                     }
+
+                  
 
                 }
             }
@@ -826,6 +871,9 @@ namespace Gerador_de_Pedidos
             {
                 await DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
             }
+
+            
+         
         }
 
         private decimal CalValorTotal()

@@ -79,10 +79,13 @@ Margin="1">
 
 
 
-                    <HorizontalStackLayout HorizontalOptions="Center">
-                        <Label Text="Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Label Text="Pedido número:" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                            <Label
 
-                    </HorizontalStackLayout>
+Text="{Binding MeuBudget.Numero_Pedido}"
+ FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                        </HorizontalStackLayout>
                     <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
                         <Picker.Items>
                             <x:String>Venda</x:String>
@@ -149,6 +152,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                                 <FontImageSource x:Name="iconCopy" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                             </Button.ImageSource>
                         </Button>
+                        
                     </HorizontalStackLayout>
                     <HorizontalStackLayout>
                         <Entry x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text"  WidthRequest="526"/>
@@ -245,7 +249,7 @@ Margin="1">
                                     </Image.Source>
                                 </Image>
                             </Grid>
-                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Padding="13">
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="13">
                                 <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="120"  HorizontalOptions="Start">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
@@ -254,6 +258,11 @@ Margin="1">
                                 <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
+                                    </Button.ImageSource>
+                                </Button>
+                                <Button x:Name="btnsave" Text="Salvar" Clicked="OnSalvarClicked" WidthRequest="120">
+                                    <Button.ImageSource>
+                                        <FontImageSource x:Name="iconSave" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
                                     </Button.ImageSource>
                                 </Button>
                             </HorizontalStackLayout>
@@ -403,19 +412,22 @@ VerticalTextAlignment="Center"/>
        Margin="0,5,0,5"
        HorizontalOptions="FillAndExpand">
 
-                                <Grid Padding="12" ColumnSpacing="15" HorizontalOptions="End" >
+                                <Grid Padding="12" ColumnSpacing="15" HorizontalOptions="Center" >
                                     <Grid.ColumnDefinitions>
+                          
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*" />
+                                       
                                     </Grid.ColumnDefinitions>
-
+                                  
+                                    
                                     <!-- Rótulo -->
                                     <Label Grid.Column="0"
                Text="Valor Total:"
                Style="{StaticResource HeaderLabelStyle}"
                VerticalTextAlignment="Center"
                FontSize="18"
-                                       HorizontalOptions="End"
+                                       HorizontalOptions="Start"
                FontAttributes="Bold"
                TextColor="Black"/>
 
