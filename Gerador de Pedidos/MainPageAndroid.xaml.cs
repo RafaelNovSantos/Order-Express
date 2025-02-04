@@ -41,10 +41,13 @@ namespace Gerador_de_Pedidos
 
             LoadLink();
 
+            MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
+            BindingContext = this;
+
         }
         public List<Product> Lista = new List<Product>();
         public List<Product> ListaSelecionados = new List<Product>();
-
+        public Budget MeuBudget { get; set; }
 
 
         private async void LoadLink()
@@ -166,13 +169,13 @@ namespace Gerador_de_Pedidos
                     entry.Text = e.OldTextValue;
                 }
             }
+
+            CalValorTotal();
         }
 
 
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
-
-
 
             // Obtém os itens selecionados na CollectionView
             var selectedItems = e.CurrentSelection.Cast<Product>().ToList();
@@ -187,8 +190,8 @@ namespace Gerador_de_Pedidos
                     txtCodigo.Text = null;
                     // Atualiza o txtCodigo com o código do produto selecionado
                     txtCodigo.Text = selectedItem.Codigo;
-                    listaProdutosExcel.SelectedItems.Clear(); // Limpa a seleção
-                    listaProdutosExcel.SelectedItem = null;
+                    txtVendedor.Focus();
+                    txtQuantidade.Focus();
                     // Força a chamada ao método OnTxtCodigoTextChangedUnified
                     OnTxtCodigoTextChangedUnified(txtCodigo, new TextChangedEventArgs(string.Empty, txtCodigo.Text));
                 }
@@ -600,6 +603,8 @@ namespace Gerador_de_Pedidos
             // Atualiza a CollectionView com os itens editados
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+            CalValorTotal();
         }
 
 
@@ -627,6 +632,8 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+            CalValorTotal();
         }
 
 
@@ -685,6 +692,8 @@ namespace Gerador_de_Pedidos
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
+
+            CalValorTotal();
         }
 
 
@@ -787,6 +796,7 @@ namespace Gerador_de_Pedidos
 
             texto += $"\nTOTAL VALOR{freteTotal} = R$ {totalGeral:F2}";
 
+            
             try
             {
                 await Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
@@ -801,6 +811,34 @@ namespace Gerador_de_Pedidos
                 await DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
             }
         }
+
+        private decimal CalValorTotal()
+        {
+            decimal frete = 0m;
+            bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
+                                 decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim().Replace(".", ","), out frete);
+
+            decimal totalGeral = 0m;
+
+            if (listaProdutosSelect.ItemsSource != null)
+            {
+                foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
+                {
+                    var valorUnidade = decimal.TryParse(product.Valor, out var val) ? val : 0m;
+                    var quantidade = decimal.TryParse(product.Quantidade, out var qnt) ? qnt : 0m;
+                    totalGeral += valorUnidade * quantidade;
+                }
+            }
+
+            // Adiciona o frete apenas uma vez, fora do loop
+            if (isFreteParsed)
+            {
+                totalGeral += frete;
+            }
+            MeuBudget.Valor_Total = $"{totalGeral:F2}";
+            return totalGeral;
+        }
+
 
         private void OnVerificarSelecoesClicked()
         {
@@ -819,20 +857,20 @@ namespace Gerador_de_Pedidos
 
 
             // Atualiza a visibilidade com base nos estados calculados
-            SetVisibility(txtFaturamento, isVenda && !isPix);
-            SetVisibility(txtChaveNotaExterna, isNotaExterna);
+            SetVisibility(frameFaturamento, isVenda && !isPix);
+            SetVisibility(frameChaveNotaExterna, isNotaExterna);
 
-            SetVisibility(txtDefeitos, !isVenda);
-            SetVisibility(txtNS, !isVenda);
+            SetVisibility(frameDefeitos, !isVenda);
+            SetVisibility(frameNS, !isVenda);
             SetVisibility(typeNota, !isVenda);
-            SetVisibility(nota, !isVenda);
-            SetVisibility(txtnota, !isVenda);
+            SetVisibility(framenota, !isVenda);
+            SetVisibility(framePickernota, !isVenda);
 
-            SetVisibility(pag, !isGarantia);
             SetVisibility(txtpag, !isGarantia);
+            SetVisibility(framepag, !isGarantia);
 
-            SetVisibility(txtFrete, !isGarantia);
-            SetVisibility(TipoFrete, !isGarantia);
+            SetVisibility(frameFrete, !isGarantia);
+            SetVisibility(frameTipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
         }
 

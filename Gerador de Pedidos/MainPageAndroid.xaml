@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2021/maui/toolkit"
+xmlns:controls="clr-namespace:Gerador_de_Pedidos.Controls"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.MainPageAndroid"
+             xmlns:local="clr-namespace:Gerador_de_Pedidos.Controls"
               Shell.NavBarIsVisible="False"
-             BackgroundColor="#1A7F3737"
+             BackgroundColor="white"
              >
 
 
@@ -48,39 +51,45 @@
     <ScrollView>
         
     
-            <VerticalStackLayout>
+            <VerticalStackLayout >
 
                 <Frame BackgroundColor="#333333"
        CornerRadius="10" 
        BorderColor="#00c4b4"
        HasShadow="True" 
        Padding="4"
-       Margin="1">
+       Margin="6,20,11,0">
                     <Frame.Shadow>
                         <Shadow Brush="Black" Opacity="0.5" Radius="10" Offset="10,10"/>
                     </Frame.Shadow>
 
                     <!-- Seção de entrada de dados -->
-                    <VerticalStackLayout Padding="0" Spacing="10">
+                    <VerticalStackLayout Padding="0,20" Spacing="10">
 
                         <!-- Título -->
                         <HorizontalStackLayout HorizontalOptions="Center">
                             <Label Text="Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
                         </HorizontalStackLayout>
-
-                        <!-- Picker Pedido -->
-                        <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected">
+                    <!-- Entrada Vendedor -->
+                    <Frame BorderColor="#00c4b4" x:Name="framepedido" Padding="5,0" BackgroundColor="#00c4b4">
+                        <local:BorderlessPicker   x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected" >
                             <Picker.Items>
                                 <x:String>Venda</x:String>
                                 <x:String>Garantia com retorno</x:String>
                                 <x:String>Garantia sem retorno</x:String>
                             </Picker.Items>
-                        </Picker>
+                        </local:BorderlessPicker>
+                    </Frame>
+                 
            
                     <!-- Entrada Vendedor -->
-                        <Entry HeightRequest="40" x:Name="txtVendedor" Placeholder="Vendedor"  HorizontalOptions="FillAndExpand" />
+                    <Frame Padding="5,0" x:Name="frameVendedor">
+                        <local:BorderlessEntry  HorizontalOptions="FillAndExpand" x:Name="txtVendedor" Placeholder="Vendedor" />
+                    </Frame>
+                
+                 
 
-                        <HorizontalStackLayout Spacing="10" HorizontalOptions="FillAndExpand">
+                    <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="10" >
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -89,16 +98,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Código e Valores -->
-                                <HorizontalStackLayout Grid.Column="0" Spacing="10" HorizontalOptions="FillAndExpand">
-                                    <Entry HeightRequest="40" x:Name="txtCodigo" Placeholder="Código" Keyboard="Numeric" TextChanged="OnTxtCodigoTextChangedUnified" HorizontalOptions="FillAndExpand"/>
-                                    <Picker x:Name="valores" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPickerSelectionChangedPrice" HorizontalOptions="FillAndExpand" TitleColor="#FFE600">
+                                <HorizontalStackLayout HorizontalOptions="FillAndExpand" Grid.Column="0" Spacing="10" >
+                                <Frame Padding="5,0" x:Name="frameCodigo">
+                                    <local:BorderlessEntry WidthRequest="80" HeightRequest="40" x:Name="txtCodigo" Placeholder="Código" Keyboard="Numeric" TextChanged="OnTxtCodigoTextChangedUnified" />
+                                </Frame>
+                                <Frame BorderColor="#00c4b4"  x:Name="framevalores" Padding="5,0" BackgroundColor="#00c4b4" >
+                                    <local:BorderlessPicker WidthRequest="100"  x:Name="valores" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPickerSelectionChangedPrice"  TitleColor="#FFE600">
                                         <Picker.Items>
                                             <x:String>Valor ATA</x:String>
                                             <x:String>Valor Oficina</x:String>
                                             <x:String>Valor Cliente Final</x:String>
                                         </Picker.Items>
-                                    </Picker>
-                                </HorizontalStackLayout>
+                                    </local:BorderlessPicker>
+                                </Frame>
+                            </HorizontalStackLayout>
                             </Grid>
 
                             <!-- Label de status -->
@@ -109,13 +122,19 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     </HorizontalStackLayout>
 
                         <!-- Descrição e Valor -->
-                        <Entry HeightRequest="40" x:Name="txtDescricao" Placeholder="Descrição" HorizontalOptions="FillAndExpand" />
-                        <Entry HeightRequest="40" x:Name="txtValor" Placeholder="Valor" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" HorizontalOptions="FillAndExpand"/>
+                    <Frame Padding="5,0" x:Name="frameDescricao">
+                        <local:BorderlessEntry HeightRequest="40" x:Name="txtDescricao" Placeholder="Descrição" HorizontalOptions="FillAndExpand" />
+                    </Frame>
+                    <Frame Padding="5,0" x:Name="frameValor">
+                        <local:BorderlessEntry HeightRequest="40" x:Name="txtValor" Placeholder="Valor" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
 
-                        <!-- Quantidade e Botões -->
+                    <!-- Quantidade e Botões -->
                         <HorizontalStackLayout Spacing="10" HorizontalOptions="FillAndExpand">
-                            <Entry HeightRequest="40" x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" HorizontalOptions="FillAndExpand" />
-                            <Button Text="Adicionar" Clicked="OnAdicionarClicked" HeightRequest="40" HorizontalOptions="End">
+                        <Frame Padding="5,0" x:Name="frameQuantidade">
+                            <local:BorderlessEntry HeightRequest="40" x:Name="txtQuantidade" Placeholder="Quantidade" Keyboard="Numeric" TextChanged="OnIntegerTextChanged" HorizontalOptions="FillAndExpand" />
+                        </Frame>
+                        <Button Text="Adicionar" Clicked="OnAdicionarClicked" HeightRequest="40" HorizontalOptions="End">
                                 <Button.ImageSource>
                                     <FontImageSource FontFamily="IconsFont" Glyph="&#xE802;" Size="20" Color="#00FF00"/>
                                 </Button.ImageSource>
@@ -128,59 +147,76 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     </HorizontalStackLayout>
 
                         <!-- Versão Peça -->
-                        <Entry HeightRequest="40" x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text" HorizontalOptions="FillAndExpand"/>
-
-                        <!-- Frete -->
+                    <Frame Padding="5,0" x:Name="frameVersion">
+                        <local:BorderlessEntry HeightRequest="40" x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                    <!-- Frete -->
                         <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True" HorizontalOptions="FillAndExpand">
-                            <Entry HeightRequest="40" x:Name="txtFrete" Placeholder="Valor do Frete" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" HorizontalOptions="FillAndExpand"/>
-                            <Picker x:Name="TipoFrete" Style="{StaticResource HeaderPickerStyle}" HorizontalOptions="End">
+                        <Frame Padding="5,0" x:Name="frameFrete">
+                            <local:BorderlessEntry HeightRequest="40" x:Name="txtFrete" Placeholder="Valor do Frete" Keyboard="Numeric" TextChanged="OnDoubleTextChanged" HorizontalOptions="FillAndExpand"/>
+                        </Frame>
+                        <Frame BorderColor="#00c4b4" x:Name="frameTipoFrete" Padding="5,0" BackgroundColor="#00c4b4">
+                            <local:BorderlessPicker x:Name="TipoFrete" Style="{StaticResource HeaderPickerStyle}" HorizontalOptions="End">
                                 <Picker.Items>
                                     <x:String>SEDEX</x:String>
                                     <x:String>PAC</x:String>
                                 </Picker.Items>
-                            </Picker>
-                        </HorizontalStackLayout>
+                            </local:BorderlessPicker>
+                        </Frame>
+                    </HorizontalStackLayout>
 
                         <!-- Pagamento -->
                         <Label x:Name="txtpag" Text="Pagamento:" FontSize="23" TextColor="White" />
-                        <Picker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPagamentoSelected">
+                    <Frame BorderColor="#00c4b4"  x:Name="framepag" Padding="5,0" BackgroundColor="#00c4b4">
+                        <local:BorderlessPicker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPagamentoSelected">
                             <Picker.Items>
                                 <x:String>BOLETO</x:String>
                                 <x:String>PIX</x:String>
                             </Picker.Items>
-                        </Picker>
+                        </local:BorderlessPicker>
+                    </Frame>
 
-                        <!-- Faturamento -->
-                        <Entry HeightRequest="40" x:Name="txtFaturamento" Placeholder="Faturamento" HorizontalOptions="FillAndExpand"/>
-
-                        <!-- Garantia -->
-                        <Entry HeightRequest="40" x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento" HorizontalOptions="FillAndExpand"/>
-                        <Entry HeightRequest="40" x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento" HorizontalOptions="FillAndExpand"/>
-
-                        <!-- Tipo de Nota -->
+                    <!-- Faturamento -->
+                    <Frame Padding="5,0" x:Name="frameFaturamento">
+                            <local:BorderlessEntry  HeightRequest="40" x:Name="txtFaturamento" Placeholder="Faturamento" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                    <!-- Garantia -->
+                    <Frame Padding="5,0" x:Name="frameDefeitos">
+                            <local:BorderlessEntry  HeightRequest="40" x:Name="txtDefeitos" IsVisible="True" Placeholder="Defeito Equipamento" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                    <Frame Padding="5,0" x:Name="frameNS">
+                        <local:BorderlessEntry  HeightRequest="40" x:Name="txtNS" IsVisible="True" Placeholder="Cod. e Nº Série do Equipamento" HorizontalOptions="FillAndExpand"/>
+                    </Frame>
+                    <!-- Tipo de Nota -->
                         <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
-                        <Picker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnNotaSelected">
+                    <Frame BorderColor="#00c4b4" x:Name="framePickernota" Padding="5,0" BackgroundColor="#00c4b4">
+                        <local:BorderlessPicker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnNotaSelected">
                             <Picker.Items>
                                 <x:String>Nota Interna</x:String>
                                 <x:String>Nota Externa</x:String>
                             </Picker.Items>
-                        </Picker>
+                        </local:BorderlessPicker>
+                    </Frame>
 
-                        <!-- Nota e Chave -->
+                    <!-- Nota e Chave -->
                         <HorizontalStackLayout Spacing="10" HorizontalOptions="FillAndExpand">
-                            <Entry HeightRequest="40" x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" HorizontalOptions="FillAndExpand"/>
-                            <Entry HeightRequest="40" x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" HorizontalOptions="FillAndExpand"/>
-                        </HorizontalStackLayout>
+                        <Frame Padding="5,0" x:Name="framenota">
+                                <local:BorderlessEntry  HeightRequest="40" x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" HorizontalOptions="FillAndExpand"/>
+                        </Frame>
+                        <Frame Padding="5,0" x:Name="frameChaveNotaExterna">
+                            <local:BorderlessEntry  HeightRequest="40" x:Name="txtChaveNotaExterna" IsVisible="true" Placeholder="Chave Nota Externa" HorizontalOptions="FillAndExpand"/>
+                        </Frame>
+                    </HorizontalStackLayout>
 
                     </VerticalStackLayout>
                 </Frame>
 
 
                 <!-- Seção de lista de produtos  -->
-            <VerticalStackLayout  HorizontalOptions="End" Margin="10">
+            <VerticalStackLayout  HorizontalOptions="End" Margin="6,0,11,0">
 
                 <!-- Lista de Produtos Da Planilha -->
-                <Frame BackgroundColor="#1e1e1e" CornerRadius="10" HasShadow="True" Padding="4" Margin="1">
+                <Frame BackgroundColor="#1e1e1e" CornerRadius="10" HasShadow="True" Padding="4" Margin="0,20">
                     <Frame.Shadow>
                         <Shadow Brush="White" Opacity="0.5" Radius="10" Offset="10,10"/>
                     </Frame.Shadow>
@@ -204,7 +240,8 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                         <!-- Picker e botões -->
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Padding="10">
-                            <Picker x:Name="equipamentos" Style="{StaticResource HeaderPickerStyleplanilha}" SelectedIndexChanged="OnPickerSelectionChanged" WidthRequest="150" HeightRequest="39">
+                            <Frame BorderColor="#00c4b4" x:Name="frameEquipamentos" Padding="5,0" BackgroundColor="#00c4b4">
+                                <local:BorderlessPicker x:Name="equipamentos" Style="{StaticResource HeaderPickerStyleplanilha}" SelectedIndexChanged="OnPickerSelectionChanged" WidthRequest="150" HeightRequest="39">
                                 <Picker.Items>
                                     <x:String>Clipse</x:String>
                                     <x:String>Passer</x:String>
@@ -218,7 +255,8 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                                     <x:String>Impressor Max-Neo</x:String>
                                     <x:String>Equipamentos</x:String>
                                 </Picker.Items>
-                            </Picker>
+                                </local:BorderlessPicker>
+                            </Frame>
 
                             <Button x:Name="teste" Clicked="OnAlterarLinkClicked" WidthRequest="44" HeightRequest="44" VerticalOptions="Start" BackgroundColor="#00FFFFFF" BorderColor="#00ED2D2D">
                                 <Button.ImageSource>
@@ -258,26 +296,53 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                                 </Image.Source>
                             </Image>
 
-                            <Frame BorderColor="White" CornerRadius="5" HasShadow="True" x:Name="disableFrame" VerticalOptions="End" Margin="3" Padding="0" BackgroundColor="White">
+                            <Frame BorderColor="White" CornerRadius="5" HasShadow="True" x:Name="disableFrame" 
+       VerticalOptions="End" Margin="3" Padding="0" BackgroundColor="White">
                                 <ScrollView>
-                                    <CollectionView x:Name="listaProdutosExcel" ItemsLayout="VerticalList" HorizontalOptions="FillAndExpand" HeightRequest="430" BackgroundColor="Black" SelectionMode="Single" SelectionChanged="SelectionChangedCopyCod">
+                                    <CollectionView x:Name="listaProdutosExcel" ItemsLayout="VerticalList" 
+                        HorizontalOptions="FillAndExpand" HeightRequest="430" 
+                        BackgroundColor="Black" SelectionMode="Single" 
+                        SelectionChanged="SelectionChangedCopyCod">
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
+                                                <Grid Padding="5" BackgroundColor="White">
+                                                    <!-- Gerenciador de estados para mudar a cor da seleção -->
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup Name="CommonStates">
+                                                            <VisualState Name="Normal">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#1A9B9B9B"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                            <VisualState Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#00c4b4"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
 
-
-                                                <HorizontalStackLayout Spacing="8">
-                                                    <Label TextColor="White" Text="{Binding Codigo}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center" WidthRequest="60" VerticalTextAlignment="Center"/>
-                                                    <Label TextColor="White" Text="{Binding Descricao}" HorizontalTextAlignment="Center" VerticalOptions="Center" WidthRequest="130" VerticalTextAlignment="Center"/>
-                                                    <Label Text="{Binding Valor, StringFormat='{0:F2}'}" TextColor="White" HorizontalTextAlignment="End" VerticalTextAlignment="Center" VerticalOptions="Center" WidthRequest="100"/>
-                                                </HorizontalStackLayout>
-
+                                                    <!-- Layout do item -->
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Label TextColor="White" Text="{Binding Codigo}" 
+                                   HorizontalOptions="Start" VerticalOptions="Center"
+                                   WidthRequest="60"/>
+                                                        <Label TextColor="White" Text="{Binding Descricao}" 
+                                   HorizontalTextAlignment="Center" VerticalOptions="Center" 
+                                   WidthRequest="130"/>
+                                                        <Label Text="{Binding Valor, StringFormat='{0:F2}'}" 
+                                   TextColor="White" HorizontalTextAlignment="End" 
+                                   VerticalOptions="Center" WidthRequest="100"/>
+                                                    </HorizontalStackLayout>
+                                                </Grid>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
                                 </ScrollView>
                             </Frame>
+
                         </Grid>
-                    </VerticalStackLayout>
+                        </VerticalStackLayout>
                 </Frame>
                 <Frame 
              BackgroundColor="#1e1e1e"
@@ -302,8 +367,8 @@ Margin="1">
                                 <Label Grid.Column="0" 
                Text="Produtos no Pedido" 
                FontAttributes="Bold" 
-               VerticalOptions="Start" 
-               HorizontalOptions="End" 
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" 
                FontSize="25" 
                TextColor="White" />
 
@@ -330,7 +395,8 @@ Margin="1">
                                 </Button>
                             </HorizontalStackLayout>
 
-                            <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" Padding="0" HorizontalOptions="FillAndExpand">
+                            <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" Padding="0" HorizontalOptions="FillAndExpand"
+                                   Margin="0,0,0,3">
                                 <Grid Padding="10" ColumnSpacing="28" VerticalOptions="Start">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="37" />
@@ -345,38 +411,52 @@ Margin="1">
                                 </Grid>
                             </Frame>
 
-                            <Frame BorderColor="White" CornerRadius="5" HasShadow="True" Padding="0" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand">
-                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-                                    <CollectionView x:Name="listaProdutosSelect"
-                            SelectionMode="Multiple"
-                                                    
-                            SelectionChanged="OnCollectionViewSelectionChanged"
-                            VerticalOptions="Start"
-                            BackgroundColor="Black"
-                           HeightRequest="430"
-                            ItemsSource="{Binding Produtos}">
+ <Frame BorderColor="White" CornerRadius="5" HasShadow="True" Padding="0" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand">
+                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                         <CollectionView x:Name="listaProdutosSelect"
+                 SelectionMode="Multiple"
+                 SelectionChanged="OnCollectionViewSelectionChanged"
+                 VerticalOptions="Start"
+                 BackgroundColor="Black"
+                HeightRequest="430"
+                 ItemsSource="{Binding Produtos}">
 
-                                        <CollectionView.EmptyView>
-                                            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#1e1e1e" HeightRequest="430">
-                                                <Label Text="Adicione algum produto da Planilha..."
-                               VerticalTextAlignment="Center"
-                               Padding="30"
-                               HorizontalOptions="Center" 
-                               FontSize="15"
-                               TextColor="Gray" />
-                                                <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
-                               WidthRequest="30" HeightRequest="30">
-                                                    <Image.Source>
-                                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
-                                                    </Image.Source>
-                                                </Image>
-                                            </Grid>
-                                        </CollectionView.EmptyView>
+                             <CollectionView.EmptyView>
+                                 <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#1e1e1e" HeightRequest="430">
+                                     <Label Text="Adicione algum produto da Planilha..."
+                    VerticalTextAlignment="Center"
+                    Padding="30"
+                    HorizontalOptions="Center" 
+                    FontSize="15"
+                    TextColor="Gray" />
+                                     <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
+                    WidthRequest="30" HeightRequest="30">
+                                         <Image.Source>
+                                             <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
+                                         </Image.Source>
+                                     </Image>
+                                 </Grid>
+                             </CollectionView.EmptyView>
 
-                                        <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                           
-     
+                             <CollectionView.ItemTemplate>
+                                 <DataTemplate>
+                                                <Grid Padding="5" BackgroundColor="White">
+                                                    <!-- Gerenciador de estados para mudar a cor da seleção -->
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup Name="CommonStates">
+                                                            <VisualState Name="Normal">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#1A9B9B9B"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                            <VisualState Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="BackgroundColor" Value="#00c4b4"/>
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+
 
                                                     <HorizontalStackLayout Spacing="0">
                                                         <Label TextColor="White" Text="{Binding Codigo}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="60"/>
@@ -384,22 +464,61 @@ Margin="1">
                                                         <Label Text="{Binding Valor, StringFormat='R${0:F2}'}" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" VerticalOptions="Center" WidthRequest="88"/>
                                                         <Label TextColor="White" Text="{Binding Quantidade}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="50"/>
                                                     </HorizontalStackLayout>
-                                              
+                                                </Grid>
                                             </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                    </CollectionView>
-                                </Grid>
-                            </Frame>
+                             </CollectionView.ItemTemplate>
+                         </CollectionView>
+                     </Grid>
+                 </Frame>
                         </VerticalStackLayout>
 
 
-                      
 
+                        <Frame BackgroundColor="#00c4b4"
+       BorderColor="Black"
+       HasShadow="True"
+       CornerRadius="12"
+       HeightRequest="50"
+       Padding="5,0"
+                               
+       Margin="0,5,0,5"
+       HorizontalOptions="FillAndExpand">
 
-</VerticalStackLayout>
+                            <Grid Padding="12" ColumnSpacing="15" HorizontalOptions="End" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Rótulo -->
+                                <Label Grid.Column="0"
+               Text="Valor Total:"
+               Style="{StaticResource HeaderLabelStyle}"
+               VerticalTextAlignment="Center"
+               FontSize="18"
+                                       HorizontalOptions="End"
+               FontAttributes="Bold"
+               TextColor="Black"/>
+
+                                <!-- Valor (Placeholder para exibição dinâmica) -->
+                                <Label Grid.Column="1"
+               x:Name="lblValorTotal"
+               Text="{Binding MeuBudget.Valor_Total}"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="Black"
+               VerticalTextAlignment="Center"
+               HorizontalTextAlignment="End"/>
+                            </Grid>
+                        </Frame>
+
+                    </VerticalStackLayout>
                 </Frame>
+                
             </VerticalStackLayout>
-            </VerticalStackLayout>
+                
+           
+        </VerticalStackLayout>
       
     </ScrollView>
 </ContentPage>
