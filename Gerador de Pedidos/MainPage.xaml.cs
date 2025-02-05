@@ -15,6 +15,7 @@ using Gerador_de_Pedidos;
 using Gerador_de_Pedidos.Historico;
 using static System.Net.WebRequestMethods;
 using SQLite;
+using System.Diagnostics;
 
 namespace Gerador_de_Pedidos
 {
@@ -58,79 +59,57 @@ namespace Gerador_de_Pedidos
 
         private async void LoadLink()
         {
-            string fileName = "link.txt";
-            string filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+
+            
+            // Cria a conexão usando o banco de dados assíncrono
+            var connection = App.Database.GetConnection();
+            await App.Database.ObterPlanilhaAsync();
+            // Consulta para pegar o último LinkPlanilha
+            var planilha = await connection.Table<Planilha>()
+     .OrderByDescending(p => p.DataMudanca) // Ordena pela data mais recente
+     .FirstOrDefaultAsync();
+
+
+            // Verifica se não há nenhum link no banco, caso não tenha, define o link padrão
+
 
             try
             {
-                if (System.IO.File.Exists(filePath))
+                if (planilha == null || string.IsNullOrEmpty(planilha.LinkPlanilha))
                 {
-                    linkplanilha = System.IO.File.ReadAllText(filePath);
-                    OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+                    linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
+                    
                 }
                 else
                 {
-                    linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
-                    OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+                    linkplanilha = planilha.LinkPlanilha;
+                    
+                    
                 }
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Erro", $"Erro ao ler o link: {ex.Message}", "OK");
                 linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
-                OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+                
 
             }
+            OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
         }
+
+
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
-
             var selectedValue = valores.SelectedItem?.ToString();
-
             string senha = await DisplayPromptAsync("Autenticação", "Digite a senha para alterar o link da planilha Sheet Google:");
 
-            if (senha == "Systelcapacitacao@1234")
-            {
-                string novoLink = await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:");
-
-                if (!string.IsNullOrEmpty(novoLink))
-                {
-                    string linkExportacao = ConvertToExportLink(novoLink);
-                    linkplanilha = linkExportacao;
-
-                    string fileName = "link.txt";
-                    string filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
-                    try
-                    {
-                        System.IO.File.WriteAllText(filePath, linkplanilha);
-                    }
-                    catch (Exception ex)
-                    {
-                        await DisplayAlert("Erro", $"Erro ao salvar o link: {ex.Message}", "OK");
-                    }
-
-                    await DisplayAlert("Link Atualizado", $"O link da planilha foi atualizado com sucesso para: {linkExportacao}", "OK");
-                    await ExecuteTask(selectedValue);
-
-                }
-            }
-            else
-            {
-                await DisplayAlert("Erro", "Senha incorreta. A alteração do link não foi autorizada.", "OK");
-            }
+            var linkService = new LinkService();
+            await linkService.AlterarLink(senha, await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:"), selectedValue, loadingIndicatorPedido, lblStatusProduto);
+            LoadLink();
+            
         }
-        private static string ConvertToExportLink(string editLink)
-        {
-            if (string.IsNullOrWhiteSpace(editLink))
-                throw new ArgumentException("O link não pode ser nulo ou vazio.", nameof(editLink));
 
-            if (editLink.Contains("/edit"))
-            {
-                return editLink.Replace("/edit", "/export");
-            }
-
-            return editLink;
-        }
+       
 
         private string selectedSheetName;
 
@@ -193,14 +172,26 @@ namespace Gerador_de_Pedidos
                 }
             }
         }
+
+        public async Task CallTaskGlobal()
+        {
+            var selectedValue = valores.SelectedItem?.ToString();
+            
+            
+            Debug.WriteLine($"Valor de linkplanilha CallTaskGlobal: {linkplanilha}");
+
+           
+        }
         private async void OnPickerSelectionChanged(object sender, EventArgs e)
         {
+            Debug.WriteLine($"Valor de linkplanilha OnPickerSelectionChanged: {linkplanilha}");
+
             var selectedValue = valores.SelectedItem?.ToString();
             var picker = sender as Picker;
             if (picker != null && picker.SelectedItem != null)
             {
                 selectedSheetName = picker.SelectedItem.ToString(); // Atualiza a variável de instância
-                Console.WriteLine($"Nome da planilha selecionada: {selectedSheetName}"); // Adicionando um log para depuração
+                Debug.WriteLine($"Nome da planilha selecionada: {selectedSheetName}"); // Adicionando um log para depuração
                 OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 await ExecuteTask(selectedValue);
                 // Chame a função LerExcel passando o nome da planilha correspondente
@@ -220,8 +211,10 @@ namespace Gerador_de_Pedidos
         }
         // Defina o evento OnPickerSelectionChanged
 
-        private async Task ExecuteTask(string selectedValue)
+        public async Task ExecuteTask(string selectedValue)
         {
+            Debug.WriteLine($"Valor de linkplanilha ExecuteTask: {linkplanilha}");
+
             int columnToUse;
             // Definir a coluna correta com base na seleção do Picker
             switch (selectedValue)
@@ -254,10 +247,13 @@ namespace Gerador_de_Pedidos
             // Exemplo de como usar o ProdutoService para processar a seleção
             var produtoService = new ProdutoService();
             await produtoService.ProcessarSelecao(selectedValue, txtCodigo.Text, Lista, txtDescricao, txtValor, lblStatusProduto);
+            Debug.WriteLine($"Valor de linkplanilha ProcessarSelecao: {linkplanilha}");
+
         }
 
         private async void OnPickerSelectionChangedPrice(object sender, EventArgs e)
         {
+
             var picker = sender as Picker;
             if (picker == null || picker.SelectedItem == null)
                 return;
@@ -290,6 +286,8 @@ namespace Gerador_de_Pedidos
             loadingIndicatorPedido.IsRunning = false;
             loadingIndicatorPedido.IsVisible = false;
             lblStatusProduto.IsVisible = true;
+            Debug.WriteLine($"Valor de linkplanilha OnPickerSelectionChangedPrice: {linkplanilha}");
+
         }
 
         private async void OnAtualizarClicked(object sender, EventArgs e)
@@ -315,6 +313,8 @@ namespace Gerador_de_Pedidos
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
+            Debug.WriteLine($"Valor de linkplanilha antes: {linkplanilha}");
+
             // Mostrar o indicador de carregamento e desativar o ScrollView
 
             disableFrame.IsVisible = false;
@@ -398,7 +398,7 @@ namespace Gerador_de_Pedidos
                 catch (HttpRequestException ex)
                 {
                     tentativas++;
-                    Console.WriteLine($"Erro ao acessar a planilha: {ex.Message}");
+                    Debug.WriteLine($"Erro ao acessar a planilha: {ex.Message}");
 
                     if (tentativas >= maxTentativas)
                     {
@@ -411,7 +411,7 @@ namespace Gerador_de_Pedidos
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Erro inesperado: {ex.Message}");
+                    Debug.WriteLine($"Erro inesperado: {ex.Message}");
                     await DisplayAlert("Erro", "Ocorreu um erro inesperado: " + ex.Message, "OK");
                     CriarListaComProdutoPadrao();
                     break;

@@ -12,6 +12,7 @@ public class Database
 
         // Criação da tabela de pedidos de forma assíncrona
         _database.CreateTableAsync<Pedido>().Wait();
+        _database.CreateTableAsync<Planilha>().Wait();
     }
 
     public Task<int> SalvarPedidoAsync(Pedido pedido)
@@ -19,11 +20,20 @@ public class Database
         return _database.InsertAsync(pedido);  // Insere um novo pedido assíncronamente
     }
 
+    public Task<int> SalvarPlanilhaAsync(Planilha plainlha)
+    {
+        return _database.InsertAsync(plainlha);  // Insere um novo pedido assíncronamente
+    }
+
     public Task<List<Pedido>> ObterPedidosAsync()
     {
         return _database.Table<Pedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
     }
 
+    public Task<List<Planilha>> ObterPlanilhaAsync()
+    {
+        return _database.Table<Planilha>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
+    }
     // Método que retorna a conexão SQLite
     public SQLiteAsyncConnection GetConnection()
     {
