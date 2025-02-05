@@ -10,12 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
+using Gerador_de_Pedidos.Services;
 using Gerador_de_Pedidos;
 using Gerador_de_Pedidos.Historico;
 using static System.Net.WebRequestMethods;
 using SQLite;
-
-
 
 namespace Gerador_de_Pedidos
 {
@@ -24,32 +23,23 @@ namespace Gerador_de_Pedidos
         private string linkplanilha;
         public MainPage()
         {
-
             InitializeComponent();
-
-
             pedido.SelectedIndex = 0;
-
             equipamentos.SelectedIndex = 0;
-
             pag.SelectedIndex = 0;
-
             nota.SelectedIndex = 0;
-
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
-
             GetProximoNumeroPedidoAsync();
-
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
             BindingContext = this;
-
         }
         public List<Product> Lista = new List<Product>();
         public List<Product> ListaSelecionados = new List<Product>();
         public Budget MeuBudget { get; set; }
+        private string _ultimoItemSelecionado;
 
         public async Task<int> GetProximoNumeroPedidoAsync()
         {
@@ -61,12 +51,10 @@ namespace Gerador_de_Pedidos
 
             MeuBudget.Numero_Pedido = ultimoPedido?.NumeroPedido + 1 ?? 1;
 
+            CalValorTotal();
             // Se houver pedidos, incrementa o último NumeroPedido + 1, senão começa com 1
             return ultimoPedido?.NumeroPedido + 1 ?? 1;
         }
-
-
-
 
         private async void LoadLink()
         {
@@ -94,7 +82,6 @@ namespace Gerador_de_Pedidos
 
             }
         }
-
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
 
@@ -132,7 +119,6 @@ namespace Gerador_de_Pedidos
                 await DisplayAlert("Erro", "Senha incorreta. A alteração do link não foi autorizada.", "OK");
             }
         }
-
         private static string ConvertToExportLink(string editLink)
         {
             if (string.IsNullOrWhiteSpace(editLink))
@@ -145,9 +131,6 @@ namespace Gerador_de_Pedidos
 
             return editLink;
         }
-
-
-
 
         private string selectedSheetName;
 
@@ -164,9 +147,6 @@ namespace Gerador_de_Pedidos
                 }
             }
         }
-
-
-
         //Bloqueia caracteres, funciona somente números inteiros e double
         private void OnDoubleTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -190,8 +170,6 @@ namespace Gerador_de_Pedidos
 
             CalValorTotal();
         }
-
-
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
 
@@ -215,7 +193,6 @@ namespace Gerador_de_Pedidos
                 }
             }
         }
-
         private async void OnPickerSelectionChanged(object sender, EventArgs e)
         {
             var selectedValue = valores.SelectedItem?.ToString();
@@ -241,16 +218,11 @@ namespace Gerador_de_Pedidos
             // Chama o método para atualizar o Picker, ou qualquer outra lógica adicional
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
         }
-
-
         // Defina o evento OnPickerSelectionChanged
-
 
         private async Task ExecuteTask(string selectedValue)
         {
-
             int columnToUse;
-
             // Definir a coluna correta com base na seleção do Picker
             switch (selectedValue)
             {
@@ -274,94 +246,15 @@ namespace Gerador_de_Pedidos
                     lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
                     return;
             }
-
             await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
-
             // Evite chamar `LerExcelComColuna` novamente, já que isso é feito com base na seleção
         }
-
-
-
-
         private async Task ProcessarSelecao(string selectedValue)
         {
-            int columnToUse;
-
-            // Definir a coluna correta com base na seleção do Picker
-            switch (selectedValue)
-            {
-                case "Valor ATA":
-                    columnToUse = 3; // Ajuste com base na coluna correta
-                    break;
-                case "Valor Oficina":
-
-                    columnToUse = 4; // Ajuste com base na coluna correta
-                    break;
-                case "Valor Cliente Final":
-
-                    columnToUse = 5; // Ajuste com base na coluna correta
-                    break;
-                default:
-                    await DisplayAlert("Erro", "Tipo de valor não selecionado.", "OK");
-                    loadingIndicatorPedido.IsVisible = false; // Ocultar o botão se houve erro
-                    loadingIndicatorPedido.IsRunning = false;
-                    lblStatusProduto.IsVisible = true; // Mostrar o texto de status se houve erro
-                    lblStatusProduto.Text = "Tipo de valor não selecionado.";
-                    lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
-                    return;
-            }
-
-            // Recarregar os dados da planilha usando a coluna correta
-
-
-            string cod = txtCodigo.Text;
-
-            if (!string.IsNullOrEmpty(cod))
-            {
-                cod = cod.ToUpper();
-                // Buscar o item correspondente na lista
-                var item = Lista.FirstOrDefault(i => i.Codigo == cod);
-                if (item != null)
-                {
-                    txtDescricao.Text = item.Descricao;
-
-                    // Converter item.Valor para decimal e formatar com duas casas decimais
-                    if ((decimal.TryParse(((item.Valor).Replace("R", "").Replace("$", "")), out decimal valorNumerico)))
-                    {
-                        txtValor.Text = valorNumerico.ToString("F2");
-                    }
-                    else
-                    {
-                        txtValor.Text = string.Empty;
-                        txtValor.Text = "Valor inválido";
-                    }
-
-                    // Atualizar o status do produto
-                    lblStatusProduto.Text = "Produto Encontrado";
-                    lblStatusProduto.FontSize = 15;
-                    lblStatusProduto.TextColor = Color.FromHex("#00FF00"); // Verde para indicar sucesso
-                }
-                else
-                {
-                    txtDescricao.Text = string.Empty;
-                    txtValor.Text = string.Empty;
-                    lblStatusProduto.Text = "Produto Não Encontrado";
-                    lblStatusProduto.FontSize = 12;
-                    lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
-                }
-            }
-            else
-            {
-                txtDescricao.Text = string.Empty;
-                txtValor.Text = string.Empty;
-                lblStatusProduto.FontSize = 17;
-                lblStatusProduto.Text = "Digite o Código...";
-                lblStatusProduto.TextColor = Color.FromHex("#FFFAFF00"); // Laranja para indicar aviso
-            }
+            // Exemplo de como usar o ProdutoService para processar a seleção
+            var produtoService = new ProdutoService();
+            await produtoService.ProcessarSelecao(selectedValue, txtCodigo.Text, Lista, txtDescricao, txtValor, lblStatusProduto);
         }
-
-
-        private string _ultimoItemSelecionado;
 
         private async void OnPickerSelectionChangedPrice(object sender, EventArgs e)
         {
@@ -399,10 +292,6 @@ namespace Gerador_de_Pedidos
             lblStatusProduto.IsVisible = true;
         }
 
-
-
-
-
         private async void OnAtualizarClicked(object sender, EventArgs e)
         {
             // Supondo que o Picker `valores` já tenha um item selecionado
@@ -423,10 +312,6 @@ namespace Gerador_de_Pedidos
                 await DisplayAlert("Erro", "Nenhum valor selecionado.", "OK");
             }
         }
-
-
-
-
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
@@ -537,11 +422,6 @@ namespace Gerador_de_Pedidos
             loadingIndicator.IsVisible = false;
             listaProdutosExcel.IsVisible = true;
         }
-
-
-
-
-
         void CriarListaComProdutoPadrao()
         {
             Lista.Clear();
@@ -556,27 +436,10 @@ namespace Gerador_de_Pedidos
             listaProdutosExcel.ItemsSource = new List<Product>();
             listaProdutosExcel.ItemsSource = Lista;
         }
-
-
-
-
-
-
-
-
-
-
         private void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = e.CurrentSelection.Cast<Product>().ToList();
-
-
-
         }
-
-
-
-
         private async void OnEditarClicked(object sender, EventArgs e)
         {
             var selectedItems = listaProdutosSelect.SelectedItems?.Cast<Product>().ToList();
@@ -635,13 +498,8 @@ namespace Gerador_de_Pedidos
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-
-      
-
         CalValorTotal();
         }
-
-
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
             var selectedItems = listaProdutosSelect.SelectedItems.Cast<Product>().ToList();
@@ -661,18 +519,12 @@ namespace Gerador_de_Pedidos
             {
                 ListaSelecionados.Remove(item);
             }
-
             // Atualiza a CollectionView e limpa a seleção
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-
             CalValorTotal();
         }
-
-
-
-
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
             // Obtém os valores dos campos de entrada
@@ -726,12 +578,12 @@ namespace Gerador_de_Pedidos
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
-
             CalValorTotal();
         }
 
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
+            var AllItems = listaProdutosSelect.ItemsSource.Cast<Product>().ToList();
             int novoNumeroPedido = await GetProximoNumeroPedidoAsync();
             if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
             {
@@ -750,138 +602,43 @@ namespace Gerador_de_Pedidos
 
                     await App.Database.SalvarPedidoAsync(novoPedido);
                 }
-
+                foreach (var item in AllItems)
+                {
+                    ListaSelecionados.Remove(item);
+                }
+                // Atualiza a CollectionView e limpa a seleção
+                listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
+                listaProdutosSelect.ItemsSource = null;
+                listaProdutosSelect.ItemsSource = ListaSelecionados;
             }
-
             await GetProximoNumeroPedidoAsync();
         }
-
-        private async void OnCopiarClicked(object sender, EventArgs e)
-        {
-            
-            var vendedor = txtVendedor.Text;
-            var saida = pedido.SelectedItem?.ToString();
-            var tipofrete = TipoFrete.SelectedItem?.ToString();
-            var pagamento = pag.SelectedItem?.ToString();
-
-            var freteTotal = "";
-
-            decimal frete = 0m;
-            bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
-                                 decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim().Replace(".", ",", StringComparison.InvariantCulture), out frete);
-
-            decimal totalGeral = 0m;
-            var texto = $"VENDEDOR: {vendedor}\n";
-            texto += $"SAÍDA: {saida}\n\n";
-
-            // Verifica se listaProdutosSelect.ItemsSource não é nulo e contém itens
-            if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
-            {
-                foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
-                {
-                    var valorUnidade = decimal.TryParse(product.Valor, out var val) ? val : 0m;
-                    var totalProduto = valorUnidade * (decimal.TryParse(product.Quantidade, out var qnt) ? qnt : 0m);
-                    totalGeral += totalProduto;
-
-                    texto += $"Cod.: {product.Codigo}\n";
-                    texto += $"Desc: {product.Descricao}\n";
-                    if (!string.IsNullOrEmpty(product.Versao_Peca))
-                    {
-                        texto += $"Versão da Peça: {product.Versao_Peca}\n";
-                    }
-
-                    texto += $"Valor/Un: R$ {valorUnidade:F2}\n";
-
-                    if (decimal.TryParse(product.Quantidade, out var quantidade) && quantidade != 1)
-                    {
-                        texto += $"Qntd: {product.Quantidade} (R$ {totalProduto:F2})\n\n";
-                    }
-                    else
-                    {
-                        texto += $"Qntd: {product.Quantidade}\n\n";
-                    }
-
-                  
-
-                }
-            }
-            else
-            {
-                await DisplayAlert("Atênção!", "Adicione algum produto no pedido", "OK");
-                return; // Retorna para que o código de cópia não seja executado
-            }
-
-            if (pedido.SelectedItem?.ToString() != "Garantia com retorno" && pedido.SelectedItem?.ToString() != "Garantia sem retorno")
-            {
-                if (isFreteParsed && frete > 0)
-                {
-                    totalGeral += frete;
-                    texto += $"FRETE({tipofrete}): R$ {frete:F2}\n\n";
-                    freteTotal = " + FRETE";
-                }
-                else
-                {
-                    freteTotal = "";
-                    texto += $"Frete a cotar\n\n";
-                }
-
-                texto += $"Pagamento: {pagamento}\n";
-
-            }
-
-
-            if (pedido.SelectedItem?.ToString() == "Venda" && pagamento == "BOLETO")
-            {
-
-                texto += $"Faturamento: {txtFaturamento.Text}\n";
-            }
-
-
-
-            if (pedido.SelectedItem?.ToString() == "Garantia com retorno" || pedido.SelectedItem?.ToString() == "Garantia sem retorno")
-            {
-                texto += $"DEFEITO: {txtDefeitos.Text}\n\n";
-                texto += $"Balança em posse do cliente:\n";
-                texto += $"N/S EQUIPAMENTO: {txtNS.Text}\n\n";
-                texto += $"{nota.SelectedItem?.ToString()}:\nNº Nota: {txtnota.Text}\n";
-
-
-
-                if (nota.SelectedItem?.ToString() == "Nota Externa")
-                {
-                    texto += $"CHAVE NOTA EXTERNA: {txtChaveNotaExterna.Text}\n";
-                }
-            }
-
-
-
-            texto += $"\nTOTAL VALOR{freteTotal} = R$ {totalGeral:F2}";
-
-
-            try
-            {
-                await Clipboard.SetTextAsync(texto); // Use SetTextAsync para compatibilidade
-                btncopy.Text = "Copiado!";
-                iconCopy.Color = Color.FromHex("#000000");
-                await Task.Delay(5000);
-                btncopy.Text = "Copiar";
-                iconCopy.Color = Color.FromHex("#FF008000");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Não foi possível copiar o texto para a área de transferência: {ex.Message}", "OK");
-            }
-
-            
-         
-        }
-
+     private async void OnCopiarClicked(object sender, EventArgs e)
+{
+    var service = new CopiarPedidoService();
+    await service.CopiarTextoAsync(
+        txtVendedor.Text,
+        pedido.SelectedItem?.ToString(),
+        TipoFrete.SelectedItem?.ToString(),
+        pag.SelectedItem?.ToString(),
+        txtFrete.Text,
+        txtFaturamento.Text,
+        txtDefeitos.Text,
+        txtNS.Text,
+        txtnota.Text,
+        txtChaveNotaExterna.Text,
+        nota.SelectedItem,
+        pedido.SelectedItem,
+        listaProdutosSelect,
+        btncopy,
+        iconCopy
+    );
+}
         private decimal CalValorTotal()
         {
             decimal frete = 0m;
             bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
                                  decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim().Replace(".", ","), out frete);
-
             decimal totalGeral = 0m;
 
             if (listaProdutosSelect.ItemsSource != null)
@@ -893,7 +650,6 @@ namespace Gerador_de_Pedidos
                     totalGeral += valorUnidade * quantidade;
                 }
             }
-
             // Adiciona o frete apenas uma vez, fora do loop
             if (isFreteParsed)
             {
@@ -902,9 +658,7 @@ namespace Gerador_de_Pedidos
             MeuBudget.Valor_Total = $"{totalGeral:F2}";
             return totalGeral;
         }
-
-
-        private void OnVerificarSelecoesClicked()
+        private void OnVerificarSelecoesClicked(object sender, EventArgs e)
         {
             // Obtém as seleções de cada Picker
             var pickerPedido = pedido.SelectedItem as string;
@@ -917,27 +671,20 @@ namespace Gerador_de_Pedidos
             bool isGarantia = pickerPedido == "Garantia com retorno" || pickerPedido == "Garantia sem retorno";
             bool isNotaExterna = pickerNota == "Nota Externa" && isGarantia;
             bool isNotaInterna = pickerNota == "Nota Interna" && isGarantia;
-
-
-
             // Atualiza a visibilidade com base nos estados calculados
             SetVisibility(txtFaturamento, isVenda && !isPix);
             SetVisibility(txtChaveNotaExterna, isNotaExterna);
-
             SetVisibility(txtDefeitos, !isVenda);
             SetVisibility(txtNS, !isVenda);
             SetVisibility(typeNota, !isVenda);
             SetVisibility(nota, !isVenda);
             SetVisibility(txtnota, !isVenda);
-
             SetVisibility(pag, !isGarantia);
             SetVisibility(txtpag, !isGarantia);
-
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
         }
-
         /// <summary>
         /// Define a visibilidade de um elemento de forma centralizada.
         /// </summary>
@@ -950,33 +697,6 @@ namespace Gerador_de_Pedidos
                 control.IsVisible = isVisible;
             }
         }
-
-
-
-        private void OnPedidoSelected(object sender, EventArgs e)
-        {
-
-            OnVerificarSelecoesClicked();
-
-        }
-
-
-        private void OnNotaSelected(object sender, EventArgs e)
-        {
-            OnVerificarSelecoesClicked();
-        }
-
-
-        private void OnPagamentoSelected(object sender, EventArgs e)
-        {
-            OnVerificarSelecoesClicked();
-
-        }
-
-
-
-
-
 
     }
 }
