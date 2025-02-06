@@ -1,8 +1,7 @@
 ﻿using SQLite;
 
-public class Pedido
+public class ProdutosPedido
 {
-    
     public int NumeroPedido { get; set; }
     public string Codigo { get; set; }
     public string Descricao { get; set; }

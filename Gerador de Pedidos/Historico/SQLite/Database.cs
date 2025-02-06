@@ -11,29 +11,51 @@ public class Database
         _database = new SQLiteAsyncConnection(dbPath);
 
         // Criação da tabela de pedidos de forma assíncrona
-        _database.CreateTableAsync<Pedido>().Wait();
+        _database.CreateTableAsync<ProdutosPedido>().Wait();
         _database.CreateTableAsync<Planilha>().Wait();
+        _database.CreateTableAsync<InfoPedido>().Wait();
     }
 
-    public Task<int> SalvarPedidoAsync(Pedido pedido)
+    // PRODUTOS NO PEDIDO
+
+    public Task<int> SalvarProdutosAsync(ProdutosPedido produtosPedido)
     {
-        return _database.InsertAsync(pedido);  // Insere um novo pedido assíncronamente
+        return _database.InsertAsync(produtosPedido);  // Insere um novo pedido assíncronamente
     }
 
-    public Task<int> SalvarPlanilhaAsync(Planilha plainlha)
+
+    public Task<List<ProdutosPedido>> ObterPedidosAsync()
     {
-        return _database.InsertAsync(plainlha);  // Insere um novo pedido assíncronamente
+        return _database.Table<ProdutosPedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
     }
 
-    public Task<List<Pedido>> ObterPedidosAsync()
+
+
+    // PLANILHA
+    public Task<int> SalvarPlanilhaAsync(Planilha planilha)
     {
-        return _database.Table<Pedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
+        return _database.InsertAsync(planilha);  // Insere um novo pedido assíncronamente
     }
+
 
     public Task<List<Planilha>> ObterPlanilhaAsync()
     {
         return _database.Table<Planilha>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
     }
+
+
+
+    // INFO PEDIDOS
+    public Task<int> SalvarInfoPedidoAsync(InfoPedido infoPedido)
+    {
+        return _database.InsertAsync(infoPedido);  // Insere um novo pedido assíncronamente
+    }
+
+    public Task<List<InfoPedido>> ObterInfoPedidoAsync()
+    {
+        return _database.Table<InfoPedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
+    }
+
     // Método que retorna a conexão SQLite
     public SQLiteAsyncConnection GetConnection()
     {

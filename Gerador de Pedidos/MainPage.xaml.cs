@@ -1,20 +1,5 @@
-﻿using System.Net.Http;
-using OfficeOpenXml;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Platform;
-using Microsoft.Maui;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text;
+﻿using OfficeOpenXml;
 using Gerador_de_Pedidos.Services;
-using Gerador_de_Pedidos;
-using Gerador_de_Pedidos.Historico;
-using static System.Net.WebRequestMethods;
-using SQLite;
 using System.Diagnostics;
 
 namespace Gerador_de_Pedidos
@@ -48,19 +33,16 @@ namespace Gerador_de_Pedidos
             var connection = App.Database.GetConnection();
 
             // Consulta para pegar o último NumeroPedido
-            var ultimoPedido = await connection.Table<Pedido>().OrderByDescending(p => p.NumeroPedido).FirstOrDefaultAsync();
+            var ultimoPedido = await connection.Table<ProdutosPedido>().OrderByDescending(p => p.NumeroPedido).FirstOrDefaultAsync();
 
             MeuBudget.Numero_Pedido = ultimoPedido?.NumeroPedido + 1 ?? 1;
 
-            CalValorTotal();
+            CallValorTotal();
             // Se houver pedidos, incrementa o último NumeroPedido + 1, senão começa com 1
             return ultimoPedido?.NumeroPedido + 1 ?? 1;
         }
-
         private async void LoadLink()
         {
-
-            
             // Cria a conexão usando o banco de dados assíncrono
             var connection = App.Database.GetConnection();
             await App.Database.ObterPlanilhaAsync();
@@ -68,23 +50,16 @@ namespace Gerador_de_Pedidos
             var planilha = await connection.Table<Planilha>()
      .OrderByDescending(p => p.DataMudanca) // Ordena pela data mais recente
      .FirstOrDefaultAsync();
-
-
             // Verifica se não há nenhum link no banco, caso não tenha, define o link padrão
-
-
             try
             {
                 if (planilha == null || string.IsNullOrEmpty(planilha.LinkPlanilha))
                 {
                     linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
-                    
                 }
                 else
                 {
                     linkplanilha = planilha.LinkPlanilha;
-                    
-                    
                 }
             }
             catch (Exception ex)
@@ -96,8 +71,6 @@ namespace Gerador_de_Pedidos
             }
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
         }
-
-
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
             var selectedValue = valores.SelectedItem?.ToString();
@@ -108,9 +81,6 @@ namespace Gerador_de_Pedidos
             LoadLink();
             
         }
-
-       
-
         private string selectedSheetName;
 
         //Bloqueia caracteres, funciona somente números inteiros
@@ -147,7 +117,7 @@ namespace Gerador_de_Pedidos
                 }
             }
 
-            CalValorTotal();
+            CallValorTotal();
         }
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
@@ -171,21 +141,9 @@ namespace Gerador_de_Pedidos
                     OnTxtCodigoTextChangedUnified(txtCodigo, new TextChangedEventArgs(string.Empty, txtCodigo.Text));
                 }
             }
-        }
-
-        public async Task CallTaskGlobal()
-        {
-            var selectedValue = valores.SelectedItem?.ToString();
-            
-            
-            Debug.WriteLine($"Valor de linkplanilha CallTaskGlobal: {linkplanilha}");
-
-           
-        }
+        }  
         private async void OnPickerSelectionChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine($"Valor de linkplanilha OnPickerSelectionChanged: {linkplanilha}");
-
             var selectedValue = valores.SelectedItem?.ToString();
             var picker = sender as Picker;
             if (picker != null && picker.SelectedItem != null)
@@ -213,8 +171,6 @@ namespace Gerador_de_Pedidos
 
         public async Task ExecuteTask(string selectedValue)
         {
-            Debug.WriteLine($"Valor de linkplanilha ExecuteTask: {linkplanilha}");
-
             int columnToUse;
             // Definir a coluna correta com base na seleção do Picker
             switch (selectedValue)
@@ -247,8 +203,6 @@ namespace Gerador_de_Pedidos
             // Exemplo de como usar o ProdutoService para processar a seleção
             var produtoService = new ProdutoService();
             await produtoService.ProcessarSelecao(selectedValue, txtCodigo.Text, Lista, txtDescricao, txtValor, lblStatusProduto);
-            Debug.WriteLine($"Valor de linkplanilha ProcessarSelecao: {linkplanilha}");
-
         }
 
         private async void OnPickerSelectionChangedPrice(object sender, EventArgs e)
@@ -286,8 +240,6 @@ namespace Gerador_de_Pedidos
             loadingIndicatorPedido.IsRunning = false;
             loadingIndicatorPedido.IsVisible = false;
             lblStatusProduto.IsVisible = true;
-            Debug.WriteLine($"Valor de linkplanilha OnPickerSelectionChangedPrice: {linkplanilha}");
-
         }
 
         private async void OnAtualizarClicked(object sender, EventArgs e)
@@ -313,15 +265,11 @@ namespace Gerador_de_Pedidos
 
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
-            Debug.WriteLine($"Valor de linkplanilha antes: {linkplanilha}");
-
             // Mostrar o indicador de carregamento e desativar o ScrollView
-
             disableFrame.IsVisible = false;
             loadingIndicator.IsRunning = true;
             loadingIndicator.IsVisible = true;
             listaProdutosExcel.IsVisible = false;
-
             int tentativas = 0;
             int maxTentativas = 3;
 
@@ -348,19 +296,15 @@ namespace Gerador_de_Pedidos
                                     CriarListaComProdutoPadrao();
                                     return;
                                 }
-
                                 Lista.Clear();
 
                                 var rowCount = worksheet.Dimension.Rows;
                                 bool linhaVazia = true;
-
                                 for (int row = 2; row <= rowCount; row++)
                                 {
                                     var codigo = worksheet.Cells[row, 1]?.Text;
                                     var descricao = worksheet.Cells[row, 2]?.Text;
                                     var valor = worksheet.Cells[row, valorColumnIndex]?.Text;
-
-
                                     if (string.IsNullOrWhiteSpace(codigo) &&
                                         string.IsNullOrWhiteSpace(descricao) &&
                                         string.IsNullOrWhiteSpace(valor))
@@ -498,7 +442,7 @@ namespace Gerador_de_Pedidos
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-        CalValorTotal();
+        CallValorTotal();
         }
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
@@ -523,7 +467,7 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-            CalValorTotal();
+            CallValorTotal();
         }
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
@@ -578,18 +522,34 @@ namespace Gerador_de_Pedidos
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
-            CalValorTotal();
+            CallValorTotal();
         }
 
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
-            var AllItems = listaProdutosSelect.ItemsSource.Cast<Product>().ToList();
+            var vendedor = txtVendedor.Text;
+            var tipopedido = pedido.SelectedItem?.ToString() ?? "";
+            // Usando TryParse para evitar exceção em caso de valor inválido ou nulo
+            int? valorfrete = null;
+            if (int.TryParse(txtFrete.Text, out int frete))
+            {
+                valorfrete = frete;
+            }
+            var tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
+            var tipopagamento = pag.SelectedItem?.ToString() ?? "";
+            var faturamento = txtFaturamento.Text;
+            var defeitoequipamento = txtDefeitos.Text;
+            var numseriequipamento = txtNS.Text;
+            var tiponota = nota.SelectedItem?.ToString() ?? "";
+            var numnota = txtnota.Text;
+            var chavenotaexterna = txtChaveNotaExterna.Text;
             int novoNumeroPedido = await GetProximoNumeroPedidoAsync();
             if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
             {
+                var AllItems = listaProdutosSelect.ItemsSource.Cast<Product>().ToList();
                 foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
                 {
-                    var novoPedido = new Pedido
+                    var novoProdutoPedido = new ProdutosPedido
                     {
                         NumeroPedido = novoNumeroPedido,
                         Codigo = product.Codigo,
@@ -600,8 +560,29 @@ namespace Gerador_de_Pedidos
                         DataPedido = DateTime.Now
                     };
 
-                    await App.Database.SalvarPedidoAsync(novoPedido);
+                    await App.Database.SalvarProdutosAsync(novoProdutoPedido);
                 }
+
+                var novoInfoPedido = new InfoPedido
+                {
+                    NumeroPedido = novoNumeroPedido,
+                    TipoPedido = tipopedido,
+                    Vendedor = vendedor,
+                    ValorFrete = tipopedido == "Venda" ? valorfrete : null,
+                    TipoFrete = tipopedido == "Venda" ? tipofrete : "",
+                    TipoPagamento = tipopedido == "Venda" ? tipopagamento : "",
+                    Faturamento = tipopedido == "Venda" ? faturamento : "",
+                    DefeitoEquipamento = tipopedido == "Venda" ? "" : defeitoequipamento,
+                    NumSerieEquipamento = tipopedido == "Venda" ? "" : numseriequipamento,
+                    TipoNota = tipopedido == "Venda" ? "" : tiponota,
+                    NumNota = tipopedido == "Venda" ? "" : numnota,
+                    ChaveNotaExterna = tipopedido == "Venda" ? "" : chavenotaexterna,
+                    DataPedido = DateTime.Now
+                };
+
+
+                await App.Database.SalvarInfoPedidoAsync(novoInfoPedido);
+
                 foreach (var item in AllItems)
                 {
                     ListaSelecionados.Remove(item);
@@ -634,7 +615,7 @@ namespace Gerador_de_Pedidos
         iconCopy
     );
 }
-        private decimal CalValorTotal()
+        private decimal CallValorTotal()
         {
             decimal frete = 0m;
             bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
@@ -667,23 +648,31 @@ namespace Gerador_de_Pedidos
 
             // Determina os estados com base nas seleções
             bool isVenda = pickerPedido == "Venda";
+            bool isOrcamento = pickerPedido == "Orçamento";
             bool isPix = pickerPagamento == "PIX";
             bool isGarantia = pickerPedido == "Garantia com retorno" || pickerPedido == "Garantia sem retorno";
             bool isNotaExterna = pickerNota == "Nota Externa" && isGarantia;
             bool isNotaInterna = pickerNota == "Nota Interna" && isGarantia;
             // Atualiza a visibilidade com base nos estados calculados
-            SetVisibility(txtFaturamento, isVenda && !isPix);
+            SetVisibility(txtFaturamento, !isGarantia && !isPix);
+            SetVisibility(txtVendedor, !isOrcamento);
             SetVisibility(txtChaveNotaExterna, isNotaExterna);
-            SetVisibility(txtDefeitos, !isVenda);
-            SetVisibility(txtNS, !isVenda);
-            SetVisibility(typeNota, !isVenda);
-            SetVisibility(nota, !isVenda);
-            SetVisibility(txtnota, !isVenda);
-            SetVisibility(pag, !isGarantia);
+            SetVisibility(txtDefeitos, !isVenda && !isOrcamento);
+            SetVisibility(txtNS, !isVenda && !isOrcamento);
+            SetVisibility(typeNota, !isVenda && !isOrcamento);
+            SetVisibility(nota, !isVenda && !isOrcamento);
+            SetVisibility(txtnota, !isVenda && !isOrcamento);
+            SetVisibility(pag, !isGarantia );
             SetVisibility(txtpag, !isGarantia);
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
+
+            if (!isPix)
+            {
+                if (MeuBudget.Valor_Total == "10") {
+                } 
+            }
         }
         /// <summary>
         /// Define a visibilidade de um elemento de forma centralizada.

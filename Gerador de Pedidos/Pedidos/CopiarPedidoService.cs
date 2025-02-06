@@ -27,7 +27,10 @@ namespace Gerador_de_Pedidos.Services
         {
             string freteTotal = "";
             decimal totalGeral = 0m;
-            var texto = $"VENDEDOR: {vendedor}\nSAÍDA: {saida}\n\n";
+            var texto = "";
+            if (pedidoSelecionado?.ToString() != "Orçamento") { 
+            texto = $"VENDEDOR: {vendedor}\nSAÍDA: {saida}\n\n";
+            }
 
             if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
             {

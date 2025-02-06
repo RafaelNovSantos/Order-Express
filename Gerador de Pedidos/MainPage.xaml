@@ -88,7 +88,8 @@ Text="{Binding MeuBudget.Numero_Pedido}"
                         </HorizontalStackLayout>
                     <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                         <Picker.Items>
-                            <x:String>Venda</x:String>
+                                <x:String>Orçamento</x:String>
+                                <x:String>Venda</x:String>
                             <x:String>Garantia com retorno</x:String>
                             <x:String>Garantia sem retorno</x:String>
                         </Picker.Items>
