@@ -23,6 +23,7 @@ namespace Gerador_de_Pedidos
                    fonts.AddFont("Poppins-Medium.ttf", "Poppins-Medium");
                    fonts.AddFont("Poppins-Bold.ttf", "Poppins-Bold");
                    fonts.AddFont("fontello.ttf", "IconsFont");
+                   fonts.AddFont("search.ttf", "SearchFont");
                });
 
             return builder.Build(); // Certifique-se de retornar a instância do MauiApp

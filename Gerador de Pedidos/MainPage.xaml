@@ -223,7 +223,7 @@ Margin="1">
                                      WidthRequest="410"
                                      
 >
-                            <Grid Padding="10" ColumnSpacing="5" HorizontalOptions="Center">
+                            <Grid Padding="0" ColumnSpacing="5" HorizontalOptions="Center">
                                 <!-- Definindo as colunas -->
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -250,7 +250,7 @@ Margin="1">
                                     </Image.Source>
                                 </Image>
                             </Grid>
-                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="13">
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10" Padding="3">
                                 <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="120"  HorizontalOptions="Start">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
@@ -267,7 +267,46 @@ Margin="1">
                                     </Button.ImageSource>
                                 </Button>
                             </HorizontalStackLayout>
+                            <Frame HasShadow="False" 
+       BorderColor="Transparent" 
+                                    Margin="3"
+                                       Padding="0"
+       CornerRadius="5" 
+       VerticalOptions="Center" 
+       BackgroundColor="white" 
+       >
+                                <Grid    >
+                                    <!-- Define duas colunas -->
 
+
+                                    <!-- Barra de pesquisa na segunda coluna -->
+                                    <SearchBar x:Name="searchBarProdutoSelecionado"
+Placeholder="Buscar produto no pedido..."
+TextChanged="OnSearchBarProdutoSelecionadoTextChanged"
+BackgroundColor="#333"
+TextColor="White"
+PlaceholderColor="White"
+CancelButtonColor="White"
+HeightRequest="30"
+Margin="1">
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+                                                <VisualState Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#333" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState Name="Focused">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#00c4b4" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </SearchBar>
+
+                                </Grid>
+                            </Frame>
                             <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" WidthRequest="395" Padding="0" HorizontalOptions="End">
                                 <Grid  Padding="10" ColumnSpacing="19"  VerticalOptions="Start">
                                     <Grid.ColumnDefinitions>
@@ -466,7 +505,7 @@ VerticalTextAlignment="Center"/>
                                          HeightRequest="614"
                          BackgroundColor="#1e1e1e">
 
-                                <Grid Padding="10" 
+                                <Grid Padding="0" 
               ColumnSpacing="10" 
                               
               HorizontalOptions="Center">
@@ -497,7 +536,7 @@ VerticalTextAlignment="Center"/>
                                     </Image>
                                 </Grid>
 
-                                <HorizontalStackLayout HorizontalOptions="End" Spacing="5" Padding="10">
+                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" >
 
                                     <Picker x:Name="equipamentos" 
                     Style="{StaticResource HeaderPickerStyleplanilha}" 
@@ -519,7 +558,7 @@ VerticalTextAlignment="Center"/>
                                         </Picker.Items>
                                     </Picker>
                                     <HorizontalStackLayout HorizontalOptions="Center">
-                                        <Button x:Name="teste" Clicked="OnAlterarLinkClicked"  WidthRequest="44"
+                                        <Button  Clicked="OnAlterarLinkClicked"  WidthRequest="44"
                                                 HeightRequest="44"
                              VerticalOptions="Start"                 
 BackgroundColor="#00FFFFFF" 
@@ -539,6 +578,46 @@ BorderColor="#00ED2D2D">
 
                                     </HorizontalStackLayout>
                                 </HorizontalStackLayout>
+                                <Frame HasShadow="False" 
+       BorderColor="Transparent" 
+                                    Margin="3"
+                                       Padding="0"
+       CornerRadius="5" 
+       VerticalOptions="Center" 
+       BackgroundColor="white" 
+       >
+                                    <Grid    >
+                                        <!-- Define duas colunas -->
+
+
+                                        <!-- Barra de pesquisa na segunda coluna -->
+                                        <SearchBar x:Name="searchBarprodutosexcel"
+Placeholder="Buscar produto da base..."
+TextChanged="OnSearchBarProdutosExcelTextChanged"
+BackgroundColor="#333"
+TextColor="White"
+PlaceholderColor="White"
+CancelButtonColor="White"
+HeightRequest="30"
+Margin="1">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup Name="CommonStates">
+                                                    <VisualState Name="Normal">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="#333" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                    <VisualState Name="Focused">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="#00c4b4" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                        </SearchBar>
+
+                                    </Grid>
+                                </Frame>
 
                                 <Frame HasShadow="False" 
                BorderColor="Transparent" 
@@ -570,7 +649,7 @@ BorderColor="#00ED2D2D">
                        Style="{StaticResource HeaderLabelStyle}"/>
                                     </Grid>
                                 </Frame>
-
+                              
 
                                 <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                                     <!-- Texto de instrução -->
@@ -583,7 +662,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                             <FontImageSource FontFamily="IconsFont" Glyph="&#xE800;" Size="42" Color="Transparent" />
                                         </Image.Source>
                                     </Image>
-
+                                   
                                     <Frame BorderColor="White" 
     CornerRadius="5" 
     HasShadow="True" 
@@ -600,6 +679,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                         <ScrollView>
 
                                             <CollectionView 
+                                                 
             x:Name="listaProdutosExcel"
             ItemsLayout="VerticalList"
                                     

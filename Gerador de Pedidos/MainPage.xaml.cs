@@ -1,12 +1,16 @@
 ﻿using OfficeOpenXml;
 using Gerador_de_Pedidos.Services;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace Gerador_de_Pedidos
 {
     public partial class MainPage : ContentPage
     {
         private string linkplanilha;
+       
+        public ObservableCollection<Product> ProdutosFiltrados { get; set; }
+        public ObservableCollection<Product> ProdutosFiltradosSelecionados { get; set; }
         public MainPage()
         {
             InitializeComponent();
@@ -20,13 +24,47 @@ namespace Gerador_de_Pedidos
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
+           
+            ProdutosFiltrados = new ObservableCollection<Product>(Lista);
+            ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
         }
         public List<Product> Lista = new List<Product>();
         public List<Product> ListaSelecionados = new List<Product>();
         public Budget MeuBudget { get; set; }
         private string _ultimoItemSelecionado;
-
+        private async void OnSearchBarProdutosExcelTextChanged(object sender, TextChangedEventArgs e)
+        {
+            string termoBusca = e.NewTextValue?.ToLower() ?? "";
+            Lista.Clear();
+            foreach (var produto in ProdutosFiltrados)
+            {
+                if (produto.Codigo.ToLower().Contains(termoBusca) ||
+                    produto.Descricao.ToLower().Contains(termoBusca))
+                {
+                    Lista.Add(produto);
+                }
+            }
+            // Atualizar a visualização da lista
+            listaProdutosExcel.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+            listaProdutosExcel.ItemsSource = Lista;
+        }
+        private async void OnSearchBarProdutoSelecionadoTextChanged(object sender, TextChangedEventArgs e)
+        {
+            string termoBusca = e.NewTextValue?.ToLower() ?? "";
+            ListaSelecionados.Clear();
+            foreach (var produto in ProdutosFiltradosSelecionados)
+            {
+                if (produto.Codigo.ToLower().Contains(termoBusca) ||
+                    produto.Descricao.ToLower().Contains(termoBusca))
+                {
+                    ListaSelecionados.Add(produto);
+                }
+            }
+            // Atualizar a visualização da lista
+            listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+            listaProdutosSelect.ItemsSource = ListaSelecionados;
+        }
         public async Task<int> GetProximoNumeroPedidoAsync()
         {
             // Cria a conexão usando o banco de dados assíncrono
@@ -197,6 +235,15 @@ namespace Gerador_de_Pedidos
             }
             await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
             // Evite chamar `LerExcelComColuna` novamente, já que isso é feito com base na seleção
+
+            ProdutosFiltrados.Clear();
+            foreach (var produto in Lista)
+            {
+                ProdutosFiltrados.Add(produto);
+            }
+
+            OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
+            OnSearchBarProdutoSelecionadoTextChanged(searchBarProdutoSelecionado, new TextChangedEventArgs(searchBarProdutoSelecionado.Text, searchBarProdutoSelecionado.Text));
         }
         private async Task ProcessarSelecao(string selectedValue)
         {
@@ -437,11 +484,17 @@ namespace Gerador_de_Pedidos
                         break;
                 }
             }
+
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-        CallValorTotal();
-            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
+            ProdutosFiltradosSelecionados.Clear();
+            foreach (var produto in ListaSelecionados)
+            {
+                ProdutosFiltradosSelecionados.Add(produto);
+            }
+            CallValorTotal();
+            CalcularFaturamento();
         }
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
@@ -466,8 +519,13 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
+            ProdutosFiltradosSelecionados.Clear();
+            foreach (var produto in ListaSelecionados)
+            {
+                ProdutosFiltradosSelecionados.Add(produto);
+            }
             CallValorTotal();
-            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
+            CalcularFaturamento();
         }
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
@@ -522,8 +580,17 @@ namespace Gerador_de_Pedidos
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
             }
+            ProdutosFiltradosSelecionados.Clear();
+            foreach (var produto in ListaSelecionados)
+            {
+                ProdutosFiltradosSelecionados.Add(produto);
+            }
+
+            OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
+
+            OnSearchBarProdutoSelecionadoTextChanged(searchBarProdutoSelecionado, new TextChangedEventArgs(searchBarProdutoSelecionado.Text, searchBarProdutoSelecionado.Text));
             CallValorTotal();
-            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
+            CalcularFaturamento();
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
@@ -592,6 +659,11 @@ namespace Gerador_de_Pedidos
                 listaProdutosSelect.ItemsSource = ListaSelecionados;
             }
             await GetProximoNumeroPedidoAsync();
+            ProdutosFiltradosSelecionados.Clear();
+            foreach (var produto in ListaSelecionados)
+            {
+                ProdutosFiltradosSelecionados.Add(produto);
+            }
         }
      private async void OnCopiarClicked(object sender, EventArgs e)
 {
@@ -675,48 +747,36 @@ namespace Gerador_de_Pedidos
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
-            
-                Debug.WriteLine($"Valor total {CallValorTotal()}");
-                if (CallValorTotal() < 110)
-                {
-                    pag.SelectedIndex = 0;
-                    txtFaturamento.Text = "";
-                }
-                else {
-                    pag.SelectedIndex = 1;
-                    if (CallValorTotal() >= 110 && CallValorTotal() <= 300)
-                    {
-                        txtFaturamento.Text = "15 dias";
-                    }
-                    if (CallValorTotal() > 300 && CallValorTotal() <= 700)
-                    {
-                        txtFaturamento.Text = "15/30";
-                    }
-                    if (CallValorTotal() > 700 && CallValorTotal() <= 2000)
-                    {
-                        txtFaturamento.Text = "30/45/60";
-                    }
-                    if (CallValorTotal() > 2000 && CallValorTotal() <= 3500)
-                    {
-                        txtFaturamento.Text = "30/60/90";
-                    }
-                    if (CallValorTotal() > 3500 && CallValorTotal() <= 5000)
-                    {
-                        txtFaturamento.Text = "30/45/60/75/90/105";
-                    }
-                    if (CallValorTotal() > 5000)
-                    {
-                        txtFaturamento.Text = "30/60/90/120";
-                    }
-                }
-                    
-            
         }
-        /// <summary>
-        /// Define a visibilidade de um elemento de forma centralizada.
-        /// </summary>
-        /// <param name="control">O controle cuja visibilidade será alterada.</param>
-        /// <param name="isVisible">True para visível, False para invisível.</param>
+
+        private void CalcularFaturamento()
+        {
+            decimal valorTotal = CallValorTotal();
+
+if (valorTotal< 110)
+{
+    pag.SelectedIndex = 0;
+    txtFaturamento.Text = "";
+}
+else
+{
+    pag.SelectedIndex = 1;
+
+    if (valorTotal <= 300)
+        txtFaturamento.Text = "15 dias";
+    else if (valorTotal <= 700)
+        txtFaturamento.Text = "15/30";
+    else if (valorTotal <= 2000)
+        txtFaturamento.Text = "30/45/60";
+    else if (valorTotal <= 3500)
+        txtFaturamento.Text = "30/60/90";
+    else if (valorTotal <= 5000)
+        txtFaturamento.Text = "30/45/60/75/90/105";
+    else
+        txtFaturamento.Text = "30/60/90/120";
+}
+        }
+
         private void SetVisibility(View control, bool isVisible)
         {
             if (control != null)
@@ -724,6 +784,5 @@ namespace Gerador_de_Pedidos
                 control.IsVisible = isVisible;
             }
         }
-
     }
 }
