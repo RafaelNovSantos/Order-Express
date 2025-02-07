@@ -76,10 +76,11 @@ namespace Gerador_de_Pedidos.Services
                 }
                 texto += $"Pagamento: {pagamento}\n";
 
-                if (pedidoSelecionado?.ToString() == "Venda" && pagamento == "BOLETO")
-                {
-                    texto += $"Faturamento: {txtFaturamento}\n";
-                }
+              if (pedidoSelecionado is string pedidoStr && !pedidoStr.StartsWith("Garantia") && pagamento == "BOLETO")
+{
+    texto += $"Faturamento: {txtFaturamento}\n";
+}
+
             }
             else
             {

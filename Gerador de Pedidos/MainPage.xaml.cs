@@ -117,7 +117,7 @@ namespace Gerador_de_Pedidos
                 }
             }
 
-            CallValorTotal();
+           
         }
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
@@ -262,7 +262,6 @@ namespace Gerador_de_Pedidos
                 await DisplayAlert("Erro", "Nenhum valor selecionado.", "OK");
             }
         }
-
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
             // Mostrar o indicador de carregamento e desativar o ScrollView
@@ -438,11 +437,11 @@ namespace Gerador_de_Pedidos
                         break;
                 }
             }
-
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
         CallValorTotal();
+            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
         }
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
@@ -468,6 +467,7 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
             CallValorTotal();
+            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
         }
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
@@ -523,8 +523,8 @@ namespace Gerador_de_Pedidos
                 }
             }
             CallValorTotal();
+            OnVerificarSelecoesClicked(pag, EventArgs.Empty);
         }
-
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
             var vendedor = txtVendedor.Text;
@@ -562,7 +562,6 @@ namespace Gerador_de_Pedidos
 
                     await App.Database.SalvarProdutosAsync(novoProdutoPedido);
                 }
-
                 var novoInfoPedido = new InfoPedido
                 {
                     NumeroPedido = novoNumeroPedido,
@@ -636,7 +635,16 @@ namespace Gerador_de_Pedidos
             {
                 totalGeral += frete;
             }
-            MeuBudget.Valor_Total = $"{totalGeral:F2}";
+            if (MeuBudget != null)
+            {
+                MeuBudget.Valor_Total = $"{totalGeral:F2}";
+            }
+            else
+            {
+                Debug.WriteLine("Erro: MeuBudget é nulo!");
+            }
+
+            
             return totalGeral;
         }
         private void OnVerificarSelecoesClicked(object sender, EventArgs e)
@@ -667,12 +675,42 @@ namespace Gerador_de_Pedidos
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
-
-            if (!isPix)
-            {
-                if (MeuBudget.Valor_Total == "10") {
-                } 
-            }
+            
+                Debug.WriteLine($"Valor total {CallValorTotal()}");
+                if (CallValorTotal() < 110)
+                {
+                    pag.SelectedIndex = 0;
+                    txtFaturamento.Text = "";
+                }
+                else {
+                    pag.SelectedIndex = 1;
+                    if (CallValorTotal() >= 110 && CallValorTotal() <= 300)
+                    {
+                        txtFaturamento.Text = "15 dias";
+                    }
+                    if (CallValorTotal() > 300 && CallValorTotal() <= 700)
+                    {
+                        txtFaturamento.Text = "15/30";
+                    }
+                    if (CallValorTotal() > 700 && CallValorTotal() <= 2000)
+                    {
+                        txtFaturamento.Text = "30/45/60";
+                    }
+                    if (CallValorTotal() > 2000 && CallValorTotal() <= 3500)
+                    {
+                        txtFaturamento.Text = "30/60/90";
+                    }
+                    if (CallValorTotal() > 3500 && CallValorTotal() <= 5000)
+                    {
+                        txtFaturamento.Text = "30/45/60/75/90/105";
+                    }
+                    if (CallValorTotal() > 5000)
+                    {
+                        txtFaturamento.Text = "30/60/90/120";
+                    }
+                }
+                    
+            
         }
         /// <summary>
         /// Define a visibilidade de um elemento de forma centralizada.

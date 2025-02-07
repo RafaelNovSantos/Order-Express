@@ -172,8 +172,8 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                         <Picker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                         <Picker.Items>
-                            <x:String>BOLETO</x:String>
-                            <x:String>PIX</x:String>
+                                <x:String>PIX</x:String>
+                                <x:String>BOLETO</x:String>
                         </Picker.Items>
                     </Picker>
 
