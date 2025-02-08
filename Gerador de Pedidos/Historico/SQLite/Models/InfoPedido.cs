@@ -7,7 +7,7 @@ public class InfoPedido
     public int NumeroPedido { get; set; }
     public string TipoPedido { get; set; }
     public string Vendedor { get; set; }
-    public int? ValorFrete { get; set; }
+    public decimal? ValorFrete { get; set; }
     public string TipoFrete { get; set; }
     public string TipoPagamento { get; set; }
     public string Faturamento { get; set; }

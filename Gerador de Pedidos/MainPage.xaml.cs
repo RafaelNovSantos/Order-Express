@@ -8,8 +8,8 @@ namespace Gerador_de_Pedidos
     public partial class MainPage : ContentPage
     {
         private string linkplanilha;
-       
-        public ObservableCollection<Product> ProdutosFiltrados { get; set; }
+        private readonly SalvarPedido _salvarPedido;
+        public ObservableCollection<Product> ProdutosFiltradosExcel { get; set; }
         public ObservableCollection<Product> ProdutosFiltradosSelecionados { get; set; }
         public MainPage()
         {
@@ -24,20 +24,21 @@ namespace Gerador_de_Pedidos
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
-           
-            ProdutosFiltrados = new ObservableCollection<Product>(Lista);
+            _salvarPedido = new SalvarPedido(App.Database);
+            ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
         }
         public List<Product> Lista = new List<Product>();
-        public List<Product> ListaSelecionados = new List<Product>();
+        public ObservableCollection<Product> ListaSelecionados { get; set; } = new ObservableCollection<Product>();
+
         public Budget MeuBudget { get; set; }
         private string _ultimoItemSelecionado;
         private async void OnSearchBarProdutosExcelTextChanged(object sender, TextChangedEventArgs e)
         {
             string termoBusca = e.NewTextValue?.ToLower() ?? "";
             Lista.Clear();
-            foreach (var produto in ProdutosFiltrados)
+            foreach (var produto in ProdutosFiltradosExcel)
             {
                 if (produto.Codigo.ToLower().Contains(termoBusca) ||
                     produto.Descricao.ToLower().Contains(termoBusca))
@@ -154,7 +155,7 @@ namespace Gerador_de_Pedidos
                     entry.Text = e.OldTextValue;
                 }
             }
-
+            CallValorTotal();
            
         }
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
@@ -235,15 +236,17 @@ namespace Gerador_de_Pedidos
             }
             await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
             // Evite chamar `LerExcelComColuna` novamente, já que isso é feito com base na seleção
+            AddProdutosFiltradosExcel();
+            OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
+        }
 
-            ProdutosFiltrados.Clear();
+        private void AddProdutosFiltradosExcel()
+        {
+             ProdutosFiltradosExcel.Clear();
             foreach (var produto in Lista)
             {
-                ProdutosFiltrados.Add(produto);
+                ProdutosFiltradosExcel.Add(produto);
             }
-
-            OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
-            OnSearchBarProdutoSelecionadoTextChanged(searchBarProdutoSelecionado, new TextChangedEventArgs(searchBarProdutoSelecionado.Text, searchBarProdutoSelecionado.Text));
         }
         private async Task ProcessarSelecao(string selectedValue)
         {
@@ -461,7 +464,8 @@ namespace Gerador_de_Pedidos
 
             if (string.IsNullOrEmpty(newValue))
                 return;
-
+            var saveTextSearchBarProdutoSelecioando = searchBarProdutoSelecionado.Text;
+            searchBarProdutoSelecionado.Text = "";
             // Atualiza todos os itens selecionados
             foreach (var item in selectedItems)
             {
@@ -484,17 +488,14 @@ namespace Gerador_de_Pedidos
                         break;
                 }
             }
-
+           
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-            ProdutosFiltradosSelecionados.Clear();
-            foreach (var produto in ListaSelecionados)
-            {
-                ProdutosFiltradosSelecionados.Add(produto);
-            }
+            AddProdutosProdutosFiltradosSelecionados();
             CallValorTotal();
             CalcularFaturamento();
+            searchBarProdutoSelecionado.Text = saveTextSearchBarProdutoSelecioando;
         }
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
@@ -510,7 +511,8 @@ namespace Gerador_de_Pedidos
             bool confirm = await DisplayAlert("Confirmação", $"Deseja realmente excluir {selectedItems.Count} item(s) selecionado(s)?", "Sim", "Não");
             if (!confirm)
                 return;
-
+            var saveTextSearchBarProdutoSelecioando = searchBarProdutoSelecionado.Text;
+            searchBarProdutoSelecionado.Text = "";
             foreach (var item in selectedItems)
             {
                 ListaSelecionados.Remove(item);
@@ -519,13 +521,10 @@ namespace Gerador_de_Pedidos
             listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
-            ProdutosFiltradosSelecionados.Clear();
-            foreach (var produto in ListaSelecionados)
-            {
-                ProdutosFiltradosSelecionados.Add(produto);
-            }
+            AddProdutosProdutosFiltradosSelecionados();
             CallValorTotal();
             CalcularFaturamento();
+            searchBarProdutoSelecionado.Text = saveTextSearchBarProdutoSelecioando;
         }
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
@@ -556,6 +555,8 @@ namespace Gerador_de_Pedidos
             }
             else
             {
+              
+                searchBarProdutoSelecionado.Text = "";
                 // Cria um novo produto e adiciona à lista se todos os campos estiverem preenchidos
                 var produto = new Product
                 {
@@ -579,86 +580,50 @@ namespace Gerador_de_Pedidos
                     // Força a atualização dos dados do Picker
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
+              
             }
-            ProdutosFiltradosSelecionados.Clear();
-            foreach (var produto in ListaSelecionados)
-            {
-                ProdutosFiltradosSelecionados.Add(produto);
-            }
-
-            OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
-
-            OnSearchBarProdutoSelecionadoTextChanged(searchBarProdutoSelecionado, new TextChangedEventArgs(searchBarProdutoSelecionado.Text, searchBarProdutoSelecionado.Text));
+            AddProdutosProdutosFiltradosSelecionados();
             CallValorTotal();
             CalcularFaturamento();
+            
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
-            var vendedor = txtVendedor.Text;
-            var tipopedido = pedido.SelectedItem?.ToString() ?? "";
-            // Usando TryParse para evitar exceção em caso de valor inválido ou nulo
-            int? valorfrete = null;
-            if (int.TryParse(txtFrete.Text, out int frete))
-            {
-                valorfrete = frete;
-            }
-            var tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
-            var tipopagamento = pag.SelectedItem?.ToString() ?? "";
-            var faturamento = txtFaturamento.Text;
-            var defeitoequipamento = txtDefeitos.Text;
-            var numseriequipamento = txtNS.Text;
-            var tiponota = nota.SelectedItem?.ToString() ?? "";
-            var numnota = txtnota.Text;
-            var chavenotaexterna = txtChaveNotaExterna.Text;
-            int novoNumeroPedido = await GetProximoNumeroPedidoAsync();
-            if (listaProdutosSelect.ItemsSource != null && listaProdutosSelect.ItemsSource.Cast<Product>().Any())
-            {
-                var AllItems = listaProdutosSelect.ItemsSource.Cast<Product>().ToList();
-                foreach (var product in listaProdutosSelect.ItemsSource.Cast<Product>())
-                {
-                    var novoProdutoPedido = new ProdutosPedido
-                    {
-                        NumeroPedido = novoNumeroPedido,
-                        Codigo = product.Codigo,
-                        Descricao = product.Descricao,
-                        Valor = product.Valor,
-                        Quantidade = product.Quantidade,
-                        VersaoPeca = product.Versao_Peca,
-                        DataPedido = DateTime.Now
-                    };
+            string vendedor = txtVendedor.Text;
+            string tipopedido = pedido.SelectedItem?.ToString() ?? "";
+            string valorFrete = txtFrete.Text;
+            string tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
+            string tipopagamento = pag.SelectedItem?.ToString() ?? "";
+            string faturamento = txtFaturamento.Text;
+            string defeitoequipamento = txtDefeitos.Text;
+            string numseriequipamento = txtNS.Text;
+            string tiponota = nota.SelectedItem?.ToString() ?? "";
+            string numnota = txtnota.Text;
+            string chavenotaexterna = txtChaveNotaExterna.Text;
 
-                    await App.Database.SalvarProdutosAsync(novoProdutoPedido);
-                }
-                var novoInfoPedido = new InfoPedido
-                {
-                    NumeroPedido = novoNumeroPedido,
-                    TipoPedido = tipopedido,
-                    Vendedor = vendedor,
-                    ValorFrete = tipopedido == "Venda" ? valorfrete : null,
-                    TipoFrete = tipopedido == "Venda" ? tipofrete : "",
-                    TipoPagamento = tipopedido == "Venda" ? tipopagamento : "",
-                    Faturamento = tipopedido == "Venda" ? faturamento : "",
-                    DefeitoEquipamento = tipopedido == "Venda" ? "" : defeitoequipamento,
-                    NumSerieEquipamento = tipopedido == "Venda" ? "" : numseriequipamento,
-                    TipoNota = tipopedido == "Venda" ? "" : tiponota,
-                    NumNota = tipopedido == "Venda" ? "" : numnota,
-                    ChaveNotaExterna = tipopedido == "Venda" ? "" : chavenotaexterna,
-                    DataPedido = DateTime.Now
-                };
+            var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
 
+            await _salvarPedido.SalvarPedidoAsync(
+                vendedor,
+                tipopedido,
+                valorFrete,
+                tipofrete,
+                tipopagamento,
+                faturamento,
+                defeitoequipamento,
+                numseriequipamento,
+                tiponota,
+                numnota,
+                chavenotaexterna,
+                produtosSelecionados,
+                ListaSelecionados,
+                listaProdutosSelect,
+                GetProximoNumeroPedidoAsync
+            );
+        }
 
-                await App.Database.SalvarInfoPedidoAsync(novoInfoPedido);
-
-                foreach (var item in AllItems)
-                {
-                    ListaSelecionados.Remove(item);
-                }
-                // Atualiza a CollectionView e limpa a seleção
-                listaProdutosSelect.SelectedItems.Clear(); // Limpa a seleção
-                listaProdutosSelect.ItemsSource = null;
-                listaProdutosSelect.ItemsSource = ListaSelecionados;
-            }
-            await GetProximoNumeroPedidoAsync();
+        private void AddProdutosProdutosFiltradosSelecionados()
+        {
             ProdutosFiltradosSelecionados.Clear();
             foreach (var produto in ListaSelecionados)
             {
@@ -690,7 +655,7 @@ namespace Gerador_de_Pedidos
         {
             decimal frete = 0m;
             bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
-                                 decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim().Replace(".", ","), out frete);
+                                 decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim(), out frete);
             decimal totalGeral = 0m;
 
             if (listaProdutosSelect.ItemsSource != null)
@@ -752,7 +717,6 @@ namespace Gerador_de_Pedidos
         private void CalcularFaturamento()
         {
             decimal valorTotal = CallValorTotal();
-
 if (valorTotal< 110)
 {
     pag.SelectedIndex = 0;
