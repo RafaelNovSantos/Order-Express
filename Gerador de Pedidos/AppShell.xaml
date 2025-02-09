@@ -60,6 +60,11 @@
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>
         </ShellContent>
+        <ShellContent x:Name="PageHistorico" Title="Historico" IsVisible="True" ContentTemplate="{DataTemplate local:Historico.HistoricoPage}" Route="Historico.HistoricoPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
+            </ShellContent.Icon>
+        </ShellContent>
     </FlyoutItem>
 
     <FlyoutItem Title="Planilha" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">

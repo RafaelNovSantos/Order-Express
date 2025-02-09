@@ -632,7 +632,8 @@ namespace Gerador_de_Pedidos
         }
      private async void OnCopiarClicked(object sender, EventArgs e)
 {
-    var service = new CopiarPedidoService();
+            
+            var service = new CopiarPedidoService();
     await service.CopiarTextoAsync(
         txtVendedor.Text,
         pedido.SelectedItem?.ToString(),

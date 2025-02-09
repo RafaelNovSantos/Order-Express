@@ -9,4 +9,6 @@ public class ProdutosPedido
     public string Quantidade { get; set; }
     public string VersaoPeca { get; set; }
     public DateTime DataPedido { get; set; }
+    // Propriedade que contém as posições no grid
+  
 }
