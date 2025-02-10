@@ -5,7 +5,10 @@
              Shell.NavBarIsVisible="False"
              Title="HistoricoPage"
              BackgroundColor="#F8F9FB">
+
+
     <ScrollView>
+        
         <VerticalStackLayout Padding="20" Spacing="15">
             <!-- Título da página -->
             <Label Text="Orders" FontSize="32" FontAttributes="Bold" 
@@ -13,10 +16,10 @@
 
             <!-- Filtros de Status -->
             <HorizontalStackLayout Spacing="10" Margin="0,10,0,20">
-                <Button Text="Pending 12" BackgroundColor="#E0E0E0" CornerRadius="20"/>
-                <Button Text="Responded 8" BackgroundColor="#E0E0E0" CornerRadius="20"/>
-                <Button Text="Assigned 13" BackgroundColor="#007AFF" TextColor="White" CornerRadius="20"/>
-                <Button Text="Completed 82" BackgroundColor="#E0E0E0" CornerRadius="20"/>
+                <Button Text="Todos" BackgroundColor="#E0E0E0" CornerRadius="20"/>
+                <Button Text="Orçamento" BackgroundColor="#007AFF" TextColor="White" CornerRadius="20"/>
+                <Button Text="Venda" BackgroundColor="#E0E0E0" CornerRadius="20"/>
+                <Button Text="Garantia" BackgroundColor="#E0E0E0" CornerRadius="20"/>
             </HorizontalStackLayout>
 
             <!-- Lista de Pedidos -->
@@ -25,24 +28,49 @@
                     <DataTemplate>
                         <Frame Padding="20" Margin="10" BorderColor="#ddd" CornerRadius="15" 
                                BackgroundColor="#FFFFFF" HasShadow="True">
-                            <Grid Padding="10" RowSpacing="5" ColumnDefinitions="*, *,*, *,*, *,*" RowDefinitions="Auto, *">
+                            <Grid Padding="10" RowSpacing="5" ColumnSpacing="50" ColumnDefinitions="*, *,*, *,*, *,*,*" RowDefinitions="Auto, *">
                                 <!-- Colunas para Labels -->
                                 <Label Text="Numero do pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="0"/>
                                 <Label Text="Tipo de pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="1"/>
                                 <Label Text="Vendedor" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="2"/>
-                                <Label Text="Tipo frete" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="3"/>
-                                <Label Text="Tipo pagamento" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="4"/>
-                                <Label Text="Data pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="5"/>
+                                <Label Text="Cliente" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="3"/>
+
+                                <Label Text="Tipo frete" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="4"/>
+                                <Label Text="Tipo pagamento" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="5"/>
+                                <Label Text="Data pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="6"/>
 
                                 <!-- Colunas para dados -->
                                 <Label Text="{Binding NumeroPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="0"/>
+
                                 <Label Text="{Binding TipoPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="1"/>
                                 <Label Text="{Binding Vendedor}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="2"/>
-                                <Label Text="{Binding TipoFrete}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="3"/>
-                                <Label Text="{Binding TipoPagamento}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="4"/>
-                                <Label Text="{Binding DataPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="5"/>
+                                <Label Text="{Binding Cliente}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="3"/>
 
-                                <Button Grid.Column="6" Grid.Row="0"></Button>
+                                <Label Text="{Binding TipoFrete}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="4"/>
+                                <Label Text="{Binding TipoPagamento}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="5"/>
+                              
+                                <Label Text="{Binding DataPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="6"/>
+
+                                <Button Grid.Row="0" Grid.Column="7" Clicked="ClickedMenu" Text="☰ Menu"
+       >
+                                    <FlyoutBase.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Clicked="OnEditMenuClicked" Text="Editar"
+                            >
+                                                <MenuFlyoutItem.IconImageSource>
+                                                    <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" />
+                                                </MenuFlyoutItem.IconImageSource>
+                                            </MenuFlyoutItem>
+                                            <MenuFlyoutItem Clicked="OnDeleteMenuClicked" Text="Excluir Pedido"
+                            >
+                                                <MenuFlyoutItem.IconImageSource>
+                                                    <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" />
+                                                </MenuFlyoutItem.IconImageSource>
+                                            </MenuFlyoutItem>
+                                        </MenuFlyout>
+                                    </FlyoutBase.ContextFlyout>
+                                </Button>
+
 
                             </Grid>
                         </Frame>

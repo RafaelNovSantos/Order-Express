@@ -1,6 +1,10 @@
 using System.Collections.ObjectModel;
 using SQLite;
-
+#if WINDOWS
+using Microsoft.UI.Input;
+using Windows.Devices.Input;
+using Windows.UI.Input.Preview.Injection;
+#endif
 namespace Gerador_de_Pedidos.Historico;
 
 public partial class HistoricoPage : ContentPage
@@ -14,7 +18,45 @@ public partial class HistoricoPage : ContentPage
         AddPedido(); 
         // Exemplo de lógica para ajustar as colunas e linhas dependendo do dispositivo ou tamanho da tela
     }
-private async void AddPedido()
+
+#if WINDOWS
+
+
+private void ClickedMenu(object sender, EventArgs e)
+{
+    var injector = InputInjector.TryCreate();
+    if (injector != null)
+    {
+        var info = new InjectedInputMouseInfo
+        {
+            MouseOptions = InjectedInputMouseOptions.RightDown
+        };
+        injector.InjectMouseInput(new[] { info });
+
+        info = new InjectedInputMouseInfo
+        {
+            MouseOptions = InjectedInputMouseOptions.RightUp
+        };
+        injector.InjectMouseInput(new[] { info });
+    }
+}
+#endif
+
+    private void OnEditMenuClicked(object sender, EventArgs e)
+    {
+        if (Shell.Current.CurrentPage is MainPage mainPage)
+        {
+            mainPage.VendedorTexto = "Novo Vendedor";
+        }
+
+
+    }
+
+    private void OnDeleteMenuClicked(object sender, EventArgs e)
+    {
+
+    }
+        private async void AddPedido()
     {
         // Cria a conexão usando o banco de dados assíncrono
         var connection = App.Database.GetConnection();

@@ -7,6 +7,12 @@ namespace Gerador_de_Pedidos
 {
     public partial class MainPage : ContentPage
     {
+        public string VendedorTexto
+        {
+            get => txtVendedor.Text;
+            set => txtVendedor.Text = value;
+        }
+
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
         public ObservableCollection<Product> ProdutosFiltradosExcel { get; set; }
@@ -28,6 +34,9 @@ namespace Gerador_de_Pedidos
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
+
+         
+            
         }
         public List<Product> Lista = new List<Product>();
         public ObservableCollection<Product> ListaSelecionados { get; set; } = new ObservableCollection<Product>();
