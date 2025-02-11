@@ -43,6 +43,8 @@ namespace Gerador_de_Pedidos
         {
             InitializeComponent();
 
+            // Registra o serviço de dados compartilhados
+            DependencyService.Register<DadosCompartilhadosService>();
             MainPage = new AppShell();
 
             // Customização para Entry

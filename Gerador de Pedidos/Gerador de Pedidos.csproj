@@ -73,15 +73,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidResource Remove="NovaPasta\**" />
-	  <Compile Remove="NovaPasta\**" />
-	  <EmbeddedResource Remove="NovaPasta\**" />
-	  <MauiCss Remove="NovaPasta\**" />
-	  <MauiXaml Remove="NovaPasta\**" />
-	  <None Remove="NovaPasta\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Remove="customWebViewHandler .cs" />
 	  <Compile Remove="Garantia\Models\CNPJItem.cs" />
 	  <Compile Remove="Garantia\Models\DataItem.cs" />

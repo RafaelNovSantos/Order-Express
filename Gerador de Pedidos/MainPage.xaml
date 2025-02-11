@@ -94,7 +94,7 @@ Text="{Binding MeuBudget.Numero_Pedido}"
                             <x:String>Garantia sem retorno</x:String>
                         </Picker.Items>
                     </Picker>
-                    <Entry x:Name="txtVendedor" Placeholder="Vendedor" WidthRequest="526"/>
+                        <Entry x:Name="txtVendedor" Text="{Binding PedidoReposiories.Vendedor}" Placeholder="Vendedor" WidthRequest="526"/>
 
                     <HorizontalStackLayout Spacing="10">
                         <Grid>

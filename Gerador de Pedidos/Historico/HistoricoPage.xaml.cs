@@ -5,24 +5,32 @@ using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
 #endif
+
+
 namespace Gerador_de_Pedidos.Historico;
 
 public partial class HistoricoPage : ContentPage
 {
+
+
     public ObservableCollection<ProdutosPedido> Produtos { get; set; } = new ObservableCollection<ProdutosPedido>();
     public ObservableCollection<InfoPedido> InfoPedido { get; set; } = new ObservableCollection<InfoPedido>();
+
+
 
     public HistoricoPage()
 	{
 		InitializeComponent();
-        AddPedido(); 
-        // Exemplo de lógica para ajustar as colunas e linhas dependendo do dispositivo ou tamanho da tela
-    }
+        AddPedido();
+      
 
+  
+    }
+  
 #if WINDOWS
 
 
-private void ClickedMenu(object sender, EventArgs e)
+    private void ClickedMenu(object sender, EventArgs e)
 {
     var injector = InputInjector.TryCreate();
     if (injector != null)
@@ -42,20 +50,52 @@ private void ClickedMenu(object sender, EventArgs e)
 }
 #endif
 
-    private void OnEditMenuClicked(object sender, EventArgs e)
-    {
-        if (Shell.Current.CurrentPage is MainPage mainPage)
-        {
-            mainPage.VendedorTexto = "Novo Vendedor";
-        }
 
+
+    private async void OnEditMenuClicked(object sender, EventArgs e)
+    {
+        string Vendedor = "Valor do Vendedor";  // Defina o valor conforme necessário
+        int NumeroPedido = 2;  // Defina o valor conforme necessário
+        string TipoPedido = "Venda";  // Defina o valor conforme necessário
+        string ValorFrete = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string TipoFrete = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string TipoPagamento = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string Faturamento = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string DefeitoEquipamento = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string NumSerieEquipamento = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string TipoNota = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string NumNota = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string ChaveNotaExterna = "Valor do Vendedor";  // Defina o valor conforme necessário
+        string DataPedido = "Valor do Vendedor";  // Defina o valor conforme necessário
+
+
+
+        // Armazena o valor no serviço
+        var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+
+        dadosService.Vendedor = Vendedor;
+        dadosService.NumeroPedido = NumeroPedido;
+        dadosService.TipoPedido = TipoPedido;
+        dadosService.ValorFrete = ValorFrete;
+        dadosService.TipoFrete = TipoFrete;
+        dadosService.TipoPagamento = TipoPagamento;
+        dadosService.Faturamento = Faturamento;
+        dadosService.DefeitoEquipamento = DefeitoEquipamento;
+        dadosService.NumSerieEquipamento = NumSerieEquipamento;
+        dadosService.TipoNota = TipoNota;
+        dadosService.NumNota = NumNota;
+        dadosService.ChaveNotaExterna = ChaveNotaExterna;
+        dadosService.DataPedido = DataPedido;
+
+
+
+        // Navega de volta para a MainPage
+        Shell.Current.GoToAsync("//MainPage");
 
     }
 
-    private void OnDeleteMenuClicked(object sender, EventArgs e)
-    {
 
-    }
+    private async void OnDeleteMenuClicked(object sender, EventArgs e) { }
         private async void AddPedido()
     {
         // Cria a conexão usando o banco de dados assíncrono

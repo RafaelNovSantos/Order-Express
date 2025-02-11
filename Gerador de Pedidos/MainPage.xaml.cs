@@ -3,15 +3,11 @@ using Gerador_de_Pedidos.Services;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 
+
 namespace Gerador_de_Pedidos
 {
     public partial class MainPage : ContentPage
     {
-        public string VendedorTexto
-        {
-            get => txtVendedor.Text;
-            set => txtVendedor.Text = value;
-        }
 
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
@@ -30,18 +26,41 @@ namespace Gerador_de_Pedidos
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
+         
             _salvarPedido = new SalvarPedido(App.Database);
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
 
-         
-            
+
+    
+
+
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // Recupera o valor do serviço de dados compartilhados
+            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+            if (dadosService != null && !string.IsNullOrEmpty(dadosService.Vendedor))
+            {
+                txtVendedor.Text = dadosService.Vendedor;  // Atualiza o txtVendedor
+                MeuBudget.Numero_Pedido = dadosService.NumeroPedido;
+                pedido.SelectedItem = dadosService.TipoPedido;
+                
+
+            }
+        }
+
+
+
         public List<Product> Lista = new List<Product>();
         public ObservableCollection<Product> ListaSelecionados { get; set; } = new ObservableCollection<Product>();
 
         public Budget MeuBudget { get; set; }
+
         private string _ultimoItemSelecionado;
         private async void OnSearchBarProdutosExcelTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -58,7 +77,12 @@ namespace Gerador_de_Pedidos
             // Atualizar a visualização da lista
             listaProdutosExcel.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
             listaProdutosExcel.ItemsSource = Lista;
+
+
         }
+
+
+     
         private async void OnSearchBarProdutoSelecionadoTextChanged(object sender, TextChangedEventArgs e)
         {
             string termoBusca = e.NewTextValue?.ToLower() ?? "";

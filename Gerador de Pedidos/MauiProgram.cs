@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Controls.Hosting;
-using CommunityToolkit.Maui; // Não se esqueça de importar o pacote CommunityToolkit
+﻿using CommunityToolkit.Maui; // Não se esqueça de importar o pacote CommunityToolkit
 
 namespace Gerador_de_Pedidos
 {
@@ -10,6 +6,7 @@ namespace Gerador_de_Pedidos
     {
         public static MauiApp CreateMauiApp()
         {
+
             var builder = MauiApp.CreateBuilder();
             builder
                .UseMauiApp<App>() // Inicializa o aplicativo MAUI
