@@ -8,28 +8,41 @@
 
 
     <ScrollView>
-        
+
         <VerticalStackLayout Padding="20" Spacing="15">
+
             <!-- Título da página -->
             <Label Text="Orders" FontSize="32" FontAttributes="Bold" 
-                   HorizontalOptions="Start" TextColor="#222"/>
+               HorizontalOptions="Start" TextColor="#222"/>
 
             <!-- Filtros de Status -->
             <HorizontalStackLayout Spacing="10" Margin="0,10,0,20">
-                <Button Text="Todos" BackgroundColor="#E0E0E0" CornerRadius="20"/>
-                <Button Text="Orçamento" BackgroundColor="#007AFF" TextColor="White" CornerRadius="20"/>
-                <Button Text="Venda" BackgroundColor="#E0E0E0" CornerRadius="20"/>
-                <Button Text="Garantia" BackgroundColor="#E0E0E0" CornerRadius="20"/>
+                <Button x:Name="btnTodos" Text="Todos" Clicked="btnGarantia_Clicked" 
+             CommandParameter="Todos" 
+            CornerRadius="20"/>
+
+                <Button x:Name="btnOrcamento" Clicked="btnGarantia_Clicked"  Text="Orçamento" 
+             CommandParameter="Orçamento" 
+            CornerRadius="20"/>
+
+                <Button x:Name="btnVenda" Text="Venda"  Clicked="btnGarantia_Clicked" 
+            CommandParameter="Venda" 
+            CornerRadius="20"/>
+
+                <Button x:Name="btnGarantia" Text="Garantia" 
+            Clicked="btnGarantia_Clicked" CommandParameter="Garantia" 
+            CornerRadius="20"/>
             </HorizontalStackLayout>
 
+
             <!-- Lista de Pedidos -->
-            <CollectionView x:Name="listaprodutos" Margin="0">
+            <CollectionView x:Name="listaprodutos" >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame Padding="20" Margin="10" BorderColor="#ddd" CornerRadius="15" 
-                               BackgroundColor="#FFFFFF" HasShadow="True">
+                           BackgroundColor="#FFFFFF" HasShadow="True">
                             <Grid Padding="10" RowSpacing="5" ColumnSpacing="50" ColumnDefinitions="*, *,*, *,*, *,*,*" RowDefinitions="Auto, *">
-                                <!-- Colunas para Labels -->
+                                <!-- Labels Cabeçalhos -->
                                 <Label Text="Numero do pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="0"/>
                                 <Label Text="Tipo de pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="1"/>
                                 <Label Text="Vendedor" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="2"/>
@@ -39,18 +52,14 @@
                                 <Label Text="Tipo pagamento" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="5"/>
                                 <Label Text="Data pedido" FontAttributes="Bold" TextColor="#888" Grid.Row="0" Grid.Column="6"/>
 
-                                <!-- Colunas para dados -->
+                                <!-- Dados Dinâmicos -->
                                 <Label Text="{Binding NumeroPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="0"/>
-
                                 <Label Text="{Binding TipoPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="1"/>
                                 <Label Text="{Binding Vendedor}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="2"/>
                                 <Label Text="{Binding Cliente}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="3"/>
-
                                 <Label Text="{Binding TipoFrete}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="4"/>
                                 <Label Text="{Binding TipoPagamento}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="5"/>
-                              
                                 <Label Text="{Binding DataPedido}" FontSize="18" TextColor="#222" Grid.Row="1" Grid.Column="6"/>
-
                                 <Button Grid.Row="0" Grid.Column="7" Clicked="ClickedMenu" Text="☰ Menu"
        >
                                     <FlyoutBase.ContextFlyout>
@@ -70,13 +79,12 @@
                                         </MenuFlyout>
                                     </FlyoutBase.ContextFlyout>
                                 </Button>
-
-
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

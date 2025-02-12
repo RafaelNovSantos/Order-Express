@@ -74,7 +74,7 @@ public class Database
                         .DeleteAsync();  // Deleta todos os produtos que correspondem ao critério
     }
 
-    public Task<int> AtualizarInfoPedidooAsync(InfoPedido infoPedido)
+    public Task<int> AtualizarInfoPedidoAsync(InfoPedido infoPedido)
     {
         return _database.UpdateAsync(infoPedido);  // Atualiza o produto existente
     }

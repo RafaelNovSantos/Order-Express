@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using SQLite;
+using Windows.Storage;
+
 #if WINDOWS
 using Microsoft.UI.Input;
 using Windows.Devices.Input;
@@ -16,6 +18,11 @@ public partial class HistoricoPage : ContentPage
     public ObservableCollection<ProdutosPedido> Produtos { get; set; } = new ObservableCollection<ProdutosPedido>();
     public ObservableCollection<InfoPedido> InfoPedido { get; set; } = new ObservableCollection<InfoPedido>();
 
+    public ObservableCollection<InfoPedido> pedidosFiltrados
+    {
+        get; set;
+    }
+
 
 
     public HistoricoPage()
@@ -24,7 +31,7 @@ public partial class HistoricoPage : ContentPage
 
         AddPedido();
 
-
+        pedidosFiltrados = new ObservableCollection<InfoPedido>(InfoPedido);
     }
 
 
@@ -125,11 +132,61 @@ public partial class HistoricoPage : ContentPage
         // Navega de volta para a MainPage
 
     }
+    private void FiltrarPedidos(string filtro)
+    {
+      
+        InfoPedido.Clear();
 
+        
+        // Filtra os pedidos com base no filtro
+        var pedidosSelecionados = (filtro == "Todos")
+            ? pedidosFiltrados
+            : pedidosFiltrados.Where(p => p.TipoPedido == filtro);
+
+        // Adiciona os pedidos filtrados
+        foreach (var pedido in pedidosSelecionados)
+        {
+            InfoPedido.Add(pedido);
+        }
+
+        // Atualiza o ItemsSource com os pedidos filtrados
+        listaprodutos.ItemsSource = new List<InfoPedido>();
+        listaprodutos.ItemsSource = InfoPedido;
+
+        // Atualiza as cores dos botões
+        AtualizarCoresBotoes(filtro);
+    }
+
+    private void AddProdutosFiltrados()
+    {
+        pedidosFiltrados.Clear();
+        foreach (var produto in InfoPedido)
+        {
+            pedidosFiltrados.Add(produto);
+        }
+    }
+    private void AtualizarCoresBotoes(string filtro)
+    {
+        // Alterando a cor dos botões com base no filtro
+        btnTodos.BackgroundColor = (filtro == "Todos") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
+        btnOrcamento.BackgroundColor = (filtro == "Orçamento") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
+        btnVenda.BackgroundColor = (filtro == "Venda") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
+        btnGarantia.BackgroundColor = (filtro == "Garantia") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
+    }
 
     private async void OnDeleteMenuClicked(object sender, EventArgs e) {
-    
-    
+
+        var menuItem = sender as MenuFlyoutItem;
+        if (menuItem?.BindingContext is InfoPedido pedido)
+        {
+
+
+            await App.Database.DeletarPedidoPorNumeroPedidoAsync(pedido.NumeroPedido);
+            await App.Database.DeletarProdutoPorNumeroPedidoAsync(pedido.NumeroPedido);
+            InfoPedido.Clear();
+            AddPedido();
+        }
+
     }
         private async void AddPedido()
     {
@@ -178,6 +235,8 @@ public partial class HistoricoPage : ContentPage
         }
         listaprodutos.ItemsSource = new List<InfoPedido>();
         listaprodutos.ItemsSource = InfoPedido;
+
+        AddProdutosFiltrados(); 
     }
 
 
@@ -193,35 +252,37 @@ public partial class HistoricoPage : ContentPage
         {
             foreach (var product in pedidos)
             {
-                var pedidoAtualizado = new InfoPedido
+                // Verifica se o produto já existe na lista pelo Número do Pedido (ou outro identificador único)
+                var pedidoExistente = InfoPedido.FirstOrDefault(p => p.NumeroPedido == product.NumeroPedido);
+
+                if (pedidoExistente != null)
                 {
-                    NumeroPedido = product.NumeroPedido,
-                    TipoPedido = product.TipoPedido,
-                    Vendedor = product.Vendedor,
-                    ValorFrete = product.ValorFrete,
-                    TipoPagamento = product.TipoPagamento,
-                    Faturamento = product.Faturamento,
-                    DefeitoEquipamento = product.DefeitoEquipamento,
-                    NumSerieEquipamento = product.NumSerieEquipamento,
-                    TipoNota = product.TipoNota,
-                    NumNota = product.NumNota,
-                    ChaveNotaExterna = product.ChaveNotaExterna,
-                    DataPedido = product.DataPedido,
-                };
-
-                // Atualiza o pedido no banco de dados
-                await App.Database.AtualizarInfoPedidooAsync(pedidoAtualizado);
-
-                // Atualiza a lista
-                InfoPedido.Add(pedidoAtualizado);
+                    // Atualiza os dados do pedido existente
+                    pedidoExistente.TipoPedido = product.TipoPedido;
+                    pedidoExistente.Vendedor = product.Vendedor;
+                    pedidoExistente.ValorFrete = product.ValorFrete;
+                    pedidoExistente.TipoPagamento = product.TipoPagamento;
+                    pedidoExistente.Faturamento = product.Faturamento;
+                    pedidoExistente.DefeitoEquipamento = product.DefeitoEquipamento;
+                    pedidoExistente.NumSerieEquipamento = product.NumSerieEquipamento;
+                    pedidoExistente.TipoNota = product.TipoNota;
+                    pedidoExistente.NumNota = product.NumNota;
+                    pedidoExistente.ChaveNotaExterna = product.ChaveNotaExterna;
+                    pedidoExistente.DataPedido = product.DataPedido;
+                }
+              
             }
 
-
             // Atualiza a interface gráfica
-            listaprodutos.ItemsSource = new List<InfoPedido>();
+            listaprodutos.ItemsSource = null;  // Limpa antes de atualizar
             listaprodutos.ItemsSource = InfoPedido;
+
+            AddProdutosFiltrados();
         }
+
+
     }
+
 
 
     private async void AddProduct()
@@ -258,5 +319,13 @@ public partial class HistoricoPage : ContentPage
             });
             }
         }
+    }
+
+    private void btnGarantia_Clicked(object sender, EventArgs e)
+    {
+        // sender é o botão que foi clicado
+        var clickedButton = sender as Button;
+        FiltrarPedidos(clickedButton.Text);
+
     }
 }

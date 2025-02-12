@@ -617,7 +617,7 @@ namespace Gerador_de_Pedidos
             if (!confirm)
                 return;
             var saveTextSearchBarProdutoSelecioando = searchBarProdutoSelecionado.Text;
-            searchBarProdutoSelecionado.Text = "";
+            searchBarProdutoSelecionado.Text = null;
             foreach (var item in selectedItems)
             {
                 ListaSelecionados.Remove(item);
