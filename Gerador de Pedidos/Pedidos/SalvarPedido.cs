@@ -1,15 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class SalvarPedido
 {
     private readonly Database _database;
-
+  
     public SalvarPedido(Database database)
     {
         _database = database;
     }
 
     public async Task SalvarPedidoAsync(
+        int numeropedido,
         string vendedor,
         string tipopedido,
         string txtFrete,
@@ -29,7 +31,18 @@ public class SalvarPedido
     {
         decimal? valorfrete = decimal.TryParse(txtFrete, out decimal frete) ? frete : null;
         int novoNumeroPedido = await getProximoNumeroPedidoAsync();
+        var dadosService = DependencyService.Get<DadosCompartilhadosService>();
 
+        if (numeropedido != novoNumeroPedido) // Verifica se a data não é nula
+        {
+            await _database.DeletarProdutoPorNumeroPedidoAsync(numeropedido);
+            await _database.DeletarPedidoPorNumeroPedidoAsync(numeropedido);
+
+        }
+        else
+        {
+            numeropedido = novoNumeroPedido;
+        }
 
         if (produtosSelecionados.Any())
         {
@@ -37,7 +50,7 @@ public class SalvarPedido
             {
                 var novoProdutoPedido = new ProdutosPedido
                 {
-                    NumeroPedido = novoNumeroPedido,
+                    NumeroPedido = numeropedido,
                     Codigo = product.Codigo,
                     Descricao = product.Descricao,
                     Valor = product.Valor,
@@ -50,7 +63,7 @@ public class SalvarPedido
 
             var novoInfoPedido = new InfoPedido
             {
-                NumeroPedido = novoNumeroPedido,
+                NumeroPedido = numeropedido,
                 TipoPedido = tipopedido,
                 Vendedor = vendedor,
                 ValorFrete = !tipopedido.StartsWith("Garantia") ? valorfrete : null,
@@ -76,6 +89,7 @@ public class SalvarPedido
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = listaSelecionados;
             await getProximoNumeroPedidoAsync();
+            dadosService.BaseChanged = true;
         }
     }
 }

@@ -29,6 +29,17 @@ public class Database
         return _database.Table<ProdutosPedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
     }
 
+    public Task<int> DeletarProdutoPorNumeroPedidoAsync(int produtoId)
+    {
+        return _database.Table<ProdutosPedido>()
+                        .Where(p => p.NumeroPedido == produtoId)  // Filtra o produto pelo ID
+                        .DeleteAsync();  // Deleta todos os produtos que correspondem ao critério
+    }
+
+    public Task<int> AtualizarProdutoAsync(ProdutosPedido produtosPedido)
+    {
+        return _database.UpdateAsync(produtosPedido);  // Atualiza o produto existente
+    }
 
 
     // PLANILHA
@@ -56,6 +67,17 @@ public class Database
         return _database.Table<InfoPedido>().ToListAsync();  // Obtém todos os pedidos de forma assíncrona
     }
 
+    public Task<int> DeletarPedidoPorNumeroPedidoAsync(int pedidoId)
+    {
+        return _database.Table<InfoPedido>()
+                        .Where(p => p.NumeroPedido == pedidoId)  // Filtra o produto pelo ID
+                        .DeleteAsync();  // Deleta todos os produtos que correspondem ao critério
+    }
+
+    public Task<int> AtualizarInfoPedidooAsync(InfoPedido infoPedido)
+    {
+        return _database.UpdateAsync(infoPedido);  // Atualiza o produto existente
+    }
     // Método que retorna a conexão SQLite
     public SQLiteAsyncConnection GetConnection()
     {

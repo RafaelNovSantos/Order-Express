@@ -94,7 +94,7 @@ Text="{Binding MeuBudget.Numero_Pedido}"
                             <x:String>Garantia sem retorno</x:String>
                         </Picker.Items>
                     </Picker>
-                        <Entry x:Name="txtVendedor" Text="{Binding PedidoReposiories.Vendedor}" Placeholder="Vendedor" WidthRequest="526"/>
+                        <Entry x:Name="txtVendedor"  Placeholder="Vendedor" WidthRequest="526"/>
 
                     <HorizontalStackLayout Spacing="10">
                         <Grid>
@@ -159,7 +159,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                         <Entry x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text"  WidthRequest="526"/>
                     </HorizontalStackLayout>
                     <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
-                        <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357" HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
+                        <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357"  HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
                         <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
                             <Picker.Items>
                                 <x:String>SEDEX</x:String>

@@ -55,13 +55,13 @@
        >
                                     <FlyoutBase.ContextFlyout>
                                         <MenuFlyout>
-                                            <MenuFlyoutItem Clicked="OnEditMenuClicked" Text="Editar"
+                                            <MenuFlyoutItem Clicked="OnEditMenuClicked" Text="Editar" CommandParameter="{Binding}"
                             >
                                                 <MenuFlyoutItem.IconImageSource>
                                                     <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" />
                                                 </MenuFlyoutItem.IconImageSource>
                                             </MenuFlyoutItem>
-                                            <MenuFlyoutItem Clicked="OnDeleteMenuClicked" Text="Excluir Pedido"
+                                            <MenuFlyoutItem Clicked="OnDeleteMenuClicked" Text="Excluir Pedido" CommandParameter="{Binding}"
                             >
                                                 <MenuFlyoutItem.IconImageSource>
                                                     <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" />

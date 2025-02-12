@@ -40,7 +40,7 @@
         <ShellContent Title="Gerador De Pedidos"   x:Name="MainPageContent"
      
         ContentTemplate="{DataTemplate local:MainPage}"
-        IsVisible="False">
+        IsVisible="False" Route="MainPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
             </ShellContent.Icon>

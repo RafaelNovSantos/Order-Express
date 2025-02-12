@@ -6,8 +6,13 @@ using System.Collections.ObjectModel;
 
 namespace Gerador_de_Pedidos
 {
+    // Vincula o parâmetro "edicao" da URL à propriedade Edicao desta página
+    [QueryProperty(nameof(Edicao), "edicao")]
     public partial class MainPage : ContentPage
-    {
+    { // Propriedade que receberá o valor do parâmetro "edicao"
+        public string Edicao { get; set; }
+
+
 
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
@@ -31,28 +36,95 @@ namespace Gerador_de_Pedidos
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
-
-
-    
-
-
         }
 
-        protected override void OnAppearing()
+        // Esse método é chamado automaticamente quando a página recebe parâmetros de consulta.
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey("edicao"))
+            {
+                Edicao = query["edicao"]?.ToString();
+            }
+        }
+
+        // Use OnAppearing para reagir à navegação e, se necessário, executar a lógica de edição.
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            // Recupera o valor do serviço de dados compartilhados
-            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
-            if (dadosService != null && !string.IsNullOrEmpty(dadosService.Vendedor))
+            // Agora, a propriedade Edicao já foi definida (se o parâmetro foi passado)
+            // Você pode converter o valor para o tipo desejado (por exemplo, bool) ou usá-lo diretamente
+            if (!string.IsNullOrEmpty(Edicao) && Edicao.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
-                txtVendedor.Text = dadosService.Vendedor;  // Atualiza o txtVendedor
-                MeuBudget.Numero_Pedido = dadosService.NumeroPedido;
-                pedido.SelectedItem = dadosService.TipoPedido;
-                
+                var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+                if (dadosService != null && dadosService.NumeroPedido != 0)
+                {
+                    ListaSelecionados.Clear();
+                    ListaSelecionados.Clear();
+                    pedido.SelectedIndex = 0;
+                    equipamentos.SelectedIndex = 0;
+                    pag.SelectedIndex = 0;
+                    nota.SelectedIndex = 0;
+                    TipoFrete.SelectedIndex = 0;
+                    valores.SelectedIndex = 0;
+                    // Caso haja algum valor numérico, defina como 0 ou o valor default
+             
+                   
+                    txtVendedor.Text = string.Empty;
+                    txtFrete.Text = string.Empty;
+                    txtFaturamento.Text = string.Empty;
+                    txtDefeitos.Text = string.Empty;
+                    txtNS.Text = string.Empty;
+                    txtnota.Text = string.Empty;
+                    txtChaveNotaExterna.Text = string.Empty;
 
+                    txtVendedor.Text = dadosService.Vendedor;
+                    MeuBudget.Numero_Pedido = dadosService.NumeroPedido;
+                    pedido.SelectedItem = dadosService.TipoPedido;
+                    txtFrete.Text = dadosService.ValorFrete.ToString();
+                    TipoFrete.SelectedItem = dadosService.TipoFrete;
+                    pag.SelectedItem = dadosService.TipoPagamento;
+                    txtFaturamento.Text = dadosService.Faturamento;
+                    txtDefeitos.Text = dadosService.DefeitoEquipamento;
+                    txtNS.Text = dadosService.NumSerieEquipamento;
+                    nota.SelectedItem = dadosService.TipoNota;
+                    txtnota.Text = dadosService.NumNota;
+                    txtChaveNotaExterna.Text = dadosService.ChaveNotaExterna;
+
+                    // Confirmação de exclusão
+                    var connection = App.Database.GetConnection();
+
+                    // Consulta para pegar o último NumeroPedido
+                    var produtosBanco = await connection.Table<ProdutosPedido>()
+                .Where(p => p.NumeroPedido == dadosService.NumeroPedido)
+                .ToListAsync();
+
+                    foreach (var item in produtosBanco)
+                    {
+                        var produto = new Product
+                        {
+                            Codigo = item.Codigo,
+                            Descricao = item.Descricao,
+                            Valor = item.Valor,
+                            Quantidade = item.Quantidade,
+                            Versao_Peca = item.VersaoPeca,
+                            Data = item.DataPedido
+                        };
+                        ListaSelecionados.Add(produto);
+                    }
+                        
+                   
+                
+                // Atualizar a visualização da lista
+                listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+                listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+                    CallValorTotal();
+                }
+                Edicao = "false";
             }
         }
+
 
 
 
@@ -622,6 +694,7 @@ namespace Gerador_de_Pedidos
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
+            int numeropedido = MeuBudget.Numero_Pedido;
             string vendedor = txtVendedor.Text;
             string tipopedido = pedido.SelectedItem?.ToString() ?? "";
             string valorFrete = txtFrete.Text;
@@ -633,10 +706,12 @@ namespace Gerador_de_Pedidos
             string tiponota = nota.SelectedItem?.ToString() ?? "";
             string numnota = txtnota.Text;
             string chavenotaexterna = txtChaveNotaExterna.Text;
+            
 
             var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
 
             await _salvarPedido.SalvarPedidoAsync(
+                numeropedido,
                 vendedor,
                 tipopedido,
                 valorFrete,
@@ -691,6 +766,9 @@ namespace Gerador_de_Pedidos
             bool isFreteParsed = !string.IsNullOrEmpty(txtFrete.Text) &&
                                  decimal.TryParse(txtFrete.Text.Replace("R$", "").Trim(), out frete);
             decimal totalGeral = 0m;
+            var pickerPedido = pedido.SelectedItem as string;
+            bool isGarantia = pickerPedido == "Garantia com retorno" || pickerPedido == "Garantia sem retorno";
+
 
             if (listaProdutosSelect.ItemsSource != null)
             {
@@ -702,7 +780,7 @@ namespace Gerador_de_Pedidos
                 }
             }
             // Adiciona o frete apenas uma vez, fora do loop
-            if (isFreteParsed)
+            if (isFreteParsed && !isGarantia)
             {
                 totalGeral += frete;
             }
@@ -746,6 +824,7 @@ namespace Gerador_de_Pedidos
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
             SetVisibility(secaofrete, !isGarantia);
+            CallValorTotal();
         }
 
         private void CalcularFaturamento()

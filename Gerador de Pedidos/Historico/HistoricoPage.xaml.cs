@@ -21,12 +21,27 @@ public partial class HistoricoPage : ContentPage
     public HistoricoPage()
 	{
 		InitializeComponent();
-        AddPedido();
-      
 
-  
+        AddPedido();
+
+
     }
-  
+
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+
+        if (dadosService.BaseChanged == true)
+        {
+            UpdatePedido();
+            dadosService.BaseChanged = false;
+        }
+    }
+
+
+
 #if WINDOWS
 
 
@@ -52,57 +67,77 @@ public partial class HistoricoPage : ContentPage
 
 
 
-    private async void OnEditMenuClicked(object sender, EventArgs e)
+        private async void OnEditMenuClicked(object sender, EventArgs e)
     {
-        string Vendedor = "Valor do Vendedor";  // Defina o valor conforme necessário
-        int NumeroPedido = 2;  // Defina o valor conforme necessário
-        string TipoPedido = "Venda";  // Defina o valor conforme necessário
-        string ValorFrete = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string TipoFrete = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string TipoPagamento = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string Faturamento = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string DefeitoEquipamento = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string NumSerieEquipamento = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string TipoNota = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string NumNota = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string ChaveNotaExterna = "Valor do Vendedor";  // Defina o valor conforme necessário
-        string DataPedido = "Valor do Vendedor";  // Defina o valor conforme necessário
+    
+
+        var menuItem = sender as MenuFlyoutItem;
+        if (menuItem?.BindingContext is InfoPedido pedido)
+        {
+            // Confirmação de exclusão
+            var connection = App.Database.GetConnection();
+
+            // Consulta para pegar o último NumeroPedido
+            var pedidoBanco = await connection.Table<InfoPedido>()
+        .Where(p => p.NumeroPedido == pedido.NumeroPedido)
+        .FirstOrDefaultAsync();
+
+            string Vendedor = pedidoBanco.Vendedor;
+            int NumeroPedido = pedidoBanco.NumeroPedido;
+            string TipoPedido = pedidoBanco.TipoPedido;
+            decimal? ValorFrete = pedidoBanco.ValorFrete;
+            string TipoFrete = pedidoBanco.TipoFrete;
+            string TipoPagamento = pedidoBanco.TipoPagamento;
+            string Faturamento = pedidoBanco.Faturamento;
+            string DefeitoEquipamento = pedidoBanco.DefeitoEquipamento;
+            string NumSerieEquipamento = pedidoBanco.NumSerieEquipamento;
+            string TipoNota = pedidoBanco.TipoNota;
+            string NumNota = pedidoBanco.NumNota;
+            string ChaveNotaExterna = pedidoBanco.ChaveNotaExterna;
+            DateTime DataPedido = pedidoBanco.DataPedido;
 
 
 
-        // Armazena o valor no serviço
-        var dadosService = DependencyService.Get<DadosCompartilhadosService>();
 
-        dadosService.Vendedor = Vendedor;
-        dadosService.NumeroPedido = NumeroPedido;
-        dadosService.TipoPedido = TipoPedido;
-        dadosService.ValorFrete = ValorFrete;
-        dadosService.TipoFrete = TipoFrete;
-        dadosService.TipoPagamento = TipoPagamento;
-        dadosService.Faturamento = Faturamento;
-        dadosService.DefeitoEquipamento = DefeitoEquipamento;
-        dadosService.NumSerieEquipamento = NumSerieEquipamento;
-        dadosService.TipoNota = TipoNota;
-        dadosService.NumNota = NumNota;
-        dadosService.ChaveNotaExterna = ChaveNotaExterna;
-        dadosService.DataPedido = DataPedido;
+            // Armazena o valor no serviço
+            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+
+            dadosService.Vendedor = Vendedor;
+            dadosService.NumeroPedido = NumeroPedido;
+            dadosService.TipoPedido = TipoPedido;
+            dadosService.ValorFrete = ValorFrete;
+            dadosService.TipoFrete = TipoFrete;
+            dadosService.TipoPagamento = TipoPagamento;
+            dadosService.Faturamento = Faturamento;
+            dadosService.DefeitoEquipamento = DefeitoEquipamento;
+            dadosService.NumSerieEquipamento = NumSerieEquipamento;
+            dadosService.TipoNota = TipoNota;
+            dadosService.NumNota = NumNota;
+            dadosService.ChaveNotaExterna = ChaveNotaExterna;
+            dadosService.DataPedido = DataPedido;
+
+            // Exemplo: passando edicao com o valor "true"
+            _ = Shell.Current.GoToAsync("//MainPage?edicao=true");
 
 
 
+        }
         // Navega de volta para a MainPage
-        Shell.Current.GoToAsync("//MainPage");
 
     }
 
 
-    private async void OnDeleteMenuClicked(object sender, EventArgs e) { }
+    private async void OnDeleteMenuClicked(object sender, EventArgs e) {
+    
+    
+    }
         private async void AddPedido()
     {
         // Cria a conexão usando o banco de dados assíncrono
         var connection = App.Database.GetConnection();
         // Consulta para pegar o último NumeroPedido
-        var ultimoPedido = await connection.Table<InfoPedido>().ToListAsync();
-        if (ultimoPedido.Count == 0)
+        var pedido = await connection.Table<InfoPedido>().ToListAsync();
+        if (pedido.Count == 0)
         {
             InfoPedido.Add(new InfoPedido
             {
@@ -122,7 +157,7 @@ public partial class HistoricoPage : ContentPage
         }
         else
         {
-            foreach (var product in ultimoPedido)
+            foreach (var product in pedido)
             {
                 InfoPedido.Add(new InfoPedido
                 {
@@ -144,6 +179,51 @@ public partial class HistoricoPage : ContentPage
         listaprodutos.ItemsSource = new List<InfoPedido>();
         listaprodutos.ItemsSource = InfoPedido;
     }
+
+
+    private async void UpdatePedido()
+    {
+        // Cria a conexão usando o banco de dados assíncrono
+        var connection = App.Database.GetConnection();
+
+        // Consulta para pegar o último NumeroPedido
+        var pedidos = await connection.Table<InfoPedido>().ToListAsync();
+
+        if (pedidos.Count != 0)
+        {
+            foreach (var product in pedidos)
+            {
+                var pedidoAtualizado = new InfoPedido
+                {
+                    NumeroPedido = product.NumeroPedido,
+                    TipoPedido = product.TipoPedido,
+                    Vendedor = product.Vendedor,
+                    ValorFrete = product.ValorFrete,
+                    TipoPagamento = product.TipoPagamento,
+                    Faturamento = product.Faturamento,
+                    DefeitoEquipamento = product.DefeitoEquipamento,
+                    NumSerieEquipamento = product.NumSerieEquipamento,
+                    TipoNota = product.TipoNota,
+                    NumNota = product.NumNota,
+                    ChaveNotaExterna = product.ChaveNotaExterna,
+                    DataPedido = product.DataPedido,
+                };
+
+                // Atualiza o pedido no banco de dados
+                await App.Database.AtualizarInfoPedidooAsync(pedidoAtualizado);
+
+                // Atualiza a lista
+                InfoPedido.Add(pedidoAtualizado);
+            }
+
+
+            // Atualiza a interface gráfica
+            listaprodutos.ItemsSource = new List<InfoPedido>();
+            listaprodutos.ItemsSource = InfoPedido;
+        }
+    }
+
+
     private async void AddProduct()
 	{
         // Cria a conexão usando o banco de dados assíncrono
