@@ -258,7 +258,7 @@ Margin="1">
                                 </Button>
                                 <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
                                     <Button.ImageSource>
-                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
+                                        <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" Size="17" Color="#FF0303"/>
                                     </Button.ImageSource>
                                 </Button>
                                 <Button x:Name="btnsave" Text="Salvar" Clicked="OnSalvarClicked" WidthRequest="120">

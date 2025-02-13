@@ -11,6 +11,7 @@ public class SalvarPedido
     }
 
     public async Task SalvarPedidoAsync(
+        string valortotal,
         int numeropedido,
         string vendedor,
         string tipopedido,
@@ -23,6 +24,7 @@ public class SalvarPedido
         string tiponota,
         string numnota,
         string chavenotaexterna,
+        
         List<Product> produtosSelecionados,
         ObservableCollection<Product> listaSelecionados,
         CollectionView listaProdutosSelect,
@@ -75,6 +77,7 @@ public class SalvarPedido
                 TipoNota = !tipopedido.StartsWith("Garantia") ? "" : tiponota,
                 NumNota = !tipopedido.StartsWith("Garantia") ? "" : numnota,
                 ChaveNotaExterna = !tipopedido.StartsWith("Garantia") ? "" : chavenotaexterna,
+                ValorTotal = valortotal,
                 DataPedido = DateTime.Now
             };
 

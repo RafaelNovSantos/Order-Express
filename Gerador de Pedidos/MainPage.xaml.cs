@@ -706,11 +706,14 @@ namespace Gerador_de_Pedidos
             string tiponota = nota.SelectedItem?.ToString() ?? "";
             string numnota = txtnota.Text;
             string chavenotaexterna = txtChaveNotaExterna.Text;
-            
+            string valortotal = MeuBudget.Valor_Total;
+
+
 
             var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
 
             await _salvarPedido.SalvarPedidoAsync(
+                valortotal,
                 numeropedido,
                 vendedor,
                 tipopedido,
@@ -724,6 +727,7 @@ namespace Gerador_de_Pedidos
                 numnota,
                 chavenotaexterna,
                 produtosSelecionados,
+                
                 ListaSelecionados,
                 listaProdutosSelect,
                 GetProximoNumeroPedidoAsync
@@ -790,7 +794,7 @@ namespace Gerador_de_Pedidos
             }
             else
             {
-                Debug.WriteLine("Erro: MeuBudget é nulo!");
+                Debug.WriteLine("MeuBudget é nulo");
             }
 
             

@@ -1,10 +1,9 @@
 using System.Collections.ObjectModel;
-using SQLite;
-using Windows.Storage;
 
 #if WINDOWS
 using Microsoft.UI.Input;
 using Windows.Devices.Input;
+using Windows.Storage;
 using Windows.UI.Input.Preview.Injection;
 #endif
 
@@ -32,6 +31,7 @@ public partial class HistoricoPage : ContentPage
         AddPedido();
 
         pedidosFiltrados = new ObservableCollection<InfoPedido>(InfoPedido);
+        AtualizarCoresBotoes("Todos");
     }
 
 
@@ -137,11 +137,12 @@ public partial class HistoricoPage : ContentPage
       
         InfoPedido.Clear();
 
-        
+
         // Filtra os pedidos com base no filtro
-        var pedidosSelecionados = (filtro == "Todos")
+        var pedidosSelecionados = (string.IsNullOrEmpty(filtro) || filtro == "Todos")
             ? pedidosFiltrados
-            : pedidosFiltrados.Where(p => p.TipoPedido == filtro);
+            : pedidosFiltrados.Where(p => p.TipoPedido.StartsWith(filtro, StringComparison.OrdinalIgnoreCase));
+
 
         // Adiciona os pedidos filtrados
         foreach (var pedido in pedidosSelecionados)
@@ -168,10 +169,22 @@ public partial class HistoricoPage : ContentPage
     private void AtualizarCoresBotoes(string filtro)
     {
         // Alterando a cor dos botões com base no filtro
-        btnTodos.BackgroundColor = (filtro == "Todos") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
-        btnOrcamento.BackgroundColor = (filtro == "Orçamento") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
-        btnVenda.BackgroundColor = (filtro == "Venda") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
-        btnGarantia.BackgroundColor = (filtro == "Garantia") ? Color.FromArgb("#007AFF") : Color.FromArgb("#E0E0E0");
+        btnTodos.BackgroundColor = (filtro == "Todos") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
+        btnTodos.TextColor = (filtro == "Todos") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
+        btnTodos.BorderColor = (filtro == "Todos") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
+
+        btnOrcamento.BackgroundColor = (filtro == "Orçamento") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
+        btnOrcamento.TextColor = (filtro == "Orçamento") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
+        btnOrcamento.BorderColor = (filtro == "Orçamento") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
+
+        btnVenda.BackgroundColor = (filtro == "Venda") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
+        btnVenda.TextColor = (filtro == "Venda") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
+        btnVenda.BorderColor = (filtro == "Venda") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
+
+        btnGarantia.BackgroundColor = (filtro == "Garantia") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
+        btnGarantia.TextColor = (filtro == "Garantia") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
+        btnGarantia.BorderColor = (filtro == "Garantia") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
+
     }
 
     private async void OnDeleteMenuClicked(object sender, EventArgs e) {
@@ -230,6 +243,7 @@ public partial class HistoricoPage : ContentPage
                     NumNota = product.NumNota,
                     ChaveNotaExterna = product.ChaveNotaExterna,
                     DataPedido = product.DataPedido,
+                    ValorTotal = product.ValorTotal,
                 });
             }
         }
@@ -269,8 +283,10 @@ public partial class HistoricoPage : ContentPage
                     pedidoExistente.NumNota = product.NumNota;
                     pedidoExistente.ChaveNotaExterna = product.ChaveNotaExterna;
                     pedidoExistente.DataPedido = product.DataPedido;
+                    pedidoExistente.ValorTotal = product.ValorTotal;
+
                 }
-              
+
             }
 
             // Atualiza a interface gráfica

@@ -16,5 +16,7 @@ public class InfoPedido
     public string TipoNota { get; set; }
     public string NumNota { get; set; }
     public string ChaveNotaExterna { get; set; }
+    public string ValorTotal { get; set; }
+
     public DateTime DataPedido { get; set; }
 }
