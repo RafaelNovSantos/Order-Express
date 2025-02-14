@@ -93,7 +93,7 @@ WidthRequest="30" HeightRequest="30">
                                 <Label Text="Cliente" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="3"/>
 
                                 <Label Text="Data pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="4"/>
-                                <Label Text="Valo Total" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="5"/>
+                                <Label Text="Valor Total" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="5"/>
 
 
                                 <!-- Dados Dinâmicos -->

@@ -23,7 +23,7 @@ namespace Gerador_de_Pedidos
                    fonts.AddFont("search.ttf", "SearchFont");
                });
 
-            return builder.Build(); // Certifique-se de retornar a instância do MauiApp
+            return builder.Build(); 
         }
     }
 }

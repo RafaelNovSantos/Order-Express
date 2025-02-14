@@ -14,6 +14,7 @@ public class SalvarPedido
         string valortotal,
         int numeropedido,
         string vendedor,
+        string cliente,
         string tipopedido,
         string txtFrete,
         string tipofrete,
@@ -68,6 +69,7 @@ public class SalvarPedido
                 NumeroPedido = numeropedido,
                 TipoPedido = tipopedido,
                 Vendedor = vendedor,
+                Cliente = cliente,
                 ValorFrete = !tipopedido.StartsWith("Garantia") ? valorfrete : null,
                 TipoFrete = !tipopedido.StartsWith("Garantia") ? tipofrete : "",
                 TipoPagamento = !tipopedido.StartsWith("Garantia") ? tipopagamento : "",
@@ -93,6 +95,9 @@ public class SalvarPedido
             listaProdutosSelect.ItemsSource = listaSelecionados;
             await getProximoNumeroPedidoAsync();
             dadosService.BaseChanged = true;
+
+            
+
         }
     }
 }

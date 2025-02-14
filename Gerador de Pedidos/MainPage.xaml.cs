@@ -12,7 +12,7 @@ namespace Gerador_de_Pedidos
     { // Propriedade que receberá o valor do parâmetro "edicao"
         public string Edicao { get; set; }
 
-
+        public string NomeCliente;
 
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
@@ -31,7 +31,6 @@ namespace Gerador_de_Pedidos
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
-         
             _salvarPedido = new SalvarPedido(App.Database);
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
@@ -60,7 +59,8 @@ namespace Gerador_de_Pedidos
                 if (dadosService != null && dadosService.NumeroPedido != 0)
                 {
                     ListaSelecionados.Clear();
-                    ListaSelecionados.Clear();
+                    listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+                    listaProdutosSelect.ItemsSource = ListaSelecionados;
                     pedido.SelectedIndex = 0;
                     equipamentos.SelectedIndex = 0;
                     pag.SelectedIndex = 0;
@@ -118,7 +118,7 @@ namespace Gerador_de_Pedidos
                 // Atualizar a visualização da lista
                 listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
                 listaProdutosSelect.ItemsSource = ListaSelecionados;
-
+                    AddProdutosProdutosFiltradosSelecionados();
                     CallValorTotal();
                 }
                 Edicao = "false";
@@ -617,7 +617,12 @@ namespace Gerador_de_Pedidos
             if (!confirm)
                 return;
             var saveTextSearchBarProdutoSelecioando = searchBarProdutoSelecionado.Text;
-            searchBarProdutoSelecionado.Text = null;
+
+            if (!string.IsNullOrEmpty(saveTextSearchBarProdutoSelecioando))
+            {
+                searchBarProdutoSelecionado.Text = null;
+            }
+            
             foreach (var item in selectedItems)
             {
                 ListaSelecionados.Remove(item);
@@ -685,7 +690,7 @@ namespace Gerador_de_Pedidos
                     // Força a atualização dos dados do Picker
                     OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
                 }
-              
+
             }
             AddProdutosProdutosFiltradosSelecionados();
             CallValorTotal();
@@ -694,8 +699,50 @@ namespace Gerador_de_Pedidos
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
+            var Items = (listaProdutosSelect?.ItemsSource as IEnumerable<object>)?
+                  .OfType<Product>()
+                  .ToList() ?? new List<Product>();
+
+            if (!Items.Any()) // Maneira mais idiomática de verificar se a lista está vazia
+            {
+                await DisplayAlert("Aviso", "Nenhum item adicionado ao pedido.", "OK");
+                return;
+            }
+
+
+            bool answer = await DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
+
+
+            if (answer == false)
+            {
+            }
+            else
+            {
+
+
+
+
+                // Abre o prompt com o valor atual preenchido
+                string newValue = await DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
+
+                if (string.IsNullOrEmpty(newValue))
+                {
+                
+                await DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
+                return;
+            }
+
+
+                NomeCliente = newValue;
+
+            }
+
+
+
+
             int numeropedido = MeuBudget.Numero_Pedido;
             string vendedor = txtVendedor.Text;
+            string cliente = NomeCliente;
             string tipopedido = pedido.SelectedItem?.ToString() ?? "";
             string valorFrete = txtFrete.Text;
             string tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
@@ -716,6 +763,7 @@ namespace Gerador_de_Pedidos
                 valortotal,
                 numeropedido,
                 vendedor,
+                cliente,
                 tipopedido,
                 valorFrete,
                 tipofrete,

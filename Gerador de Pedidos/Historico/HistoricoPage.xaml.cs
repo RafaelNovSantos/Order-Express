@@ -22,12 +22,14 @@ public partial class HistoricoPage : ContentPage
         get; set;
     }
 
-
+    public bool pedidoatualizado;
 
     public HistoricoPage()
 	{
 		InitializeComponent();
 
+
+        pedidoatualizado = true;
         AddPedido();
 
         pedidosFiltrados = new ObservableCollection<InfoPedido>(InfoPedido);
@@ -40,10 +42,12 @@ public partial class HistoricoPage : ContentPage
         base.OnAppearing();
         var dadosService = DependencyService.Get<DadosCompartilhadosService>();
 
-        if (dadosService.BaseChanged == true)
+        if (dadosService.BaseChanged == true && pedidoatualizado != true)
         {
-            UpdatePedido();
+            InfoPedido.Clear();
+            AddPedido();
             dadosService.BaseChanged = false;
+            pedidoatualizado = false;
         }
     }
 
@@ -209,21 +213,7 @@ public partial class HistoricoPage : ContentPage
         var pedido = await connection.Table<InfoPedido>().ToListAsync();
         if (pedido.Count == 0)
         {
-            InfoPedido.Add(new InfoPedido
-            {
-                NumeroPedido = 1,
-                TipoPedido = "product.Codigo",
-                Vendedor = "product.Descricao",
-                ValorFrete = 10,
-                TipoPagamento = "product.Valor",
-                Faturamento = "product.VersaoPeca",
-                DefeitoEquipamento = "product.VersaoPeca",
-                NumSerieEquipamento = "product.VersaoPeca",
-                TipoNota = "product.VersaoPeca",
-                NumNota = "product.VersaoPeca",
-                ChaveNotaExterna = "product.VersaoPeca",
-                DataPedido = DateTime.Now,
-            });
+            
         }
         else
         {
@@ -234,6 +224,7 @@ public partial class HistoricoPage : ContentPage
                     NumeroPedido = product.NumeroPedido,
                     TipoPedido = product.TipoPedido,
                     Vendedor = product.Vendedor,
+                    Cliente = product.Cliente,
                     ValorFrete = product.ValorFrete,
                     TipoPagamento = product.TipoPagamento,
                     Faturamento = product.Faturamento,
@@ -254,50 +245,7 @@ public partial class HistoricoPage : ContentPage
     }
 
 
-    private async void UpdatePedido()
-    {
-        // Cria a conexão usando o banco de dados assíncrono
-        var connection = App.Database.GetConnection();
-
-        // Consulta para pegar o último NumeroPedido
-        var pedidos = await connection.Table<InfoPedido>().ToListAsync();
-
-        if (pedidos.Count != 0)
-        {
-            foreach (var product in pedidos)
-            {
-                // Verifica se o produto já existe na lista pelo Número do Pedido (ou outro identificador único)
-                var pedidoExistente = InfoPedido.FirstOrDefault(p => p.NumeroPedido == product.NumeroPedido);
-
-                if (pedidoExistente != null)
-                {
-                    // Atualiza os dados do pedido existente
-                    pedidoExistente.TipoPedido = product.TipoPedido;
-                    pedidoExistente.Vendedor = product.Vendedor;
-                    pedidoExistente.ValorFrete = product.ValorFrete;
-                    pedidoExistente.TipoPagamento = product.TipoPagamento;
-                    pedidoExistente.Faturamento = product.Faturamento;
-                    pedidoExistente.DefeitoEquipamento = product.DefeitoEquipamento;
-                    pedidoExistente.NumSerieEquipamento = product.NumSerieEquipamento;
-                    pedidoExistente.TipoNota = product.TipoNota;
-                    pedidoExistente.NumNota = product.NumNota;
-                    pedidoExistente.ChaveNotaExterna = product.ChaveNotaExterna;
-                    pedidoExistente.DataPedido = product.DataPedido;
-                    pedidoExistente.ValorTotal = product.ValorTotal;
-
-                }
-
-            }
-
-            // Atualiza a interface gráfica
-            listaprodutos.ItemsSource = null;  // Limpa antes de atualizar
-            listaprodutos.ItemsSource = InfoPedido;
-
-            AddProdutosFiltrados();
-        }
-
-
-    }
+ 
 
 
 
