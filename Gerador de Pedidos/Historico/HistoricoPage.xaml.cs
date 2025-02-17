@@ -49,6 +49,7 @@ public partial class HistoricoPage : ContentPage
             dadosService.BaseChanged = false;
             pedidoatualizado = false;
         }
+        pedidoatualizado = false;
     }
 
 
@@ -75,7 +76,8 @@ public partial class HistoricoPage : ContentPage
     }
 }
 #endif
-
+    private void ClickedMenu(object sender, EventArgs e)
+    { }
 
 
         private async void OnEditMenuClicked(object sender, EventArgs e)
@@ -94,6 +96,7 @@ public partial class HistoricoPage : ContentPage
         .FirstOrDefaultAsync();
 
             string Vendedor = pedidoBanco.Vendedor;
+            string Cliente = pedidoBanco.Cliente;
             int NumeroPedido = pedidoBanco.NumeroPedido;
             string TipoPedido = pedidoBanco.TipoPedido;
             decimal? ValorFrete = pedidoBanco.ValorFrete;
@@ -114,6 +117,7 @@ public partial class HistoricoPage : ContentPage
             var dadosService = DependencyService.Get<DadosCompartilhadosService>();
 
             dadosService.Vendedor = Vendedor;
+            dadosService.Cliente = Cliente;
             dadosService.NumeroPedido = NumeroPedido;
             dadosService.TipoPedido = TipoPedido;
             dadosService.ValorFrete = ValorFrete;
@@ -128,7 +132,8 @@ public partial class HistoricoPage : ContentPage
             dadosService.DataPedido = DataPedido;
 
             // Exemplo: passando edicao com o valor "true"
-            _ = Shell.Current.GoToAsync("//MainPage?edicao=true");
+            await Shell.Current.GoToAsync("//MainPage?edicao=true&titulopedido=edicao");
+
 
 
 

@@ -80,11 +80,16 @@ Margin="1">
 
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                        <Label Text="Pedido número:" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding MeuBudget.Titulo_Pedido}" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
                             <Label
 
 Text="{Binding MeuBudget.Numero_Pedido}"
  FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                            <Button Text="Cancelar Edição" Clicked="OnCancelarClicked" x:Name="btncancelaredicao" IsVisible="false" HeightRequest="40" WidthRequest="170" HorizontalOptions="End">
+                                <Button.ImageSource>
+                                    <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" Size="17" Color="#FF0303"/>
+                                </Button.ImageSource>
+                            </Button>
                         </HorizontalStackLayout>
                     <Picker x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                         <Picker.Items>

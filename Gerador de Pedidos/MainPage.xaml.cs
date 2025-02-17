@@ -11,8 +11,8 @@ namespace Gerador_de_Pedidos
     public partial class MainPage : ContentPage
     { // Propriedade que receberá o valor do parâmetro "edicao"
         public string Edicao { get; set; }
+        public string Titulo_Pedido { get; set; }
 
-        public string NomeCliente;
 
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
@@ -31,10 +31,12 @@ namespace Gerador_de_Pedidos
             LoadLink();
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
+            MeuBudget = new Budget { Titulo_Pedido = "Pedido Número:" };
             _salvarPedido = new SalvarPedido(App.Database);
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
+
         }
 
         // Esse método é chamado automaticamente quando a página recebe parâmetros de consulta.
@@ -43,6 +45,10 @@ namespace Gerador_de_Pedidos
             if (query.ContainsKey("edicao"))
             {
                 Edicao = query["edicao"]?.ToString();
+            }
+            if (query.ContainsKey("titulopedido"))
+            {
+                Titulo_Pedido = query["titulopedido"]?.ToString();
             }
         }
 
@@ -55,29 +61,12 @@ namespace Gerador_de_Pedidos
             // Você pode converter o valor para o tipo desejado (por exemplo, bool) ou usá-lo diretamente
             if (!string.IsNullOrEmpty(Edicao) && Edicao.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
+
                 var dadosService = DependencyService.Get<DadosCompartilhadosService>();
                 if (dadosService != null && dadosService.NumeroPedido != 0)
                 {
-                    ListaSelecionados.Clear();
-                    listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
-                    listaProdutosSelect.ItemsSource = ListaSelecionados;
-                    pedido.SelectedIndex = 0;
-                    equipamentos.SelectedIndex = 0;
-                    pag.SelectedIndex = 0;
-                    nota.SelectedIndex = 0;
-                    TipoFrete.SelectedIndex = 0;
-                    valores.SelectedIndex = 0;
-                    // Caso haja algum valor numérico, defina como 0 ou o valor default
-             
-                   
-                    txtVendedor.Text = string.Empty;
-                    txtFrete.Text = string.Empty;
-                    txtFaturamento.Text = string.Empty;
-                    txtDefeitos.Text = string.Empty;
-                    txtNS.Text = string.Empty;
-                    txtnota.Text = string.Empty;
-                    txtChaveNotaExterna.Text = string.Empty;
-
+                    CleanInputs();
+                    btncancelaredicao.IsVisible = true;
                     txtVendedor.Text = dadosService.Vendedor;
                     MeuBudget.Numero_Pedido = dadosService.NumeroPedido;
                     pedido.SelectedItem = dadosService.TipoPedido;
@@ -112,20 +101,48 @@ namespace Gerador_de_Pedidos
                         };
                         ListaSelecionados.Add(produto);
                     }
-                        
-                   
-                
-                // Atualizar a visualização da lista
-                listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
-                listaProdutosSelect.ItemsSource = ListaSelecionados;
+
+
+
+                    // Atualizar a visualização da lista
+                    listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+                    listaProdutosSelect.ItemsSource = ListaSelecionados;
                     AddProdutosProdutosFiltradosSelecionados();
                     CallValorTotal();
                 }
+
                 Edicao = "false";
             }
         }
 
+        private async void CleanInputs()
+        {
+            ListaSelecionados.Clear();
+            listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
+            listaProdutosSelect.ItemsSource = ListaSelecionados;
+            pedido.SelectedIndex = 0;
+            equipamentos.SelectedIndex = 0;
+            pag.SelectedIndex = 0;
+            nota.SelectedIndex = 0;
+            TipoFrete.SelectedIndex = 0;
+            valores.SelectedIndex = 0;
+            // Caso haja algum valor numérico, defina como 0 ou o valor default
 
+            txtCodigo.Text = string.Empty;
+            txtDescricao.Text = string.Empty;
+            txtValor.Text = string.Empty;
+            txtQuantidade.Text = string.Empty;
+            txtVendedor.Text = string.Empty;
+            txtFrete.Text = string.Empty;
+            txtVersion.Text = string.Empty;
+            txtFaturamento.Text = string.Empty;
+            txtDefeitos.Text = string.Empty;
+            txtNS.Text = string.Empty;
+            txtnota.Text = string.Empty;
+            txtChaveNotaExterna.Text = string.Empty;
+
+
+        }
 
 
         public List<Product> Lista = new List<Product>();
@@ -154,7 +171,7 @@ namespace Gerador_de_Pedidos
         }
 
 
-     
+
         private async void OnSearchBarProdutoSelecionadoTextChanged(object sender, TextChangedEventArgs e)
         {
             string termoBusca = e.NewTextValue?.ToLower() ?? "";
@@ -210,7 +227,7 @@ namespace Gerador_de_Pedidos
             {
                 await DisplayAlert("Erro", $"Erro ao ler o link: {ex.Message}", "OK");
                 linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
-                
+
 
             }
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
@@ -223,7 +240,7 @@ namespace Gerador_de_Pedidos
             var linkService = new LinkService();
             await linkService.AlterarLink(senha, await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:"), selectedValue, loadingIndicatorPedido, lblStatusProduto);
             LoadLink();
-            
+
         }
         private string selectedSheetName;
 
@@ -261,7 +278,7 @@ namespace Gerador_de_Pedidos
                 }
             }
             CallValorTotal();
-           
+            CalcularFaturamento();
         }
         private void SelectionChangedCopyCod(object sender, SelectionChangedEventArgs e)
         {
@@ -285,9 +302,11 @@ namespace Gerador_de_Pedidos
                     OnTxtCodigoTextChangedUnified(txtCodigo, new TextChangedEventArgs(string.Empty, txtCodigo.Text));
                 }
             }
-        }  
+        }
         private async void OnPickerSelectionChanged(object sender, EventArgs e)
         {
+            var saveCodigo = txtCodigo.Text;
+            
             var selectedValue = valores.SelectedItem?.ToString();
             var picker = sender as Picker;
             if (picker != null && picker.SelectedItem != null)
@@ -300,6 +319,8 @@ namespace Gerador_de_Pedidos
                 // Remova esta chamada se você não quiser que a função seja chamada automaticamente ao selecionar um item
 
             }
+            txtCodigo.Text = "";
+            txtCodigo.Text = saveCodigo;
         }
 
         //Bloqueia caracteres, funciona somente número inteiros e chama a função para atualizar a tabela com a lista da planilha
@@ -347,7 +368,7 @@ namespace Gerador_de_Pedidos
 
         private void AddProdutosFiltradosExcel()
         {
-             ProdutosFiltradosExcel.Clear();
+            ProdutosFiltradosExcel.Clear();
             foreach (var produto in Lista)
             {
                 ProdutosFiltradosExcel.Add(produto);
@@ -593,7 +614,7 @@ namespace Gerador_de_Pedidos
                         break;
                 }
             }
-           
+
             // Atualiza a interface automaticamente
             listaProdutosSelect.ItemsSource = null;
             listaProdutosSelect.ItemsSource = ListaSelecionados;
@@ -601,6 +622,12 @@ namespace Gerador_de_Pedidos
             CallValorTotal();
             CalcularFaturamento();
             searchBarProdutoSelecionado.Text = saveTextSearchBarProdutoSelecioando;
+        }
+        private async void OnCancelarClicked(object sender, EventArgs e)
+        {
+            GetProximoNumeroPedidoAsync();
+            CleanInputs();
+            btncancelaredicao.IsVisible = false;
         }
         private async void OnExcluirClicked(object sender, EventArgs e)
         {
@@ -622,7 +649,7 @@ namespace Gerador_de_Pedidos
             {
                 searchBarProdutoSelecionado.Text = null;
             }
-            
+
             foreach (var item in selectedItems)
             {
                 ListaSelecionados.Remove(item);
@@ -665,7 +692,7 @@ namespace Gerador_de_Pedidos
             }
             else
             {
-              
+
                 searchBarProdutoSelecionado.Text = "";
                 // Cria um novo produto e adiciona à lista se todos os campos estiverem preenchidos
                 var produto = new Product
@@ -695,13 +722,17 @@ namespace Gerador_de_Pedidos
             AddProdutosProdutosFiltradosSelecionados();
             CallValorTotal();
             CalcularFaturamento();
-            
+
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
             var Items = (listaProdutosSelect?.ItemsSource as IEnumerable<object>)?
                   .OfType<Product>()
                   .ToList() ?? new List<Product>();
+            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+            bool answer;
+
+            var Cliente = dadosService.Cliente;
 
             if (!Items.Any()) // Maneira mais idiomática de verificar se a lista está vazia
             {
@@ -709,32 +740,30 @@ namespace Gerador_de_Pedidos
                 return;
             }
 
-
-            bool answer = await DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
-
-
-            if (answer == false)
+            if (!string.IsNullOrEmpty(Cliente))
             {
+                answer = await DisplayAlert("Alteração cliente", $"Deseja alterar o nome do cliente: {Cliente} no pedido?", "Sim", "Não");
+
             }
             else
             {
 
+                answer = await DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
 
-
-
-                // Abre o prompt com o valor atual preenchido
-                string newValue = await DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
-
-                if (string.IsNullOrEmpty(newValue))
-                {
-                
-                await DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
-                return;
             }
 
 
-                NomeCliente = newValue;
 
+            if (answer == true)
+            {
+                // Abre o prompt com o valor atual preenchido
+                string newValue = await DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
+                if (string.IsNullOrEmpty(newValue))
+                {
+                    await DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
+                    return;
+                }
+                Cliente = newValue;
             }
 
 
@@ -742,7 +771,7 @@ namespace Gerador_de_Pedidos
 
             int numeropedido = MeuBudget.Numero_Pedido;
             string vendedor = txtVendedor.Text;
-            string cliente = NomeCliente;
+            string cliente = Cliente;
             string tipopedido = pedido.SelectedItem?.ToString() ?? "";
             string valorFrete = txtFrete.Text;
             string tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
@@ -759,27 +788,32 @@ namespace Gerador_de_Pedidos
 
             var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
 
-            await _salvarPedido.SalvarPedidoAsync(
-                valortotal,
-                numeropedido,
-                vendedor,
-                cliente,
-                tipopedido,
-                valorFrete,
-                tipofrete,
-                tipopagamento,
-                faturamento,
-                defeitoequipamento,
-                numseriequipamento,
-                tiponota,
-                numnota,
-                chavenotaexterna,
-                produtosSelecionados,
-                
-                ListaSelecionados,
-                listaProdutosSelect,
-                GetProximoNumeroPedidoAsync
-            );
+            bool pedidosalvo = await _salvarPedido.SalvarPedidoAsync(
+               valortotal,
+               numeropedido,
+               vendedor,
+               cliente,
+               tipopedido,
+               valorFrete,
+               tipofrete,
+               tipopagamento,
+               faturamento,
+               defeitoequipamento,
+               numseriequipamento,
+               tiponota,
+               numnota,
+               chavenotaexterna,
+               produtosSelecionados,
+
+               ListaSelecionados,
+               listaProdutosSelect,
+               GetProximoNumeroPedidoAsync
+           );
+
+            if (pedidosalvo == true)
+            {
+                OnCancelarClicked(btncancelaredicao, EventArgs.Empty);
+            }
         }
 
         private void AddProdutosProdutosFiltradosSelecionados()
@@ -790,28 +824,28 @@ namespace Gerador_de_Pedidos
                 ProdutosFiltradosSelecionados.Add(produto);
             }
         }
-     private async void OnCopiarClicked(object sender, EventArgs e)
-{
-            
+        private async void OnCopiarClicked(object sender, EventArgs e)
+        {
+
             var service = new CopiarPedidoService();
-    await service.CopiarTextoAsync(
-        txtVendedor.Text,
-        pedido.SelectedItem?.ToString(),
-        TipoFrete.SelectedItem?.ToString(),
-        pag.SelectedItem?.ToString(),
-        txtFrete.Text,
-        txtFaturamento.Text,
-        txtDefeitos.Text,
-        txtNS.Text,
-        txtnota.Text,
-        txtChaveNotaExterna.Text,
-        nota.SelectedItem,
-        pedido.SelectedItem,
-        listaProdutosSelect,
-        btncopy,
-        iconCopy
-    );
-}
+            await service.CopiarTextoAsync(
+                txtVendedor.Text,
+                pedido.SelectedItem?.ToString(),
+                TipoFrete.SelectedItem?.ToString(),
+                pag.SelectedItem?.ToString(),
+                txtFrete.Text,
+                txtFaturamento.Text,
+                txtDefeitos.Text,
+                txtNS.Text,
+                txtnota.Text,
+                txtChaveNotaExterna.Text,
+                nota.SelectedItem,
+                pedido.SelectedItem,
+                listaProdutosSelect,
+                btncopy,
+                iconCopy
+            );
+        }
         private decimal CallValorTotal()
         {
             decimal frete = 0m;
@@ -845,7 +879,7 @@ namespace Gerador_de_Pedidos
                 Debug.WriteLine("MeuBudget é nulo");
             }
 
-            
+
             return totalGeral;
         }
         private void OnVerificarSelecoesClicked(object sender, EventArgs e)
@@ -871,7 +905,7 @@ namespace Gerador_de_Pedidos
             SetVisibility(typeNota, !isVenda && !isOrcamento);
             SetVisibility(nota, !isVenda && !isOrcamento);
             SetVisibility(txtnota, !isVenda && !isOrcamento);
-            SetVisibility(pag, !isGarantia );
+            SetVisibility(pag, !isGarantia);
             SetVisibility(txtpag, !isGarantia);
             SetVisibility(txtFrete, !isGarantia);
             SetVisibility(TipoFrete, !isGarantia);
@@ -882,28 +916,28 @@ namespace Gerador_de_Pedidos
         private void CalcularFaturamento()
         {
             decimal valorTotal = CallValorTotal();
-if (valorTotal< 110)
-{
-    pag.SelectedIndex = 0;
-    txtFaturamento.Text = "";
-}
-else
-{
-    pag.SelectedIndex = 1;
+            if (valorTotal < 110)
+            {
+                pag.SelectedIndex = 0;
+                txtFaturamento.Text = "";
+            }
+            else
+            {
+                pag.SelectedIndex = 1;
 
-    if (valorTotal <= 300)
-        txtFaturamento.Text = "15 dias";
-    else if (valorTotal <= 700)
-        txtFaturamento.Text = "15/30";
-    else if (valorTotal <= 2000)
-        txtFaturamento.Text = "30/45/60";
-    else if (valorTotal <= 3500)
-        txtFaturamento.Text = "30/60/90";
-    else if (valorTotal <= 5000)
-        txtFaturamento.Text = "30/45/60/75/90/105";
-    else
-        txtFaturamento.Text = "30/60/90/120";
-}
+                if (valorTotal <= 300)
+                    txtFaturamento.Text = "15 dias";
+                else if (valorTotal <= 700)
+                    txtFaturamento.Text = "15/30";
+                else if (valorTotal <= 2000)
+                    txtFaturamento.Text = "30/45/60";
+                else if (valorTotal <= 3500)
+                    txtFaturamento.Text = "30/60/90";
+                else if (valorTotal <= 5000)
+                    txtFaturamento.Text = "30/45/60/75/90/105";
+                else
+                    txtFaturamento.Text = "30/60/90/120";
+            }
         }
 
         private void SetVisibility(View control, bool isVisible)

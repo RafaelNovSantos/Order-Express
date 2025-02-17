@@ -25,8 +25,8 @@ namespace Gerador_de_Pedidos
             }
             else
             {
-                MainPageContent.IsVisible = true; // Mostra MainPage para outras plataformas
-                CurrentItem = MainPageContent; // Define como página inicial
+                MainPageAndroidContent.IsVisible = true; // Mostra MainPage para outras plataformas
+                CurrentItem = MainPageAndroidContent; // Define como página inicial
             }
         }
     }

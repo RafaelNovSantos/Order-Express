@@ -2,6 +2,7 @@
 {
     public bool BaseChanged { get; set; }
     public string Vendedor { get; set; }
+    public string Cliente { get; set; }
     public int NumeroPedido { get; set; }
     public string TipoPedido { get; set; }
     public decimal? ValorFrete { get; set; }

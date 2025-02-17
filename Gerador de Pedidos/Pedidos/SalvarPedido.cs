@@ -10,7 +10,7 @@ public class SalvarPedido
         _database = database;
     }
 
-    public async Task SalvarPedidoAsync(
+    public async Task<bool> SalvarPedidoAsync(
         string valortotal,
         int numeropedido,
         string vendedor,
@@ -96,8 +96,9 @@ public class SalvarPedido
             await getProximoNumeroPedidoAsync();
             dadosService.BaseChanged = true;
 
-            
 
+            return true;
         }
+        return false;
     }
 }

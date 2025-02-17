@@ -67,12 +67,21 @@ xmlns:controls="clr-namespace:Gerador_de_Pedidos.Controls"
                     <VerticalStackLayout Padding="0,20" Spacing="10">
 
                         <!-- Título -->
-                        <HorizontalStackLayout HorizontalOptions="Center">
-                            <Label Text="Pedido" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
-                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Label Text="{Binding MeuBudget.Titulo_Pedido}" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                        <Label
+
+Text="{Binding MeuBudget.Numero_Pedido}"
+ FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
+                        <Button Text="Cancelar Edição" Clicked="OnCancelarClicked" x:Name="btncancelaredicao" IsVisible="false" HeightRequest="40" WidthRequest="170" HorizontalOptions="End">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" Size="17" Color="#FF0303"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </HorizontalStackLayout>
                     <!-- Entrada Vendedor -->
                     <Frame BorderColor="#00c4b4" x:Name="framepedido" Padding="5,0" BackgroundColor="#00c4b4">
-                        <local:BorderlessPicker   x:Name="pedido" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPedidoSelected" >
+                        <local:BorderlessPicker   x:Name="pedido" SelectedIndexChanged="OnVerificarSelecoesClicked" Style="{StaticResource HeaderPickerStyle}"  >
                             <Picker.Items>
                                 <x:String>Venda</x:String>
                                 <x:String>Garantia com retorno</x:String>
@@ -168,7 +177,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                         <!-- Pagamento -->
                         <Label x:Name="txtpag" Text="Pagamento:" FontSize="23" TextColor="White" />
                     <Frame BorderColor="#00c4b4"  x:Name="framepag" Padding="5,0" BackgroundColor="#00c4b4">
-                        <local:BorderlessPicker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnPagamentoSelected">
+                        <local:BorderlessPicker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                             <Picker.Items>
                                 <x:String>BOLETO</x:String>
                                 <x:String>PIX</x:String>
@@ -190,7 +199,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     <!-- Tipo de Nota -->
                         <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
                     <Frame BorderColor="#00c4b4" x:Name="framePickernota" Padding="5,0" BackgroundColor="#00c4b4">
-                        <local:BorderlessPicker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnNotaSelected">
+                        <local:BorderlessPicker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                             <Picker.Items>
                                 <x:String>Nota Interna</x:String>
                                 <x:String>Nota Externa</x:String>
@@ -270,7 +279,46 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                                 </Button.ImageSource>
                             </Button>
                         </HorizontalStackLayout>
+                        <Frame HasShadow="False" 
+       BorderColor="Transparent" 
+                                    Margin="3"
+                                       Padding="0"
+       CornerRadius="5" 
+       VerticalOptions="Center" 
+       BackgroundColor="white" 
+       >
+                            <Grid    >
+                                <!-- Define duas colunas -->
 
+
+                                <!-- Barra de pesquisa na segunda coluna -->
+                                <SearchBar x:Name="searchBarprodutosexcel"
+Placeholder="Buscar produto da base..."
+TextChanged="OnSearchBarProdutosExcelTextChanged"
+BackgroundColor="#333"
+TextColor="White"
+PlaceholderColor="White"
+CancelButtonColor="White"
+HeightRequest="30"
+Margin="1">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="#333" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState Name="Focused">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="#00c4b4" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                </SearchBar>
+
+                            </Grid>
+                        </Frame>
                         <!-- Frame de dados -->
                         <Frame HasShadow="False" BorderColor="Transparent" CornerRadius="10" VerticalOptions="Center" BackgroundColor="Transparent" Padding="0">
                             <Grid BackgroundColor="White" Padding="7" ColumnSpacing="28">
@@ -382,18 +430,63 @@ Margin="1">
                                 </Image>
                             </Grid>
 
-                            <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="20" Padding="13">
-                                <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="Start">
+                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Padding="13">
+                                <Button Text="Editar" Clicked="OnEditarClicked" HeightRequest="40" WidthRequest="100" HorizontalOptions="Start">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="Black"/>
                                     </Button.ImageSource>
                                 </Button>
-                                <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="120" HorizontalOptions="End">
+                                <Button Text="Excluir" Clicked="OnExcluirClicked" HeightRequest="40" WidthRequest="100" HorizontalOptions="End">
                                     <Button.ImageSource>
                                         <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" Size="17" Color="#FF0303"/>
                                     </Button.ImageSource>
                                 </Button>
+                                <Button x:Name="btnsave" Text="Salvar" Clicked="OnSalvarClicked" WidthRequest="100">
+                                    <Button.ImageSource>
+                                        <FontImageSource x:Name="iconSave" FontFamily="IconsFont" Glyph="&#xF0C5;" Size="17" Color="Green"/>
+                                    </Button.ImageSource>
+                                </Button>
                             </HorizontalStackLayout>
+                            <Frame HasShadow="False" 
+       BorderColor="Transparent" 
+                                    Margin="3"
+                                       Padding="0"
+       CornerRadius="5" 
+       VerticalOptions="Center" 
+       BackgroundColor="white" 
+       >
+                                <Grid    >
+                                    <!-- Define duas colunas -->
+
+
+                                    <!-- Barra de pesquisa na segunda coluna -->
+                                    <SearchBar x:Name="searchBarProdutoSelecionado"
+Placeholder="Buscar produto no pedido..."
+TextChanged="OnSearchBarProdutoSelecionadoTextChanged"
+BackgroundColor="#333"
+TextColor="White"
+PlaceholderColor="White"
+CancelButtonColor="White"
+HeightRequest="30"
+Margin="1">
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+                                                <VisualState Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#333" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState Name="Focused">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#00c4b4" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </SearchBar>
+
+                                </Grid>
+                            </Frame>
 
                             <Frame BackgroundColor="White" HasShadow="False" BorderColor="Transparent" CornerRadius="10" HeightRequest="40" Padding="0" HorizontalOptions="FillAndExpand"
                                    Margin="0,0,0,3">

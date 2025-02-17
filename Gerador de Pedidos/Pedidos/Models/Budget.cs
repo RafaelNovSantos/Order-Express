@@ -32,6 +32,22 @@ public class Budget : INotifyPropertyChanged
         }
     }
 
+
+    private string _tituloPedido;
+
+    public string Titulo_Pedido
+    {
+        get => _tituloPedido;
+        set
+        {
+            if (_tituloPedido != value)
+            {
+                _tituloPedido = value;
+                OnPropertyChanged(nameof(Titulo_Pedido));
+            }
+        }
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void OnPropertyChanged(string propertyName)
