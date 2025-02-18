@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gerador_de_Pedidos.Historico.HistoricoPageAndroid"
+             Shell.NavBarIsVisible="False"
+             Title="HistoricoPage"
+             BackgroundColor="#2a312e">
+
+
+    <ScrollView>
+
+        <VerticalStackLayout Padding="10" HorizontalOptions="Center" Spacing="0">
+
+          
+            <Frame Padding="5" Margin="0" BorderColor="#101010"  CornerRadius="15" 
+BackgroundColor="#1e1e1e" HasShadow="False">
+                <!-- Filtros de Status -->
+                <Grid RowDefinitions="Auto,auto" ColumnSpacing="10" RowSpacing="10"  ColumnDefinitions="*, *" >
+                    <Button x:Name="btnTodos" BackgroundColor="White" Grid.Column="0" Text="Todos" Clicked="btnGarantia_Clicked" BorderColor="#00c4b4"
+        CommandParameter="Todos" >
+                            <Button.ImageSource>
+                            <FontImageSource FontFamily="SearchFont" Glyph="&#xE803;" Size="17" Color="Black"/>
+                        </Button.ImageSource>
+                    </Button>
+
+                    <Button x:Name="btnOrcamento" BackgroundColor="White" Grid.Column="1" Clicked="btnGarantia_Clicked" BorderColor="#00c4b4" Text="Orçamento" 
+        CommandParameter="Orçamento" 
+       >
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="SearchFont" Glyph="&#xE802;" Size="17" Color="Black"/>
+                        </Button.ImageSource>
+                    </Button>
+
+                    <Button x:Name="btnVenda" BorderColor="#00c4b4" BackgroundColor="White" Text="Venda" Grid.Row="1" Grid.Column="0" Clicked="btnGarantia_Clicked" 
+       CommandParameter="Venda" 
+       >
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="SearchFont" Glyph="&#xE804;" Size="17" Color="Black"/>
+                        </Button.ImageSource>
+                    </Button>
+
+                    <Button x:Name="btnGarantia" BorderColor="#00c4b4" BackgroundColor="White" Grid.Column="1" Grid.Row="1" Text="Garantia" 
+       Clicked="btnGarantia_Clicked" CommandParameter="Garantia" 
+     
+                    >
+                    <Button.ImageSource>
+                            <FontImageSource  FontFamily="IconsFont" Glyph="&#xE806;" Size="17" Color="Black"/>
+                    </Button.ImageSource>
+                    </Button>
+                   
+                </Grid>
+            </Frame>
+
+            <!-- Lista de Pedidos -->
+            <CollectionView x:Name="listaprodutos" >
+                <CollectionView.EmptyView>
+                    <Frame Padding="20" Margin="10" BorderColor="White"  CornerRadius="15" 
+    BackgroundColor="#101010" HasShadow="True">
+                        <Grid VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand"  HeightRequest="150">
+                            <!-- Texto de instrução -->
+                            <Label Text="Sem pedidos desse filtro..."
+VerticalTextAlignment="Center"
+Padding="30"
+HorizontalOptions="Center" 
+FontSize="15"
+VerticalOptions="Start" 
+TextColor="Gray" />
+
+                            <!-- Ícone usando FontImageSource -->
+                            <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
+WidthRequest="30" HeightRequest="30">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
+                                </Image.Source>
+                            </Image>
+                        </Grid>
+                    </Frame>
+                </CollectionView.EmptyView>
+
+
+
+
+           
+                    <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="20" Margin="10" BorderColor="White"  CornerRadius="15" 
+                           BackgroundColor="#101010" HasShadow="True">
+                            <Grid Padding="10" RowSpacing="5" ColumnSpacing="10" ColumnDefinitions="*, *,Auto" RowDefinitions="Auto, *,*,*,*,*">
+                                <!-- Labels Cabeçalhos -->
+                                <Label Text="Numero do pedido" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="0" Grid.Column="0"/>
+                                <Label Text="Tipo de pedido" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="1" Grid.Column="0"/>
+                                <Label Text="Vendedor" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="2" Grid.Column="0"/>
+                                <Label Text="Cliente" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="3" Grid.Column="0"/>
+
+                                <Label Text="Data pedido" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="4" Grid.Column="0"/>
+                                <Label Text="Valor Total" FontAttributes="Bold" MinimumWidthRequest="100" TextColor="#00c4b4" Grid.Row="5" Grid.Column="0"/>
+
+
+                                <!-- Dados Dinâmicos -->
+                                <Label Text="{Binding NumeroPedido}" FontSize="18"  TextColor="white" Grid.Row="0" Grid.Column="1"/>
+                                <Label Text="{Binding TipoPedido}" FontSize="18"  TextColor="white" Grid.Row="1" Grid.Column="1"/>
+                                <Label Text="{Binding Vendedor}" FontSize="18" TextColor="white" Grid.Row="2" Grid.Column="1"/>
+                                <Label Text="{Binding Cliente}" FontSize="18" TextColor="white" Grid.Row="3" Grid.Column="1"/>
+                                <Label Text="{Binding DataPedido}" FontSize="18" TextColor="white" Grid.Row="4" Grid.Column="1"/>
+                                <Label Text="{Binding ValorTotal}" FontSize="18"  TextColor="white" Grid.Row="5" Grid.Column="1"/>
+                                <Button  x:Name="MenuButton" Grid.Column="2" Text="☰ Menu" 
+        Clicked="ClickedMenu" BindingContext="{Binding}"/>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

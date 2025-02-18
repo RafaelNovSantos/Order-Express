@@ -47,7 +47,7 @@
         </ShellContent>
 
         <ShellContent Title="Gerador De Pedidos"    x:Name="MainPageAndroidContent"
-   
+   Route="MainPageAndroid"
         ContentTemplate="{DataTemplate local:MainPageAndroid}"
         IsVisible="False">
             <ShellContent.Icon>

@@ -73,7 +73,7 @@ xmlns:controls="clr-namespace:Gerador_de_Pedidos.Controls"
 
 Text="{Binding MeuBudget.Numero_Pedido}"
  FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
-                        <Button Text="Cancelar Edição" Clicked="OnCancelarClicked" x:Name="btncancelaredicao" IsVisible="false" HeightRequest="40" WidthRequest="170" HorizontalOptions="End">
+                        <Button Text="Cancelar Edição" Clicked="OnCancelarClicked" x:Name="btncancelaredicao" IsVisible="false" HeightRequest="40" WidthRequest="150" HorizontalOptions="End">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" Size="17" Color="#FF0303"/>
                             </Button.ImageSource>
@@ -179,8 +179,8 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     <Frame BorderColor="#00c4b4"  x:Name="framepag" Padding="5,0" BackgroundColor="#00c4b4">
                         <local:BorderlessPicker x:Name="pag" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                             <Picker.Items>
-                                <x:String>BOLETO</x:String>
                                 <x:String>PIX</x:String>
+                                <x:String>BOLETO</x:String>
                             </Picker.Items>
                         </local:BorderlessPicker>
                     </Frame>

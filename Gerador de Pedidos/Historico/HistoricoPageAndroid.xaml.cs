@@ -10,7 +10,7 @@ using Windows.UI.Input.Preview.Injection;
 
 namespace Gerador_de_Pedidos.Historico;
 
-public partial class HistoricoPage : ContentPage
+public partial class HistoricoPageAndroid : ContentPage
 {
 
 
@@ -24,7 +24,7 @@ public partial class HistoricoPage : ContentPage
 
     public bool pedidoatualizado;
 
-    public HistoricoPage()
+    public HistoricoPageAndroid()
 	{
 		InitializeComponent();
 
@@ -53,95 +53,65 @@ public partial class HistoricoPage : ContentPage
     }
 
 
+    private async void ClickedMenu(object sender, EventArgs e)
+    {
+        var button = sender as Button;
+        if (button == null) return;
 
+        var pedido = button.BindingContext as InfoPedido;
+        if (pedido == null) return;
+
+        var option = await Shell.Current.DisplayActionSheet("Menu", "Cancelar", null, "Editar", "Excluir Pedido");
+
+        if (option == "Editar") OnEditMenuClicked(pedido);
+        if (option == "Excluir Pedido") OnDeleteMenuClicked(pedido);
+    }
+
+
+
+
+
+
+    private async void OnEditMenuClicked(InfoPedido pedido)
+    {
+        if (pedido == null) return;
+
+        var connection = App.Database.GetConnection();
+
+        // Consulta o banco de dados para obter os detalhes do pedido
+        var pedidoBanco = await connection.Table<InfoPedido>()
+            .Where(p => p.NumeroPedido == pedido.NumeroPedido)
+            .FirstOrDefaultAsync();
+
+        if (pedidoBanco == null) return; // Evita erro caso o pedido não seja encontrado
+
+        // Armazena os valores no serviço de compartilhamento de dados
+        var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+
+        dadosService.Vendedor = pedidoBanco.Vendedor;
+        dadosService.Cliente = pedidoBanco.Cliente;
+        dadosService.NumeroPedido = pedidoBanco.NumeroPedido;
+        dadosService.TipoPedido = pedidoBanco.TipoPedido;
+        dadosService.ValorFrete = pedidoBanco.ValorFrete;
+        dadosService.TipoFrete = pedidoBanco.TipoFrete;
+        dadosService.TipoPagamento = pedidoBanco.TipoPagamento;
+        dadosService.Faturamento = pedidoBanco.Faturamento;
+        dadosService.DefeitoEquipamento = pedidoBanco.DefeitoEquipamento;
+        dadosService.NumSerieEquipamento = pedidoBanco.NumSerieEquipamento;
+        dadosService.TipoNota = pedidoBanco.TipoNota;
+        dadosService.NumNota = pedidoBanco.NumNota;
+        dadosService.ChaveNotaExterna = pedidoBanco.ChaveNotaExterna;
+        dadosService.DataPedido = pedidoBanco.DataPedido;
+
+        // Navega para a página principal com os parâmetros de edição
 #if WINDOWS
+        await Shell.Current.GoToAsync("//MainPage?edicao=true&titulopedido=edicao");
+#elif ANDROID
+        await Shell.Current.GoToAsync("//MainPageAndroid?edicao=true&titulopedido=edicao");
 
-    private void ClickedMenu(object sender, EventArgs e)
-{
-    var injector = InputInjector.TryCreate();
-    if (injector != null)
-    {
-        var info = new InjectedInputMouseInfo
-        {
-            MouseOptions = InjectedInputMouseOptions.RightDown
-        };
-        injector.InjectMouseInput(new[] { info });
-
-        info = new InjectedInputMouseInfo
-        {
-            MouseOptions = InjectedInputMouseOptions.RightUp
-        };
-        injector.InjectMouseInput(new[] { info });
-    }
-}
 #endif
-
-#if ANDROID
-  private void ClickedMenu(object sender, EventArgs e)
-{}
-#endif
-
-    private async void OnEditMenuClicked(object sender, EventArgs e)
-    {
-    
-
-        var menuItem = sender as MenuFlyoutItem;
-        if (menuItem?.BindingContext is InfoPedido pedido)
-        {
-            // Confirmação de exclusão
-            var connection = App.Database.GetConnection();
-
-            // Consulta para pegar o último NumeroPedido
-            var pedidoBanco = await connection.Table<InfoPedido>()
-        .Where(p => p.NumeroPedido == pedido.NumeroPedido)
-        .FirstOrDefaultAsync();
-
-            string Vendedor = pedidoBanco.Vendedor;
-            string Cliente = pedidoBanco.Cliente;
-            int NumeroPedido = pedidoBanco.NumeroPedido;
-            string TipoPedido = pedidoBanco.TipoPedido;
-            decimal? ValorFrete = pedidoBanco.ValorFrete;
-            string TipoFrete = pedidoBanco.TipoFrete;
-            string TipoPagamento = pedidoBanco.TipoPagamento;
-            string Faturamento = pedidoBanco.Faturamento;
-            string DefeitoEquipamento = pedidoBanco.DefeitoEquipamento;
-            string NumSerieEquipamento = pedidoBanco.NumSerieEquipamento;
-            string TipoNota = pedidoBanco.TipoNota;
-            string NumNota = pedidoBanco.NumNota;
-            string ChaveNotaExterna = pedidoBanco.ChaveNotaExterna;
-            DateTime DataPedido = pedidoBanco.DataPedido;
-
-
-
-
-            // Armazena o valor no serviço
-            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
-
-            dadosService.Vendedor = Vendedor;
-            dadosService.Cliente = Cliente;
-            dadosService.NumeroPedido = NumeroPedido;
-            dadosService.TipoPedido = TipoPedido;
-            dadosService.ValorFrete = ValorFrete;
-            dadosService.TipoFrete = TipoFrete;
-            dadosService.TipoPagamento = TipoPagamento;
-            dadosService.Faturamento = Faturamento;
-            dadosService.DefeitoEquipamento = DefeitoEquipamento;
-            dadosService.NumSerieEquipamento = NumSerieEquipamento;
-            dadosService.TipoNota = TipoNota;
-            dadosService.NumNota = NumNota;
-            dadosService.ChaveNotaExterna = ChaveNotaExterna;
-            dadosService.DataPedido = DataPedido;
-
-            // Exemplo: passando edicao com o valor "true"
-            await Shell.Current.GoToAsync("//MainPage?edicao=true&titulopedido=edicao");
-
-
-
-
-        }
-        // Navega de volta para a MainPage
-
     }
+
     private void FiltrarPedidos(string filtro)
     {
       
@@ -197,21 +167,31 @@ public partial class HistoricoPage : ContentPage
 
     }
 
-    private async void OnDeleteMenuClicked(object sender, EventArgs e) {
-
-        var menuItem = sender as MenuFlyoutItem;
-        if (menuItem?.BindingContext is InfoPedido pedido)
-        {
 
 
-            await App.Database.DeletarPedidoPorNumeroPedidoAsync(pedido.NumeroPedido);
-            await App.Database.DeletarProdutoPorNumeroPedidoAsync(pedido.NumeroPedido);
-            InfoPedido.Clear();
-            AddPedido();
-        }
 
+
+    private async void OnDeleteMenuClicked(InfoPedido pedido)
+    {
+        if (pedido == null) return;
+
+        bool confirm = await Shell.Current.DisplayAlert(
+            "Excluir Pedido",
+            "Tem certeza que deseja excluir este pedido?",
+            "Sim", "Não"
+        );
+
+        if (!confirm) return;
+
+        await App.Database.DeletarPedidoPorNumeroPedidoAsync(pedido.NumeroPedido);
+        await App.Database.DeletarProdutoPorNumeroPedidoAsync(pedido.NumeroPedido);
+        InfoPedido.Clear();
+
+        // Atualiza a lista após a exclusão
+        AddPedido();
     }
-        private async void AddPedido()
+
+    private async void AddPedido()
     {
         // Cria a conexão usando o banco de dados assíncrono
         var connection = App.Database.GetConnection();

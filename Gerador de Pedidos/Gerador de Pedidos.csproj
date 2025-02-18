@@ -109,12 +109,18 @@
 	  <Compile Update="Garantia\GarantiaPage.xaml.cs">
 	    <DependentUpon>GarantiaPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Historico\HistoricoPageAndroid.xaml.cs">
+	    <DependentUpon>HistoricoPageAndroid.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="MainPageAndroid.xaml.cs">
 	    <DependentUpon>MainPageAndroid.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Historico\HistoricoPageAndroid.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Historico\HistoricoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
