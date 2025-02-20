@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui; // Não se esqueça de importar o pacote CommunityToolkit
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gerador_de_Pedidos
 {
@@ -22,8 +23,11 @@ namespace Gerador_de_Pedidos
                    fonts.AddFont("fontello.ttf", "IconsFont");
                    fonts.AddFont("search.ttf", "SearchFont");
                });
-
+            // Adiciona o registro do LicenseService
+            builder.Services.AddSingleton<LicenseService>();
+            builder.Services.AddLogging(); // Registra o sistema de logging
             return builder.Build(); 
         }
+
     }
 }
