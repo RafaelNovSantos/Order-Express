@@ -2,7 +2,6 @@
 using System.Net.NetworkInformation;
 using System.Xml.Linq;
 
-
 namespace Gerador_de_Pedidos
 {
     public partial class AppShell : Shell
@@ -11,38 +10,51 @@ namespace Gerador_de_Pedidos
         public bool IsLicenseValid { get; private set; } = false;
         public bool IsConnectedInternet { get; private set; } = false;
 
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient = new HttpClient();
 
         public AppShell()
         {
             InitializeComponent();
 
-            var teste = CheckLicenseAsync();
+            // Chamar método assíncrono sem bloquear o construtor
+            _ = InitializeAppAsync();
+        }
 
+        private async Task InitializeAppAsync()
+        {
+            await CheckLicenseAsync();
+            ConfigureUI();
+        }
 
-            Debug.WriteLine($"Valor de teste{teste}");
-            // Obter informações da tela
-            var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-            double screenWidth = displayInfo.Width / displayInfo.Density;
+        private void ConfigureUI()
+        {
+            Debug.WriteLine($"IsConnectedInternet: {IsConnectedInternet}, IsLicenseValid: {IsLicenseValid}");
+
+            if (IsConnectedInternet && IsLicenseValid)
+            {
 #if ANDROID
-            this.FlyoutBehavior = FlyoutBehavior.Disabled; // Desativa o menu no Android
-            
+                this.FlyoutBehavior = FlyoutBehavior.Disabled; // Desativa o menu no Android
                 PageHistorico.Route = "Historico.HistoricoPageAndroid";
                 PageHistorico.ContentTemplate = new DataTemplate(typeof(Historico.HistoricoPageAndroid));
                 MainPageAndroidContent.IsVisible = true; // Mostra MainPageAndroid
-                    CurrentItem = MainPageAndroidContent; // Define como página inicial
-                    PageGarantia.IsVisible = false;
+                CurrentItem = MainPageAndroidContent; // Define como página inicial
+                PageGarantia.IsVisible = false;
 #else
-            PageHistorico.Route = "Historico.HistoricoPage";
-            PageHistorico.ContentTemplate = new DataTemplate(typeof(Historico.HistoricoPage));
-            MainPageContent.IsVisible = true; // Mostra MainPage para outras plataformas
-            CurrentItem = MainPageContent; // Define como página inicial
+                PageHistorico.Route = "Historico.HistoricoPage";
+                PageHistorico.ContentTemplate = new DataTemplate(typeof(Historico.HistoricoPage));
+                MainPageContent.IsVisible = true; // Mostra MainPage para outras plataformas
+                CurrentItem = MainPageContent; // Define como página inicial
 #endif
-
-
-
-
-
+            }
+            else
+            {
+                this.FlyoutBehavior = FlyoutBehavior.Disabled; // Desativa o menu no Android
+                PagePlanilha.IsVisible = false;
+                PageHistorico.IsVisible = false;
+                MainPageContent.IsVisible = false; // Oculta MainPage para outras plataformas
+                MainPageAndroidContent.IsVisible = false; // Oculta MainPageAndroid
+                PageGarantia.IsVisible = false;
+            }
         }
 
         public async Task CheckLicenseAsync()
@@ -101,6 +113,5 @@ namespace Gerador_de_Pedidos
                 Debug.WriteLine($"Erro ao acessar o XML: {ex.Message}");
             }
         }
-
     }
 }

@@ -72,7 +72,7 @@
             <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="30" Color="#00FF00" />
         </FlyoutItem.Icon>
 
-        <ShellContent Title="Planilha" ContentTemplate="{DataTemplate local:PlanilhaPage}" Route="Planilha">
+        <ShellContent Title="Planilha" x:Name="PagePlanilha" ContentTemplate="{DataTemplate local:PlanilhaPage}" Route="Planilha">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>
