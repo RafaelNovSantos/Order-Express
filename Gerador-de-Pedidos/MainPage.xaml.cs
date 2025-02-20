@@ -21,14 +21,10 @@ namespace Gerador_de_Pedidos
         public MainPage()
         {
             InitializeComponent();
-            pedido.SelectedIndex = 0;
-            equipamentos.SelectedIndex = 0;
-            pag.SelectedIndex = 0;
-            nota.SelectedIndex = 0;
-            TipoFrete.SelectedIndex = 0;
-            valores.SelectedIndex = 0;
+           LoadLink();
+            
             GetProximoNumeroPedidoAsync();
-            LoadLink();
+           
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
             MeuBudget = new Budget { Titulo_Pedido = "Pedido Número:" };
@@ -52,10 +48,12 @@ namespace Gerador_de_Pedidos
             }
         }
 
+
         // Use OnAppearing para reagir à navegação e, se necessário, executar a lógica de edição.
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
 
             // Agora, a propriedade Edicao já foi definida (se o parâmetro foi passado)
             // Você pode converter o valor para o tipo desejado (por exemplo, bool) ou usá-lo diretamente
@@ -230,7 +228,15 @@ namespace Gerador_de_Pedidos
 
 
             }
+            pedido.SelectedIndex = 0;
+            equipamentos.SelectedIndex = 0;
+            pag.SelectedIndex = 0;
+            nota.SelectedIndex = 0;
+            TipoFrete.SelectedIndex = 0;
+            valores.SelectedIndex = 0;
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
+
+
         }
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
@@ -352,11 +358,13 @@ namespace Gerador_de_Pedidos
                     columnToUse = 5; // Ajuste com base na coluna correta
                     break;
                 default:
-                    await DisplayAlert("Erro", "Tipo de valor não selecionado.", "OK");
+
                     loadingIndicatorPedido.IsVisible = false; // Ocultar o botão se houve erro
                     loadingIndicatorPedido.IsRunning = false;
                     lblStatusProduto.IsVisible = true; // Mostrar o texto de status se houve erro
-                    lblStatusProduto.Text = "Tipo de valor não selecionado.";
+                    lblStatusProduto.Text = "Tipo de valor \nnão selecionado.";
+                    lblStatusProduto.LineBreakMode = LineBreakMode.WordWrap; // Para quebra de linha automática
+
                     lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
                     return;
             }
@@ -447,6 +455,7 @@ namespace Gerador_de_Pedidos
             listaProdutosExcel.IsVisible = false;
             int tentativas = 0;
             int maxTentativas = 3;
+            HttpResponseMessage response = null;  // Declare a variável 'response' fora do bloco de try-catch
 
             while (tentativas < maxTentativas)
             {
@@ -454,7 +463,7 @@ namespace Gerador_de_Pedidos
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        var response = await client.GetAsync(fileUrl);
+                        response = await client.GetAsync(fileUrl);  // Use a variável 'response' já declarada
                         response.EnsureSuccessStatusCode();
 
                         using (var stream = await response.Content.ReadAsStreamAsync())
@@ -492,7 +501,6 @@ namespace Gerador_de_Pedidos
                                         Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
                                         Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
                                         Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A"
-
                                     };
 
                                     Lista.Add(produto);
@@ -510,7 +518,6 @@ namespace Gerador_de_Pedidos
                             }
                         }
                     }
-
 
                     break; // Saia do loop se a operação foi bem-sucedida
                 }
@@ -530,17 +537,49 @@ namespace Gerador_de_Pedidos
                 }
                 catch (Exception ex)
                 {
+                    // Tentativa de reconectar ou manipular erro
+                    for (int tentativa = 0; tentativa < 3; tentativa++)
+                    {
+                        try
+                        {
+                            if (response != null) // Verifique se a resposta foi obtida
+                            {
+                                using (var stream = await response.Content.ReadAsStreamAsync())
+                                {
+                                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                                    using (var package = new ExcelPackage(stream))
+                                    {
+                                        var worksheet = package.Workbook.Worksheets[sheetName];
+
+                                        if (worksheet == null || worksheet.Dimension == null)
+                                        {
+                                            throw new Exception("A planilha não foi carregada corretamente.");
+                                        }
+
+                                        break; // Sai do loop se der certo
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            await Task.Delay(3000); // Espera 3 segundos antes de tentar de novo
+                        }
+                    }
+
                     Debug.WriteLine($"Erro inesperado: {ex.Message}");
                     await DisplayAlert("Erro", "Ocorreu um erro inesperado: " + ex.Message, "OK");
                     CriarListaComProdutoPadrao();
                     break;
                 }
             }
+
             disableFrame.IsVisible = true;
             loadingIndicator.IsRunning = false;
             loadingIndicator.IsVisible = false;
             listaProdutosExcel.IsVisible = true;
         }
+
         void CriarListaComProdutoPadrao()
         {
             Lista.Clear();

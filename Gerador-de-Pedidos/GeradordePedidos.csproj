@@ -124,6 +124,9 @@
 	  <MauiXaml Update="Historico\HistoricoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Licenca\LicencaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="MainPageAndroid.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -137,6 +140,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 		
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Licenca\LicencaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 
 </Project>

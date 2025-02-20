@@ -11,7 +11,7 @@
 
     <Shell.Resources>
         <ResourceDictionary>
-            <Color x:Key="ShellBackgroundColor">#00000000</Color>
+            <Color x:Key="ShellBackgroundColor">#0000000</Color>
             <Color x:Key="ShellTitleColor">White</Color>
         </ResourceDictionary>
     </Shell.Resources>
@@ -50,6 +50,15 @@
    Route="MainPageAndroid"
         ContentTemplate="{DataTemplate local:MainPageAndroid}"
         IsVisible="False">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <ShellContent Title="Licença"   x:Name="PageLicenca"
+     
+        ContentTemplate="{DataTemplate local:Licenca.LicencaPage}"
+        IsVisible="False" Route="Licenca.LicencaPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE801;" Size="40" Color="Yellow"/>
             </ShellContent.Icon>
