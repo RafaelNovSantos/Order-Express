@@ -734,7 +734,7 @@ namespace Gerador_de_Pedidos
 
             var Cliente = dadosService.Cliente;
 
-            if (!Items.Any()) // Maneira mais idiomática de verificar se a lista está vazia
+            if (!Items.Any()) // Maneira mais de verificar se a lista está vazia
             {
                 await DisplayAlert("Aviso", "Nenhum item adicionado ao pedido.", "OK");
                 return;
