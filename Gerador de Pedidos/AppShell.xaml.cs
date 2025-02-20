@@ -6,7 +6,7 @@ namespace Gerador_de_Pedidos
 {
     public partial class AppShell : Shell
     {
-        private const string LicenseUrl = "https://raw.githubusercontent.com/RafaelNovSantos/CuoraConnect/master/CuoraConnect/Licenca/activeLicense.xml";
+        private const string LicenseUrl = "https://raw.githubusercontent.com/RafaelNovSantos/Order-Express/blob/master/Gerador%20de%20Pedidos/Licenca/activeLicense.xml";
         public bool IsLicenseValid { get; private set; } = false;
         public bool IsConnectedInternet { get; private set; } = false;
 
