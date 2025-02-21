@@ -75,9 +75,6 @@ Margin="1">
                 <!-- Seção de entrada de dados -->
                 <ScrollView>
                     <VerticalStackLayout Padding="10" Spacing="10" >
-
-
-
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
                             <Label Text="{Binding MeuBudget.Titulo_Pedido}" FontSize="23" TextColor="White" HorizontalTextAlignment="Center"/>
                             <Label
