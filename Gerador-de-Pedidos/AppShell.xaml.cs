@@ -28,6 +28,12 @@ namespace Gerador_de_Pedidos
             ConfigureUI();
         }
 
+        private async void OnGitHubButtonClicked(object sender, EventArgs e)
+        {
+            await Launcher.OpenAsync("https://linktr.ee/rafaelnovsantos");
+        }
+
+
         private void ConfigureUI()
         {
             Debug.WriteLine($"IsConnectedInternet: {IsConnectedInternet}, IsLicenseValid: {IsLicenseValid}");
@@ -119,6 +125,11 @@ namespace Gerador_de_Pedidos
             {
                 Debug.WriteLine($"Erro ao acessar o XML: {ex.Message}");
             }
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

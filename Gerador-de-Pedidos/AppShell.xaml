@@ -74,7 +74,9 @@
                 <FontImageSource FontFamily="IconsFont" Glyph="&#xE806;" Size="40" Color="Green"/>
             </ShellContent.Icon>
         </ShellContent>
+    
     </FlyoutItem>
+    
 
     <FlyoutItem Title="Planilha" FlyoutDisplayOptions="AsSingleItem" Shell.BackgroundColor="#00c4b4" Shell.TitleColor="Black">
         <FlyoutItem.Icon>
@@ -87,4 +89,16 @@
             </ShellContent.Icon>
         </ShellContent>
     </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+
+        <Button Text="GitHub"
+        BackgroundColor="#00c4b4"
+        TextColor="White"
+   
+            Clicked="OnGitHubButtonClicked"
+     />
+
+    </Shell.FlyoutFooter>
+
 </Shell>
