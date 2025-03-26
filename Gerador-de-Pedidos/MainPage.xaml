@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Gerador_de_Pedidos.MainPage"
               Shell.NavBarIsVisible="False"
-             BackgroundColor="#1A9B9B9B"
+             BackgroundColor="#1b1c1f"
              >
 
 
@@ -64,7 +64,7 @@
             <Frame 
              BackgroundColor="#333333"
 CornerRadius="10" 
-                HeightRequest="634"
+               
              BorderColor="#00c4b4"
 HasShadow="True" 
 Padding="4"
@@ -156,10 +156,10 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                             </Button>
 
                         </HorizontalStackLayout>
-                        <HorizontalStackLayout>
+                       
                             <Entry x:Name="txtVersion" Placeholder="Versão Peça" Keyboard="Text"  WidthRequest="526"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout x:Name="secaofrete" Spacing="10" IsVisible="True">
+                    
+                        <HorizontalStackLayout x:Name="secaofrete" Margin="0" Padding="0" Spacing="10" IsVisible="True">
                             <Entry x:Name="txtFrete" Placeholder="Valor do Frete" WidthRequest="357"  HorizontalOptions="Start" Keyboard="Numeric" TextChanged="OnDoubleTextChanged"/>
                             <Picker x:Name="TipoFrete" WidthRequest="160" HorizontalOptions="End" Style="{StaticResource HeaderPickerStyle}">
                                 <Picker.Items>
@@ -186,7 +186,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                         <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
 
-                        <Picker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
+                        <Picker x:Name="notaPicker" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                             <Picker.Items>
                                 <x:String>Nota Interna</x:String>
                                 <x:String>Nota Externa</x:String>
@@ -195,7 +195,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
 
                         <HorizontalStackLayout Spacing="10">
                             <Entry x:Name="txtnota" IsVisible="True" Placeholder="Nº Nota" WidthRequest="160" HorizontalOptions="Start" />
-                            <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="357" HorizontalOptions="End"/>
+                            <Entry x:Name="txtChaveNotaExterna" IsVisible="False" Placeholder="Chave Nota Externa" WidthRequest="356" HorizontalOptions="End"/>
                         </HorizontalStackLayout>
 
 
@@ -210,7 +210,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
             <!-- Seção de lista de produtos selecionados -->
             <HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" Margin="10">
                 <Frame 
-             BackgroundColor="#1e1e1e"
+             BackgroundColor="#333"
 CornerRadius="20" 
              BorderColor="Transparent"
 HasShadow="True" 
@@ -348,7 +348,7 @@ BackgroundColor="Transparent">
     VerticalOptions="Start"
                                         BackgroundColor="Black"
     WidthRequest="450"
-    HeightRequest="370"
+    HeightRequest="450"
     ItemsSource="{Binding Produtos}">
 
                                         <!-- Exibe uma mensagem quando a lista está vazia -->
@@ -448,9 +448,9 @@ VerticalTextAlignment="Center"/>
        HasShadow="True"
        CornerRadius="12"
        HeightRequest="50"
-       Padding="5,0"
+       Padding="0,0"
                                
-       Margin="0,5,0,5"
+       Margin="0,5,0,0"
        HorizontalOptions="FillAndExpand">
 
                                 <Grid Padding="12" ColumnSpacing="15" HorizontalOptions="Center" >
@@ -503,7 +503,7 @@ VerticalTextAlignment="Center"/>
                                          
                          HorizontalOptions="FillAndExpand"
                                          WidthRequest="350"
-                                         HeightRequest="614"
+                                        
                          BackgroundColor="#1e1e1e">
 
                                 <Grid Padding="0" 
@@ -686,7 +686,7 @@ x:Name="loadingIndicator" IsRunning="False" IsVisible="False" Color="Blue" Width
                                     
             HorizontalOptions="FillAndExpand"
             
-                                    HeightRequest="430"
+                                    HeightRequest="500"
             BackgroundColor="Black"
                                     
                                     SelectionMode="Single"

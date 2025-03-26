@@ -54,10 +54,11 @@ public partial class HistoricoPage : ContentPage
 
 
 
-#if WINDOWS
+
 
     private void ClickedMenu(object sender, EventArgs e)
 {
+#if WINDOWS
     var injector = InputInjector.TryCreate();
     if (injector != null)
     {
@@ -73,13 +74,11 @@ public partial class HistoricoPage : ContentPage
         };
         injector.InjectMouseInput(new[] { info });
     }
+#endif
 }
-#endif
 
-#if ANDROID
-  private void ClickedMenu(object sender, EventArgs e)
-{}
-#endif
+
+
 
     private async void OnEditMenuClicked(object sender, EventArgs e)
     {
@@ -88,10 +87,10 @@ public partial class HistoricoPage : ContentPage
         var menuItem = sender as MenuFlyoutItem;
         if (menuItem?.BindingContext is InfoPedido pedido)
         {
-            // Confirmação de exclusão
+            // Confirmaï¿½ï¿½o de exclusï¿½o
             var connection = App.Database.GetConnection();
 
-            // Consulta para pegar o último NumeroPedido
+            // Consulta para pegar o ï¿½ltimo NumeroPedido
             var pedidoBanco = await connection.Table<InfoPedido>()
         .Where(p => p.NumeroPedido == pedido.NumeroPedido)
         .FirstOrDefaultAsync();
@@ -114,7 +113,7 @@ public partial class HistoricoPage : ContentPage
 
 
 
-            // Armazena o valor no serviço
+            // Armazena o valor no serviï¿½o
             var dadosService = DependencyService.Get<DadosCompartilhadosService>();
 
             dadosService.Vendedor = Vendedor;
@@ -164,7 +163,7 @@ public partial class HistoricoPage : ContentPage
         listaprodutos.ItemsSource = new List<InfoPedido>();
         listaprodutos.ItemsSource = InfoPedido;
 
-        // Atualiza as cores dos botões
+        // Atualiza as cores dos botï¿½es
         AtualizarCoresBotoes(filtro);
     }
 
@@ -178,14 +177,14 @@ public partial class HistoricoPage : ContentPage
     }
     private void AtualizarCoresBotoes(string filtro)
     {
-        // Alterando a cor dos botões com base no filtro
+        // Alterando a cor dos botï¿½es com base no filtro
         btnTodos.BackgroundColor = (filtro == "Todos") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
         btnTodos.TextColor = (filtro == "Todos") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
         btnTodos.BorderColor = (filtro == "Todos") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
 
-        btnOrcamento.BackgroundColor = (filtro == "Orçamento") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
-        btnOrcamento.TextColor = (filtro == "Orçamento") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
-        btnOrcamento.BorderColor = (filtro == "Orçamento") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
+        btnOrcamento.BackgroundColor = (filtro == "Orï¿½amento") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
+        btnOrcamento.TextColor = (filtro == "Orï¿½amento") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
+        btnOrcamento.BorderColor = (filtro == "Orï¿½amento") ? Color.FromArgb("#fff") : Color.FromArgb("#00c4b4");
 
         btnVenda.BackgroundColor = (filtro == "Venda") ? Color.FromArgb("#00c4b4") : Color.FromArgb("#fff");
         btnVenda.TextColor = (filtro == "Venda") ? Color.FromArgb("#fff") : Color.FromArgb("#000");
@@ -197,25 +196,22 @@ public partial class HistoricoPage : ContentPage
 
     }
 
-    private async void OnDeleteMenuClicked(object sender, EventArgs e) {
-
+    private async void OnDeleteMenuClicked(object sender, EventArgs e)
+    {
         var menuItem = sender as MenuFlyoutItem;
         if (menuItem?.BindingContext is InfoPedido pedido)
         {
-
-
             await App.Database.DeletarPedidoPorNumeroPedidoAsync(pedido.NumeroPedido);
             await App.Database.DeletarProdutoPorNumeroPedidoAsync(pedido.NumeroPedido);
             InfoPedido.Clear();
             AddPedido();
         }
-
     }
         private async void AddPedido()
     {
-        // Cria a conexão usando o banco de dados assíncrono
+        // Cria a conexï¿½o usando o banco de dados assï¿½ncrono
         var connection = App.Database.GetConnection();
-        // Consulta para pegar o último NumeroPedido
+        // Consulta para pegar o ï¿½ltimo NumeroPedido
         var pedido = await connection.Table<InfoPedido>().ToListAsync();
         if (pedido.Count == 0)
         {
@@ -247,7 +243,11 @@ public partial class HistoricoPage : ContentPage
         listaprodutos.ItemsSource = new List<InfoPedido>();
         listaprodutos.ItemsSource = InfoPedido;
 
-        AddProdutosFiltrados(); 
+        AddProdutosFiltrados();
+
+        
+
+        
     }
 
 
@@ -257,9 +257,9 @@ public partial class HistoricoPage : ContentPage
 
     private async void AddProduct()
 	{
-        // Cria a conexão usando o banco de dados assíncrono
+        // Cria a conexï¿½o usando o banco de dados assï¿½ncrono
         var connection = App.Database.GetConnection();
-        // Consulta para pegar o último NumeroPedido
+        // Consulta para pegar o ï¿½ltimo NumeroPedido
         var ultimoPedido = await connection.Table<ProdutosPedido>().ToListAsync();
         if (ultimoPedido.Count == 0)
         {
@@ -293,7 +293,7 @@ public partial class HistoricoPage : ContentPage
 
     private void btnGarantia_Clicked(object sender, EventArgs e)
     {
-        // sender é o botão que foi clicado
+        // sender ï¿½ o botï¿½o que foi clicado
         var clickedButton = sender as Button;
         FiltrarPedidos(clickedButton.Text);
 

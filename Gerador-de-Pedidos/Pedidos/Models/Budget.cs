@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+namespace Gerador_de_Pedidos.Pedidos.Models { 
 public class Budget : INotifyPropertyChanged
 {
     private string _valorTotal;
@@ -54,4 +55,5 @@ public class Budget : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+}
 }

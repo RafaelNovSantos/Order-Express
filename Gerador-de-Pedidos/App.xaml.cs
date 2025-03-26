@@ -8,7 +8,7 @@ namespace Gerador_de_Pedidos
 {
     public partial class App : Application
     {
-        private static Database _database;
+        private static Database? _database;
         public static Database Database
         {
             get

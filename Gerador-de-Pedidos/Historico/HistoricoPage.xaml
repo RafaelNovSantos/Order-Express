@@ -4,21 +4,21 @@
              x:Class="Gerador_de_Pedidos.Historico.HistoricoPage"
              Shell.NavBarIsVisible="False"
              Title="HistoricoPage"
-             BackgroundColor="#2a312e">
+             BackgroundColor="#1b1c1f">
 
 
     <ScrollView>
 
         <VerticalStackLayout Padding="20" Spacing="5">
 
-          
-            <Frame Padding="10" Margin="0" BorderColor="#101010"  CornerRadius="15" 
-BackgroundColor="#1e1e1e" HasShadow="False">
+
+            <Frame Padding="10" Margin="0" BorderColor="#00c4b4"  CornerRadius="15" 
+BackgroundColor="#333" HasShadow="False">
                 <!-- Filtros de Status -->
                 <Grid RowDefinitions="Auto" ColumnSpacing="20"  ColumnDefinitions="*, *, *,*" >
                     <Button x:Name="btnTodos" BackgroundColor="White" Grid.Column="0" Text="Todos" Clicked="btnGarantia_Clicked" BorderColor="#00c4b4"
         CommandParameter="Todos" >
-                            <Button.ImageSource>
+                        <Button.ImageSource>
                             <FontImageSource FontFamily="SearchFont" Glyph="&#xE803;" Size="17" Color="Black"/>
                         </Button.ImageSource>
                     </Button>
@@ -43,22 +43,23 @@ BackgroundColor="#1e1e1e" HasShadow="False">
        Clicked="btnGarantia_Clicked" CommandParameter="Garantia" 
      
                     >
-                    <Button.ImageSource>
+                        <Button.ImageSource>
                             <FontImageSource  FontFamily="IconsFont" Glyph="&#xE806;" Size="17" Color="Black"/>
-                    </Button.ImageSource>
+                        </Button.ImageSource>
                     </Button>
-                   
+
                 </Grid>
             </Frame>
-
-            <!-- Lista de Pedidos -->
-            <CollectionView x:Name="listaprodutos" >
-                <CollectionView.EmptyView>
-                    <Frame Padding="20" Margin="10" BorderColor="White"  CornerRadius="15" 
+            <Frame   VerticalOptions="Center"  Padding="5" Margin="2" BorderColor="#00c4b4"  CornerRadius="15" 
+BackgroundColor="#333" HasShadow="True">
+                <!-- Lista de Pedidos -->
+                <CollectionView  x:Name="listaprodutos">
+                    <CollectionView.EmptyView>
+                        <Frame Padding="20" Margin="10" BorderColor="White"  CornerRadius="15" 
     BackgroundColor="#101010" HasShadow="True">
-                        <Grid VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand"  HeightRequest="150">
-                            <!-- Texto de instrução -->
-                            <Label Text="Sem pedidos desse filtro..."
+                            <Grid VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand"  HeightRequest="150">
+                                <!-- Texto de instrução -->
+                                <Label Text="Sem pedidos desse filtro..."
 VerticalTextAlignment="Center"
 Padding="30"
 HorizontalOptions="Center" 
@@ -66,69 +67,72 @@ FontSize="15"
 VerticalOptions="Start" 
 TextColor="Gray" />
 
-                            <!-- Ícone usando FontImageSource -->
-                            <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
+                                <!-- Ícone usando FontImageSource -->
+                                <Image HorizontalOptions="Center" VerticalOptions="Start" Margin="0,60,0,0"
 WidthRequest="30" HeightRequest="30">
-                                <Image.Source>
-                                    <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
-                                </Image.Source>
-                            </Image>
-                        </Grid>
-                    </Frame>
-                </CollectionView.EmptyView>
-
-
-
-
-           
-                    <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="20" Margin="10" BorderColor="White"  CornerRadius="15" 
-                           BackgroundColor="#101010" HasShadow="True">
-                            <Grid Padding="10" RowSpacing="5" ColumnSpacing="50" ColumnDefinitions="*, *,*, *,*,*, *" RowDefinitions="Auto, *">
-                                <!-- Labels Cabeçalhos -->
-                                <Label Text="Numero do pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="0"/>
-                                <Label Text="Tipo de pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="1"/>
-                                <Label Text="Vendedor" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="2"/>
-                                <Label Text="Cliente" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="3"/>
-
-                                <Label Text="Data pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="4"/>
-                                <Label Text="Valor Total" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="5"/>
-
-
-                                <!-- Dados Dinâmicos -->
-                                <Label Text="{Binding NumeroPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="0"/>
-                                <Label Text="{Binding TipoPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="1"/>
-                                <Label Text="{Binding Vendedor}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="2"/>
-                                <Label Text="{Binding Cliente}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="3"/>
-                                <Label Text="{Binding DataPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="4"/>
-                                <Label Text="{Binding ValorTotal}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="5"/>
-
-                                <Button  Grid.Column="6" Clicked="ClickedMenu" Text="☰ Menu"
-       >
-                                    <FlyoutBase.ContextFlyout>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem Clicked="OnEditMenuClicked" Text="Editar" CommandParameter="{Binding}"
-                            >
-                                                <MenuFlyoutItem.IconImageSource>
-                                                    <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" />
-                                                </MenuFlyoutItem.IconImageSource>
-                                            </MenuFlyoutItem>
-                                            <MenuFlyoutItem Clicked="OnDeleteMenuClicked" Text="Excluir Pedido" CommandParameter="{Binding}"
-                            >
-                                                <MenuFlyoutItem.IconImageSource>
-                                                    <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" />
-                                                </MenuFlyoutItem.IconImageSource>
-                                            </MenuFlyoutItem>
-                                        </MenuFlyout>
-                                    </FlyoutBase.ContextFlyout>
-                                </Button>
+                                    <Image.Source>
+                                        <FontImageSource FontFamily="IconsFont" Glyph="&#xF0CE;" Size="42" Color="#00FF00" />
+                                    </Image.Source>
+                                </Image>
                             </Grid>
                         </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    </CollectionView.EmptyView>
 
+
+
+
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid Padding="0" RowSpacing="0" ColumnSpacing="0" ColumnDefinitions="*" RowDefinitions="*">
+                                <Frame   VerticalOptions="Center"  Padding="20" Margin="0,0,0,5" BorderColor="White"  CornerRadius="15" 
+                           BackgroundColor="#101010" HasShadow="True">
+                                    <Grid Padding="10" RowSpacing="5" ColumnSpacing="50" ColumnDefinitions="*, *,*, *,*,*, *" RowDefinitions="Auto, *">
+                                        <!-- Labels Cabeçalhos -->
+                                        <Label Text="Numero do pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Text="Tipo de pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="1"/>
+                                        <Label Text="Vendedor" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="2"/>
+                                        <Label Text="Cliente" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="3"/>
+
+                                        <Label Text="Data pedido" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="4"/>
+                                        <Label Text="Valor Total" FontAttributes="Bold" TextColor="#00c4b4" Grid.Row="0" Grid.Column="5"/>
+
+
+                                        <!-- Dados Dinâmicos -->
+                                        <Label Text="{Binding NumeroPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="0"/>
+                                        <Label Text="{Binding TipoPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="1"/>
+                                        <Label Text="{Binding Vendedor}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="2"/>
+                                        <Label Text="{Binding Cliente}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="3"/>
+                                        <Label Text="{Binding DataPedido}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="4"/>
+                                        <Label Text="{Binding ValorTotal}" FontSize="18" TextColor="white" Grid.Row="1" Grid.Column="5"/>
+
+                                        <Button  Grid.Column="6" Clicked="ClickedMenu" Text="☰ Menu"
+       >
+                                            <FlyoutBase.ContextFlyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem Clicked="OnEditMenuClicked" Text="Editar" CommandParameter="{Binding}"
+                            >
+                                                        <MenuFlyoutItem.IconImageSource>
+                                                            <FontImageSource FontFamily="IconsFont" Glyph="&#xE804;" />
+                                                        </MenuFlyoutItem.IconImageSource>
+                                                    </MenuFlyoutItem>
+                                                    <MenuFlyoutItem Clicked="OnDeleteMenuClicked" Text="Excluir Pedido" CommandParameter="{Binding}"
+                            >
+                                                        <MenuFlyoutItem.IconImageSource>
+                                                            <FontImageSource FontFamily="SearchFont" Glyph="&#xE801;" />
+                                                        </MenuFlyoutItem.IconImageSource>
+                                                    </MenuFlyoutItem>
+                                                </MenuFlyout>
+                                            </FlyoutBase.ContextFlyout>
+                                        </Button>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Frame>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

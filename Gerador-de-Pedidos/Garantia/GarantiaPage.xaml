@@ -4,7 +4,7 @@
              x:Class="Gerador_de_Pedidos.GarantiaPage"
              
               Shell.NavBarIsVisible="False"
-             BackgroundColor="#1A9B9B9B"
+             BackgroundColor="#1b1c1f"
              >
 
 

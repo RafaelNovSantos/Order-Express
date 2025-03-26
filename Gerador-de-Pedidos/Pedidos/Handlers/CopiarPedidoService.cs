@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
-namespace Gerador_de_Pedidos.Services
+namespace GeradordePedidos.Pedidos.Handlers
 {
     public class CopiarPedidoService
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Gerador_de_Pedidos.Pedidos.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class SalvarPedido
@@ -11,10 +12,8 @@ public class SalvarPedido
     }
 
     public async Task<bool> SalvarPedidoAsync(
-        string valortotal,
-        int numeropedido,
+        Budget MyBudget,
         string vendedor,
-        string cliente,
         string tipopedido,
         string txtFrete,
         string tipofrete,
@@ -32,19 +31,57 @@ public class SalvarPedido
         Func<Task<int>> getProximoNumeroPedidoAsync
     )
     {
-        decimal? valorfrete = decimal.TryParse(txtFrete, out decimal frete) ? frete : null;
-        int novoNumeroPedido = await getProximoNumeroPedidoAsync();
+        var Items = (listaProdutosSelect?.ItemsSource as IEnumerable<object>)?
+                 .OfType<Product>()
+                 .ToList() ?? new List<Product>();
         var dadosService = DependencyService.Get<DadosCompartilhadosService>();
+        bool answer;
 
-        if (numeropedido != novoNumeroPedido) // Verifica se a data não é nula
+        var Cliente = dadosService.Cliente;
+
+        if (!Items.Any()) // Maneira mais idiomática de verificar se a lista está vazia
         {
-            await _database.DeletarProdutoPorNumeroPedidoAsync(numeropedido);
-            await _database.DeletarPedidoPorNumeroPedidoAsync(numeropedido);
+            await Application.Current.MainPage.DisplayAlert("Aviso", "Nenhum item adicionado ao pedido.", "OK");
+            return false;
+        }
+
+        if (!string.IsNullOrEmpty(Cliente))
+        {
+            answer = await Application.Current.MainPage.DisplayAlert("Alteração cliente", $"Deseja alterar o nome do cliente: {Cliente} no pedido?", "Sim", "Não");
 
         }
         else
         {
-            numeropedido = novoNumeroPedido;
+
+            answer = await Application.Current.MainPage.DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
+
+        }
+
+        if (answer == true)
+        {
+            // Abre o prompt com o valor atual preenchido
+            string newValue = await Application.Current.MainPage.DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
+            if (string.IsNullOrEmpty(newValue))
+            {
+                await Application.Current.MainPage.DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
+                return false;
+            }
+            Cliente = newValue;
+        }
+
+        decimal? valorfrete = decimal.TryParse(txtFrete, out decimal frete) ? frete : null;
+        int novoNumeroPedido = await getProximoNumeroPedidoAsync();
+
+
+        if (MyBudget.Numero_Pedido != novoNumeroPedido) // Verifica se a data não é nula
+        {
+            await _database.DeletarProdutoPorNumeroPedidoAsync(MyBudget.Numero_Pedido);
+            await _database.DeletarPedidoPorNumeroPedidoAsync(MyBudget.Numero_Pedido);
+
+        }
+        else
+        {
+            MyBudget.Numero_Pedido = novoNumeroPedido;
         }
 
         if (produtosSelecionados.Any())
@@ -53,7 +90,7 @@ public class SalvarPedido
             {
                 var novoProdutoPedido = new ProdutosPedido
                 {
-                    NumeroPedido = numeropedido,
+                    NumeroPedido = MyBudget.Numero_Pedido,
                     Codigo = product.Codigo,
                     Descricao = product.Descricao,
                     Valor = product.Valor,
@@ -66,10 +103,10 @@ public class SalvarPedido
 
             var novoInfoPedido = new InfoPedido
             {
-                NumeroPedido = numeropedido,
+                NumeroPedido = MyBudget.Numero_Pedido,
                 TipoPedido = tipopedido,
                 Vendedor = vendedor,
-                Cliente = cliente,
+                Cliente = Cliente,
                 ValorFrete = !tipopedido.StartsWith("Garantia") ? valorfrete : null,
                 TipoFrete = !tipopedido.StartsWith("Garantia") ? tipofrete : "",
                 TipoPagamento = !tipopedido.StartsWith("Garantia") ? tipopagamento : "",
@@ -79,7 +116,7 @@ public class SalvarPedido
                 TipoNota = !tipopedido.StartsWith("Garantia") ? "" : tiponota,
                 NumNota = !tipopedido.StartsWith("Garantia") ? "" : numnota,
                 ChaveNotaExterna = !tipopedido.StartsWith("Garantia") ? "" : chavenotaexterna,
-                ValorTotal = valortotal,
+                ValorTotal = MyBudget.Valor_Total,
                 DataPedido = DateTime.Now
             };
 

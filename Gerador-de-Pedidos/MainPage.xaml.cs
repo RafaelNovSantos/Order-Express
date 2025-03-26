@@ -1,7 +1,8 @@
-﻿using OfficeOpenXml;
-using Gerador_de_Pedidos.Services;
+﻿using Gerador_de_Pedidos.Pedidos.Handlers;
+using Gerador_de_Pedidos.Pedidos.Models;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using GeradordePedidos.Pedidos.Handlers;
 
 
 namespace Gerador_de_Pedidos
@@ -10,20 +11,38 @@ namespace Gerador_de_Pedidos
     [QueryProperty(nameof(Edicao), "edicao")]
     public partial class MainPage : ContentPage
     { // Propriedade que receberá o valor do parâmetro "edicao"
-        public string Edicao { get; set; }
-        public string Titulo_Pedido { get; set; }
+        public string? Edicao { get; set; }
+        public string? Titulo_Pedido { get; set; }
 
+        private string selectedSheetName = string.Empty;
 
-        private string linkplanilha;
+        AdicionarHandler _adicionarHandler;
+
+        ProdutoService _produtoService = new ProdutoService();
+
+        EditarHandler _editarHandler;
+
+        LinkService _linkService = new LinkService();
+
+        LinkService _linkServiceExecute;
+
         private readonly SalvarPedido _salvarPedido;
         public ObservableCollection<Product> ProdutosFiltradosExcel { get; set; }
         public ObservableCollection<Product> ProdutosFiltradosSelecionados { get; set; }
+
+
+        public List<Product> Lista = new List<Product>();
+        public ObservableCollection<Product> ListaSelecionados { get; set; } = new ObservableCollection<Product>();
+
+        public Budget MeuBudget { get; set; }
+
+        private string _ultimoItemSelecionado = string.Empty;
         public MainPage()
         {
             InitializeComponent();
            LoadLink();
             
-            GetProximoNumeroPedidoAsync();
+             GetProximoNumeroPedidoAsync();
            
             MeuBudget = new Budget { Numero_Pedido = 0 };
             MeuBudget = new Budget { Valor_Total = "0,00" }; // Inicializa com zero
@@ -33,7 +52,27 @@ namespace Gerador_de_Pedidos
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
 
+             _adicionarHandler = new AdicionarHandler(
+    ListaSelecionados,
+    listaProdutosSelect,
+    valores,
+    txtCodigo,
+    txtDescricao,
+    txtValor,
+    txtQuantidade,
+    txtVersion,
+    searchBarProdutoSelecionado,
+    OnPickerSelectionChangedPrice,
+    AddProdutosProdutosFiltradosSelecionados,
+    CallValorTotal,
+    CalcularFaturamento
+);
+            _linkServiceExecute = new LinkService(loadingIndicatorPedido, lblStatusProduto);
+
+            _editarHandler = new EditarHandler(ListaSelecionados, listaProdutosSelect, searchBarProdutoSelecionado, AddProdutosProdutosFiltradosSelecionados, CalcularFaturamento, CallValorTotal);
+
         }
+
 
         // Esse método é chamado automaticamente quando a página recebe parâmetros de consulta.
         public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -53,103 +92,32 @@ namespace Gerador_de_Pedidos
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-
-            // Agora, a propriedade Edicao já foi definida (se o parâmetro foi passado)
-            // Você pode converter o valor para o tipo desejado (por exemplo, bool) ou usá-lo diretamente
             if (!string.IsNullOrEmpty(Edicao) && Edicao.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
 
                 var dadosService = DependencyService.Get<DadosCompartilhadosService>();
                 if (dadosService != null && dadosService.NumeroPedido != 0)
                 {
-                    CleanInputs();
-                    btncancelaredicao.IsVisible = true;
-                    txtVendedor.Text = dadosService.Vendedor;
-                    MeuBudget.Numero_Pedido = dadosService.NumeroPedido;
-                    pedido.SelectedItem = dadosService.TipoPedido;
-                    txtFrete.Text = dadosService.ValorFrete.ToString();
-                    TipoFrete.SelectedItem = dadosService.TipoFrete;
-                    pag.SelectedItem = dadosService.TipoPagamento;
-                    txtFaturamento.Text = dadosService.Faturamento;
-                    txtDefeitos.Text = dadosService.DefeitoEquipamento;
-                    txtNS.Text = dadosService.NumSerieEquipamento;
-                    nota.SelectedItem = dadosService.TipoNota;
-                    txtnota.Text = dadosService.NumNota;
-                    txtChaveNotaExterna.Text = dadosService.ChaveNotaExterna;
-
-                    // Confirmação de exclusão
-                    var connection = App.Database.GetConnection();
-
-                    // Consulta para pegar o último NumeroPedido
-                    var produtosBanco = await connection.Table<ProdutosPedido>()
-                .Where(p => p.NumeroPedido == dadosService.NumeroPedido)
-                .ToListAsync();
-
-                    foreach (var item in produtosBanco)
-                    {
-                        var produto = new Product
-                        {
-                            Codigo = item.Codigo,
-                            Descricao = item.Descricao,
-                            Valor = item.Valor,
-                            Quantidade = item.Quantidade,
-                            Versao_Peca = item.VersaoPeca,
-                            Data = item.DataPedido
-                        };
-                        ListaSelecionados.Add(produto);
-                    }
-
-
-
-                    // Atualizar a visualização da lista
-                    listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
-                    listaProdutosSelect.ItemsSource = ListaSelecionados;
-                    AddProdutosProdutosFiltradosSelecionados();
-                    CallValorTotal();
+                    // Deixa a página pedidos em modo de edição conforme pedido selecionado na página historico
+                    _produtoService.EditOrderToHistoric(CleanInputs, btncancelaredicao, txtVendedor, MeuBudget, dadosService, pedido, txtFrete, TipoFrete, pag, txtFaturamento, txtDefeitos, txtNS, notaPicker, txtnota, txtChaveNotaExterna, ListaSelecionados, listaProdutosSelect, AddProdutosProdutosFiltradosSelecionados, CallValorTotal);
                 }
 
                 Edicao = "false";
             }
+            //Verifica se o pedido atual é o próximo pedido do banco, se não for ele apaga todos os dados
+            if (!btncancelaredicao.IsVisible)
+            {
+                 await GetProximoNumeroPedidoAsync();
+
+            }
         }
 
-        private async void CleanInputs()
+        private void CleanInputs()
         {
-            ListaSelecionados.Clear();
-            listaProdutosSelect.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
-            listaProdutosSelect.ItemsSource = ListaSelecionados;
-            pedido.SelectedIndex = 0;
-            equipamentos.SelectedIndex = 0;
-            pag.SelectedIndex = 0;
-            nota.SelectedIndex = 0;
-            TipoFrete.SelectedIndex = 0;
-            valores.SelectedIndex = 0;
-            // Caso haja algum valor numérico, defina como 0 ou o valor default
-
-            txtCodigo.Text = string.Empty;
-            txtDescricao.Text = string.Empty;
-            txtValor.Text = string.Empty;
-            txtQuantidade.Text = string.Empty;
-            txtVendedor.Text = string.Empty;
-            txtFrete.Text = string.Empty;
-            txtVersion.Text = string.Empty;
-            txtFaturamento.Text = string.Empty;
-            txtDefeitos.Text = string.Empty;
-            txtNS.Text = string.Empty;
-            txtnota.Text = string.Empty;
-            txtChaveNotaExterna.Text = string.Empty;
-
-
+            _produtoService.CleanInputsService(txtVendedor,pedido,txtFrete,TipoFrete,pag,txtFaturamento,txtDefeitos,txtNS,notaPicker,txtnota,txtChaveNotaExterna,ListaSelecionados,listaProdutosSelect,equipamentos,valores,txtCodigo,txtDescricao,txtValor,txtQuantidade,txtVersion);
         }
 
-
-        public List<Product> Lista = new List<Product>();
-        public ObservableCollection<Product> ListaSelecionados { get; set; } = new ObservableCollection<Product>();
-
-        public Budget MeuBudget { get; set; }
-
-        private string _ultimoItemSelecionado;
-        private async void OnSearchBarProdutosExcelTextChanged(object sender, TextChangedEventArgs e)
+        private void OnSearchBarProdutosExcelTextChanged(object sender, TextChangedEventArgs e)
         {
             string termoBusca = e.NewTextValue?.ToLower() ?? "";
             Lista.Clear();
@@ -164,13 +132,9 @@ namespace Gerador_de_Pedidos
             // Atualizar a visualização da lista
             listaProdutosExcel.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
             listaProdutosExcel.ItemsSource = Lista;
-
-
         }
 
-
-
-        private async void OnSearchBarProdutoSelecionadoTextChanged(object sender, TextChangedEventArgs e)
+        private void OnSearchBarProdutoSelecionadoTextChanged(object sender, TextChangedEventArgs e)
         {
             string termoBusca = e.NewTextValue?.ToLower() ?? "";
             ListaSelecionados.Clear();
@@ -202,53 +166,18 @@ namespace Gerador_de_Pedidos
         }
         private async void LoadLink()
         {
-            // Cria a conexão usando o banco de dados assíncrono
-            var connection = App.Database.GetConnection();
-            await App.Database.ObterPlanilhaAsync();
-            // Consulta para pegar o último LinkPlanilha
-            var planilha = await connection.Table<Planilha>()
-     .OrderByDescending(p => p.DataMudanca) // Ordena pela data mais recente
-     .FirstOrDefaultAsync();
-            // Verifica se não há nenhum link no banco, caso não tenha, define o link padrão
-            try
-            {
-                if (planilha == null || string.IsNullOrEmpty(planilha.LinkPlanilha))
-                {
-                    linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
-                }
-                else
-                {
-                    linkplanilha = planilha.LinkPlanilha;
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Erro ao ler o link: {ex.Message}", "OK");
-                linkplanilha = "https://docs.google.com/spreadsheets/d/1tF_sKR6Mne3H1HPSuz9G2rlHahqnTmX_KaxUuHV6qBw/export?usp=sharing";
 
-
-            }
-            pedido.SelectedIndex = 0;
-            equipamentos.SelectedIndex = 0;
-            pag.SelectedIndex = 0;
-            nota.SelectedIndex = 0;
-            TipoFrete.SelectedIndex = 0;
-            valores.SelectedIndex = 0;
-            OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
-
+            await _linkService.LoadLink(pedido, equipamentos, pag, notaPicker, TipoFrete, valores, OnPickerSelectionChangedPrice);
 
         }
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
-            var selectedValue = valores.SelectedItem?.ToString();
-            string senha = await DisplayPromptAsync("Autenticação", "Digite a senha para alterar o link da planilha Sheet Google:");
-
-            var linkService = new LinkService();
-            await linkService.AlterarLink(senha, await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:"), selectedValue, loadingIndicatorPedido, lblStatusProduto);
+           
+            
+            await _linkService.AlterarLink( loadingIndicatorPedido);
             LoadLink();
 
         }
-        private string selectedSheetName;
 
         //Bloqueia caracteres, funciona somente números inteiros
         private void OnIntegerTextChanged(object sender, TextChangedEventArgs e)
@@ -333,8 +262,6 @@ namespace Gerador_de_Pedidos
         private void OnTxtCodigoTextChangedUnified(object sender, TextChangedEventArgs e)
         {
             var entry = sender as Entry;
-
-
             // Chama o método para atualizar o Picker, ou qualquer outra lógica adicional
             OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
         }
@@ -365,10 +292,10 @@ namespace Gerador_de_Pedidos
                     lblStatusProduto.Text = "Tipo de valor \nnão selecionado.";
                     lblStatusProduto.LineBreakMode = LineBreakMode.WordWrap; // Para quebra de linha automática
 
-                    lblStatusProduto.TextColor = Color.FromHex("#FF0000"); // Vermelho para indicar erro
+                    lblStatusProduto.TextColor = Color.FromArgb("#FF0000"); // Vermelho para indicar erro
                     return;
             }
-            await LerExcelComColuna(linkplanilha, selectedSheetName, columnToUse);
+            await LerExcelComColuna(_linkService.LinkPlanilha, selectedSheetName, columnToUse);
             // Evite chamar `LerExcelComColuna` novamente, já que isso é feito com base na seleção
             AddProdutosFiltradosExcel();
             OnSearchBarProdutosExcelTextChanged(searchBarprodutosexcel, new TextChangedEventArgs(searchBarprodutosexcel.Text, searchBarprodutosexcel.Text));
@@ -385,13 +312,12 @@ namespace Gerador_de_Pedidos
         private async Task ProcessarSelecao(string selectedValue)
         {
             // Exemplo de como usar o ProdutoService para processar a seleção
-            var produtoService = new ProdutoService();
-            await produtoService.ProcessarSelecao(selectedValue, txtCodigo.Text, Lista, txtDescricao, txtValor, lblStatusProduto);
+
+            await _produtoService.ProcessarSelecao(selectedValue, txtCodigo.Text, Lista, txtDescricao, txtValor, lblStatusProduto);
         }
 
-        private async void OnPickerSelectionChangedPrice(object sender, EventArgs e)
+        private async void OnPickerSelectionChangedPrice(object? sender, EventArgs e)
         {
-
             var picker = sender as Picker;
             if (picker == null || picker.SelectedItem == null)
                 return;
@@ -401,6 +327,7 @@ namespace Gerador_de_Pedidos
             // Verifica se o item selecionado mudou
             if (selectedValue != _ultimoItemSelecionado)
             {
+                lblStatusProduto.TextColor = Color.FromArgb("#00000000");
                 await ExecuteTask(selectedValue);
 
                 // Atualiza o item selecionado após a tarefa ser executada
@@ -412,10 +339,9 @@ namespace Gerador_de_Pedidos
             loadingIndicatorPedido.IsRunning = true;
             lblStatusProduto.IsVisible = true;
             lblStatusProduto.Text = "center";
-            lblStatusProduto.TextColor = Color.FromHex("#00000000");
+            lblStatusProduto.TextColor = Color.FromArgb("#00000000");
 
             // Inicia a rotação do ícone e do botão de busca
-
 
             await ProcessarSelecao(selectedValue);
 
@@ -448,223 +374,21 @@ namespace Gerador_de_Pedidos
         }
         async Task LerExcelComColuna(string fileUrl, string sheetName, int valorColumnIndex)
         {
-            // Mostrar o indicador de carregamento e desativar o ScrollView
-            disableFrame.IsVisible = false;
-            loadingIndicator.IsRunning = true;
-            loadingIndicator.IsVisible = true;
-            listaProdutosExcel.IsVisible = false;
-            int tentativas = 0;
-            int maxTentativas = 3;
-            HttpResponseMessage response = null;  // Declare a variável 'response' fora do bloco de try-catch
-
-            while (tentativas < maxTentativas)
-            {
-                try
-                {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        response = await client.GetAsync(fileUrl);  // Use a variável 'response' já declarada
-                        response.EnsureSuccessStatusCode();
-
-                        using (var stream = await response.Content.ReadAsStreamAsync())
-                        {
-                            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-                            using (var package = new ExcelPackage(stream))
-                            {
-                                var worksheet = package.Workbook.Worksheets[sheetName];
-
-                                if (worksheet == null || worksheet.Dimension == null || worksheet.Cells == null)
-                                {
-                                    await DisplayAlert("Erro", $"Página '{sheetName}' da planilha não encontrada ou as células da planilha estão vazias", "OK");
-                                    CriarListaComProdutoPadrao();
-                                    return;
-                                }
-                                Lista.Clear();
-
-                                var rowCount = worksheet.Dimension.Rows;
-                                bool linhaVazia = true;
-                                for (int row = 2; row <= rowCount; row++)
-                                {
-                                    var codigo = worksheet.Cells[row, 1]?.Text;
-                                    var descricao = worksheet.Cells[row, 2]?.Text;
-                                    var valor = worksheet.Cells[row, valorColumnIndex]?.Text;
-                                    if (string.IsNullOrWhiteSpace(codigo) &&
-                                        string.IsNullOrWhiteSpace(descricao) &&
-                                        string.IsNullOrWhiteSpace(valor))
-                                    {
-                                        continue; // Ignorar linhas vazias
-                                    }
-
-                                    var produto = new Product
-                                    {
-                                        Codigo = !string.IsNullOrWhiteSpace(codigo) ? codigo : "N/A",
-                                        Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : "N/A",
-                                        Valor = !string.IsNullOrWhiteSpace(valor) ? valor : "N/A"
-                                    };
-
-                                    Lista.Add(produto);
-                                    linhaVazia = false;
-                                }
-
-                                if (linhaVazia)
-                                {
-                                    CriarListaComProdutoPadrao();
-                                }
-
-                                // Atualizar a visualização da lista
-                                listaProdutosExcel.ItemsSource = null; // Limpar a origem de itens para forçar a atualização
-                                listaProdutosExcel.ItemsSource = Lista;
-                            }
-                        }
-                    }
-
-                    break; // Saia do loop se a operação foi bem-sucedida
-                }
-                catch (HttpRequestException ex)
-                {
-                    tentativas++;
-                    Debug.WriteLine($"Erro ao acessar a planilha: {ex.Message}");
-
-                    if (tentativas >= maxTentativas)
-                    {
-                        await DisplayAlert("Erro", "Falha ao acessar a planilha após várias tentativas. Erro: " + ex.Message, "OK");
-                        CriarListaComProdutoPadrao();
-                        break;
-                    }
-
-                    await Task.Delay(5000); // Aguardar 5 segundos antes de tentar novamente
-                }
-                catch (Exception ex)
-                {
-                    // Tentativa de reconectar ou manipular erro
-                    for (int tentativa = 0; tentativa < 3; tentativa++)
-                    {
-                        try
-                        {
-                            if (response != null) // Verifique se a resposta foi obtida
-                            {
-                                using (var stream = await response.Content.ReadAsStreamAsync())
-                                {
-                                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                                    using (var package = new ExcelPackage(stream))
-                                    {
-                                        var worksheet = package.Workbook.Worksheets[sheetName];
-
-                                        if (worksheet == null || worksheet.Dimension == null)
-                                        {
-                                            throw new Exception("A planilha não foi carregada corretamente.");
-                                        }
-
-                                        break; // Sai do loop se der certo
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            await Task.Delay(3000); // Espera 3 segundos antes de tentar de novo
-                        }
-                    }
-
-                    Debug.WriteLine($"Erro inesperado: {ex.Message}");
-                    await DisplayAlert("Erro", "Ocorreu um erro inesperado: " + ex.Message, "OK");
-                    CriarListaComProdutoPadrao();
-                    break;
-                }
-            }
-
-            disableFrame.IsVisible = true;
-            loadingIndicator.IsRunning = false;
-            loadingIndicator.IsVisible = false;
-            listaProdutosExcel.IsVisible = true;
+            await _linkService.LerExcelComColuna(fileUrl, sheetName, valorColumnIndex, Lista, listaProdutosExcel, disableFrame, loadingIndicator);
         }
 
-        void CriarListaComProdutoPadrao()
-        {
-            Lista.Clear();
-            Lista.Add(new Product
-            {
-                Codigo = "N/A",
-                Descricao = "N/A",
-                Valor = "N/A",
-                Quantidade = "N/A"
-            });
-
-            listaProdutosExcel.ItemsSource = new List<Product>();
-            listaProdutosExcel.ItemsSource = Lista;
-        }
+       
         private void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = e.CurrentSelection.Cast<Product>().ToList();
         }
         private async void OnEditarClicked(object sender, EventArgs e)
         {
-            var selectedItems = listaProdutosSelect.SelectedItems?.Cast<Product>().ToList();
-
-            if (selectedItems == null || selectedItems.Count == 0)
-            {
-                await DisplayAlert("Aviso", "Nenhum item selecionado.", "OK");
-                return;
-            }
-
-            string action = await DisplayActionSheet("Escolha o campo a editar", "Cancelar", null, "Código", "Descrição", "Valor", "Quantidade", "Versão Peça");
-
-            if (action == "Cancelar")
-                return;
-
-            // Pega o valor do primeiro item selecionado como referência para pré-preencher o campo
-            string valorAtual = action switch
-            {
-                "Código" => selectedItems[0].Codigo,
-                "Descrição" => selectedItems[0].Descricao,
-                "Valor" => selectedItems[0].Valor,
-                "Quantidade" => selectedItems[0].Quantidade,
-                "Versão Peça" => selectedItems[0].Versao_Peca,
-                _ => ""
-            };
-
-            // Abre o prompt com o valor atual preenchido
-            string newValue = await DisplayPromptAsync("Editar", $"Digite o novo valor para {action}:", "OK", "Cancelar", initialValue: valorAtual);
-
-            if (string.IsNullOrEmpty(newValue))
-                return;
-            var saveTextSearchBarProdutoSelecioando = searchBarProdutoSelecionado.Text;
-            searchBarProdutoSelecionado.Text = "";
-            // Atualiza todos os itens selecionados
-            foreach (var item in selectedItems)
-            {
-                switch (action)
-                {
-                    case "Código":
-                        item.Codigo = newValue;
-                        break;
-                    case "Descrição":
-                        item.Descricao = newValue;
-                        break;
-                    case "Valor":
-                        item.Valor = newValue;
-                        break;
-                    case "Quantidade":
-                        item.Quantidade = newValue;
-                        break;
-                    case "Versão Peça":
-                        item.Versao_Peca = newValue;
-                        break;
-                }
-            }
-
-            // Atualiza a interface automaticamente
-            listaProdutosSelect.ItemsSource = null;
-            listaProdutosSelect.ItemsSource = ListaSelecionados;
-            AddProdutosProdutosFiltradosSelecionados();
-            CallValorTotal();
-            CalcularFaturamento();
-            searchBarProdutoSelecionado.Text = saveTextSearchBarProdutoSelecioando;
+            await _editarHandler.HandlerEditarClicked();
         }
         private async void OnCancelarClicked(object sender, EventArgs e)
         {
-            GetProximoNumeroPedidoAsync();
+           await GetProximoNumeroPedidoAsync();
             CleanInputs();
             btncancelaredicao.IsVisible = false;
         }
@@ -704,151 +428,29 @@ namespace Gerador_de_Pedidos
         }
         private async void OnAdicionarClicked(object sender, EventArgs e)
         {
-            // Obtém os valores dos campos de entrada
-            string cod = txtCodigo.Text;
-            string descricao = txtDescricao.Text;
-            string valor = txtValor.Text;
-            string quantidade = txtQuantidade.Text;
-            string versao_peca = txtVersion.Text;
-
-            // Verifica se todos os campos estão preenchidos
-            bool isCodEmpty = string.IsNullOrEmpty(cod);
-            bool isDescricaoEmpty = string.IsNullOrEmpty(descricao);
-            bool isValorEmpty = string.IsNullOrEmpty(valor);
-            bool isQuantidadeEmpty = string.IsNullOrEmpty(quantidade);
-
-            if (isCodEmpty || isDescricaoEmpty || isValorEmpty || isQuantidadeEmpty)
-            {
-                // Cria uma mensagem com os campos que estão faltando
-                string missingFieldsMessage = "Por favor, preencha os seguintes campos:\n";
-                if (isCodEmpty) missingFieldsMessage += "- Código\n";
-                if (isDescricaoEmpty) missingFieldsMessage += "- Descrição\n";
-                if (isValorEmpty) missingFieldsMessage += "- Valor\n";
-                if (isQuantidadeEmpty) missingFieldsMessage += "- Quantidade\n";
-
-                // Exibe o alerta para o usuário
-                await DisplayAlert("Campos Faltando", missingFieldsMessage, "OK");
-            }
-            else
-            {
-
-                searchBarProdutoSelecionado.Text = "";
-                // Cria um novo produto e adiciona à lista se todos os campos estiverem preenchidos
-                var produto = new Product
-                {
-                    Codigo = cod,
-                    Descricao = descricao,
-                    Valor = valor,
-                    Quantidade = quantidade,
-                    Versao_Peca = versao_peca
-                };
-
-                // Adiciona o produto à lista de produtos selecionados
-                ListaSelecionados.Add(produto);
-
-                // Atualiza a lista de produtos selecionados na interface
-                listaProdutosSelect.ItemsSource = null; // Reset the ItemsSource
-                listaProdutosSelect.ItemsSource = ListaSelecionados; // Set the updated list
-
-                // Atualiza o Picker se necessário
-                if (valores.SelectedItem != null)
-                {
-                    // Força a atualização dos dados do Picker
-                    OnPickerSelectionChangedPrice(valores, EventArgs.Empty);
-                }
-
-            }
-            AddProdutosProdutosFiltradosSelecionados();
-            CallValorTotal();
-            CalcularFaturamento();
+           await _adicionarHandler.HandleAdicionarClicked();
 
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
-            var Items = (listaProdutosSelect?.ItemsSource as IEnumerable<object>)?
-                  .OfType<Product>()
-                  .ToList() ?? new List<Product>();
-            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
-            bool answer;
-
-            var Cliente = dadosService.Cliente;
-
-            if (!Items.Any()) // Maneira mais idiomática de verificar se a lista está vazia
-            {
-                await DisplayAlert("Aviso", "Nenhum item adicionado ao pedido.", "OK");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(Cliente))
-            {
-                answer = await DisplayAlert("Alteração cliente", $"Deseja alterar o nome do cliente: {Cliente} no pedido?", "Sim", "Não");
-
-            }
-            else
-            {
-
-                answer = await DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
-
-            }
-
-
-
-            if (answer == true)
-            {
-                // Abre o prompt com o valor atual preenchido
-                string newValue = await DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
-                if (string.IsNullOrEmpty(newValue))
-                {
-                    await DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
-                    return;
-                }
-                Cliente = newValue;
-            }
-
-
-
-
-            int numeropedido = MeuBudget.Numero_Pedido;
-            string vendedor = txtVendedor.Text;
-            string cliente = Cliente;
-            string tipopedido = pedido.SelectedItem?.ToString() ?? "";
-            string valorFrete = txtFrete.Text;
-            string tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
-            string tipopagamento = pag.SelectedItem?.ToString() ?? "";
-            string faturamento = txtFaturamento.Text;
-            string defeitoequipamento = txtDefeitos.Text;
-            string numseriequipamento = txtNS.Text;
-            string tiponota = nota.SelectedItem?.ToString() ?? "";
-            string numnota = txtnota.Text;
-            string chavenotaexterna = txtChaveNotaExterna.Text;
-            string valortotal = MeuBudget.Valor_Total;
-
-
-
-            var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
-
             bool pedidosalvo = await _salvarPedido.SalvarPedidoAsync(
-               valortotal,
-               numeropedido,
-               vendedor,
-               cliente,
-               tipopedido,
-               valorFrete,
-               tipofrete,
-               tipopagamento,
-               faturamento,
-               defeitoequipamento,
-               numseriequipamento,
-               tiponota,
-               numnota,
-               chavenotaexterna,
-               produtosSelecionados,
-
+               MeuBudget,
+               txtVendedor.Text,
+               pedido.SelectedItem?.ToString() ?? "",
+               txtFrete.Text,
+               TipoFrete.SelectedItem?.ToString() ?? "",
+               pag.SelectedItem?.ToString() ?? "",
+               txtFaturamento.Text,
+               txtDefeitos.Text,
+               txtNS.Text,
+               notaPicker.SelectedItem?.ToString() ?? "",
+               txtnota.Text,
+               txtChaveNotaExterna.Text,
+               listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>(),
                ListaSelecionados,
                listaProdutosSelect,
                GetProximoNumeroPedidoAsync
            );
-
             if (pedidosalvo == true)
             {
                 OnCancelarClicked(btncancelaredicao, EventArgs.Empty);
@@ -878,7 +480,7 @@ namespace Gerador_de_Pedidos
                 txtNS.Text,
                 txtnota.Text,
                 txtChaveNotaExterna.Text,
-                nota.SelectedItem,
+                notaPicker.SelectedItem,
                 pedido.SelectedItem,
                 listaProdutosSelect,
                 btncopy,
@@ -918,73 +520,16 @@ namespace Gerador_de_Pedidos
                 Debug.WriteLine("MeuBudget é nulo");
             }
 
-
             return totalGeral;
         }
         private void OnVerificarSelecoesClicked(object sender, EventArgs e)
         {
-            // Obtém as seleções de cada Picker
-            var pickerPedido = pedido.SelectedItem as string;
-            var pickerNota = nota.SelectedItem as string;
-            var pickerPagamento = pag.SelectedItem as string;
-
-            // Determina os estados com base nas seleções
-            bool isVenda = pickerPedido == "Venda";
-            bool isOrcamento = pickerPedido == "Orçamento";
-            bool isPix = pickerPagamento == "PIX";
-            bool isGarantia = pickerPedido == "Garantia com retorno" || pickerPedido == "Garantia sem retorno";
-            bool isNotaExterna = pickerNota == "Nota Externa" && isGarantia;
-            bool isNotaInterna = pickerNota == "Nota Interna" && isGarantia;
-            // Atualiza a visibilidade com base nos estados calculados
-            SetVisibility(txtFaturamento, !isGarantia && !isPix);
-            SetVisibility(txtVendedor, !isOrcamento);
-            SetVisibility(txtChaveNotaExterna, isNotaExterna);
-            SetVisibility(txtDefeitos, !isVenda && !isOrcamento);
-            SetVisibility(txtNS, !isVenda && !isOrcamento);
-            SetVisibility(typeNota, !isVenda && !isOrcamento);
-            SetVisibility(nota, !isVenda && !isOrcamento);
-            SetVisibility(txtnota, !isVenda && !isOrcamento);
-            SetVisibility(pag, !isGarantia);
-            SetVisibility(txtpag, !isGarantia);
-            SetVisibility(txtFrete, !isGarantia);
-            SetVisibility(TipoFrete, !isGarantia);
-            SetVisibility(secaofrete, !isGarantia);
-            CallValorTotal();
+            _produtoService.OnVerificarSelecoesClickedService(txtVendedor, pedido, secaofrete, TipoFrete, pag, txtpag, txtFaturamento , txtDefeitos, txtNS , notaPicker, typeNota, txtnota, txtChaveNotaExterna, CallValorTotal);
         }
 
         private void CalcularFaturamento()
         {
-            decimal valorTotal = CallValorTotal();
-            if (valorTotal < 110)
-            {
-                pag.SelectedIndex = 0;
-                txtFaturamento.Text = "";
-            }
-            else
-            {
-                pag.SelectedIndex = 1;
-
-                if (valorTotal <= 300)
-                    txtFaturamento.Text = "15 dias";
-                else if (valorTotal <= 700)
-                    txtFaturamento.Text = "15/30";
-                else if (valorTotal <= 2000)
-                    txtFaturamento.Text = "30/45/60";
-                else if (valorTotal <= 3500)
-                    txtFaturamento.Text = "30/60/90";
-                else if (valorTotal <= 5000)
-                    txtFaturamento.Text = "30/45/60/75/90/105";
-                else
-                    txtFaturamento.Text = "30/60/90/120";
-            }
-        }
-
-        private void SetVisibility(View control, bool isVisible)
-        {
-            if (control != null)
-            {
-                control.IsVisible = isVisible;
-            }
+            _produtoService.CalcularFaturamentoService(CallValorTotal, pag, txtFaturamento);
         }
     }
 }

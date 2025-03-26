@@ -199,7 +199,7 @@ x:Name="loadingIndicatorPedido" IsRunning="False" IsVisible="False" Color="Blue"
                     <!-- Tipo de Nota -->
                         <Label x:Name="typeNota" Text="Tipo de Nota:" FontSize="20" TextColor="White"/>
                     <Frame BorderColor="#00c4b4" x:Name="framePickernota" Padding="5,0" BackgroundColor="#00c4b4">
-                        <local:BorderlessPicker x:Name="nota" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
+                        <local:BorderlessPicker x:Name="notaPicker" Style="{StaticResource HeaderPickerStyle}" SelectedIndexChanged="OnVerificarSelecoesClicked">
                             <Picker.Items>
                                 <x:String>Nota Interna</x:String>
                                 <x:String>Nota Externa</x:String>

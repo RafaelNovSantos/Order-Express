@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
-using Gerador_de_Pedidos.Services;
+using GeradordePedidos.Pedidos.Handlers;
+using Gerador_de_Pedidos.Pedidos.Models;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 
@@ -13,6 +14,7 @@ namespace Gerador_de_Pedidos
         public string Edicao { get; set; }
         public string Titulo_Pedido { get; set; }
 
+        LinkService _linkService;
 
         private string linkplanilha;
         private readonly SalvarPedido _salvarPedido;
@@ -24,7 +26,7 @@ namespace Gerador_de_Pedidos
             pedido.SelectedIndex = 0;
             equipamentos.SelectedIndex = 0;
             pag.SelectedIndex = 0;
-            nota.SelectedIndex = 0;
+            notaPicker.SelectedIndex = 0;
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
             GetProximoNumeroPedidoAsync();
@@ -36,6 +38,7 @@ namespace Gerador_de_Pedidos
             ProdutosFiltradosExcel = new ObservableCollection<Product>(Lista);
             ProdutosFiltradosSelecionados = new ObservableCollection<Product>(Lista);
             BindingContext = this;
+            _linkService = new LinkService(loadingIndicatorPedido, lblStatusProduto);
 
         }
 
@@ -76,7 +79,7 @@ namespace Gerador_de_Pedidos
                     txtFaturamento.Text = dadosService.Faturamento;
                     txtDefeitos.Text = dadosService.DefeitoEquipamento;
                     txtNS.Text = dadosService.NumSerieEquipamento;
-                    nota.SelectedItem = dadosService.TipoNota;
+                    notaPicker.SelectedItem = dadosService.TipoNota;
                     txtnota.Text = dadosService.NumNota;
                     txtChaveNotaExterna.Text = dadosService.ChaveNotaExterna;
 
@@ -123,7 +126,7 @@ namespace Gerador_de_Pedidos
             pedido.SelectedIndex = 0;
             equipamentos.SelectedIndex = 0;
             pag.SelectedIndex = 0;
-            nota.SelectedIndex = 0;
+            notaPicker.SelectedIndex = 0;
             TipoFrete.SelectedIndex = 0;
             valores.SelectedIndex = 0;
             // Caso haja algum valor numérico, defina como 0 ou o valor default
@@ -234,11 +237,8 @@ namespace Gerador_de_Pedidos
         }
         private async void OnAlterarLinkClicked(object sender, EventArgs e)
         {
-            var selectedValue = valores.SelectedItem?.ToString();
-            string senha = await DisplayPromptAsync("Autenticação", "Digite a senha para alterar o link da planilha Sheet Google:");
 
-            var linkService = new LinkService();
-            await linkService.AlterarLink(senha, await DisplayPromptAsync("Alterar Link", "Digite o novo link da planilha:"), selectedValue, loadingIndicatorPedido, lblStatusProduto);
+            await _linkService.AlterarLink(loadingIndicatorPedido);
             LoadLink();
 
         }
@@ -726,84 +726,21 @@ namespace Gerador_de_Pedidos
         }
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
-            var Items = (listaProdutosSelect?.ItemsSource as IEnumerable<object>)?
-                  .OfType<Product>()
-                  .ToList() ?? new List<Product>();
-            var dadosService = DependencyService.Get<DadosCompartilhadosService>();
-            bool answer;
-
-            var Cliente = dadosService.Cliente;
-
-            if (!Items.Any()) // Maneira mais de verificar se a lista está vazia
-            {
-                await DisplayAlert("Aviso", "Nenhum item adicionado ao pedido.", "OK");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(Cliente))
-            {
-                answer = await DisplayAlert("Alteração cliente", $"Deseja alterar o nome do cliente: {Cliente} no pedido?", "Sim", "Não");
-
-            }
-            else
-            {
-
-                answer = await DisplayAlert("Cadastro cliente", "Deseja adicionar o nome do cliente no pedido?", "Sim", "Não");
-
-            }
-
-
-
-            if (answer == true)
-            {
-                // Abre o prompt com o valor atual preenchido
-                string newValue = await DisplayPromptAsync("Editar", $"Digite o nome do cliente:", "OK", "Cancelar");
-                if (string.IsNullOrEmpty(newValue))
-                {
-                    await DisplayAlert("Aviso", "Você deixou o campo cliente vazio, o pedido não foi salvo", "OK");
-                    return;
-                }
-                Cliente = newValue;
-            }
-
-
-
-
-            int numeropedido = MeuBudget.Numero_Pedido;
-            string vendedor = txtVendedor.Text;
-            string cliente = Cliente;
-            string tipopedido = pedido.SelectedItem?.ToString() ?? "";
-            string valorFrete = txtFrete.Text;
-            string tipofrete = TipoFrete.SelectedItem?.ToString() ?? "";
-            string tipopagamento = pag.SelectedItem?.ToString() ?? "";
-            string faturamento = txtFaturamento.Text;
-            string defeitoequipamento = txtDefeitos.Text;
-            string numseriequipamento = txtNS.Text;
-            string tiponota = nota.SelectedItem?.ToString() ?? "";
-            string numnota = txtnota.Text;
-            string chavenotaexterna = txtChaveNotaExterna.Text;
-            string valortotal = MeuBudget.Valor_Total;
-
-
-
-            var produtosSelecionados = listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>();
 
             bool pedidosalvo = await _salvarPedido.SalvarPedidoAsync(
-               valortotal,
-               numeropedido,
-               vendedor,
-               cliente,
-               tipopedido,
-               valorFrete,
-               tipofrete,
-               tipopagamento,
-               faturamento,
-               defeitoequipamento,
-               numseriequipamento,
-               tiponota,
-               numnota,
-               chavenotaexterna,
-               produtosSelecionados,
+               MeuBudget,
+               txtVendedor.Text,
+               pedido.SelectedItem?.ToString() ?? "",
+               txtFrete.Text,
+               TipoFrete.SelectedItem?.ToString() ?? "",
+               pag.SelectedItem?.ToString() ?? "",
+               txtFaturamento.Text,
+               txtDefeitos.Text,
+               txtNS.Text,
+               notaPicker.SelectedItem?.ToString() ?? "",
+               txtnota.Text,
+               txtChaveNotaExterna.Text,
+               listaProdutosSelect.ItemsSource?.Cast<Product>().ToList() ?? new List<Product>(),
 
                ListaSelecionados,
                listaProdutosSelect,
@@ -839,7 +776,7 @@ namespace Gerador_de_Pedidos
                 txtNS.Text,
                 txtnota.Text,
                 txtChaveNotaExterna.Text,
-                nota.SelectedItem,
+                notaPicker.SelectedItem,
                 pedido.SelectedItem,
                 listaProdutosSelect,
                 btncopy,
@@ -886,7 +823,7 @@ namespace Gerador_de_Pedidos
         {
             // Obtém as seleções de cada Picker
             var pickerPedido = pedido.SelectedItem as string;
-            var pickerNota = nota.SelectedItem as string;
+            var pickerNota = notaPicker.SelectedItem as string;
             var pickerPagamento = pag.SelectedItem as string;
 
             // Determina os estados com base nas seleções
